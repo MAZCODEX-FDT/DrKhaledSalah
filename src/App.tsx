@@ -4,6 +4,7 @@ import { SmoothScroll } from './lib/smooth'
 import Navbar from './components/site/Navbar'
 import Footer from './components/site/Footer'
 import ContactDock from './components/site/ContactDock'
+import Analytics from './components/site/Analytics'
 import Home from './pages/Home'
 import About from './pages/About'
 import ProceduresPage from './pages/ProceduresPage'
@@ -25,6 +26,7 @@ function SiteLayout() {
       <main><Outlet /></main>
       <Footer />
       <ContactDock />
+      <Analytics />
     </SmoothScroll>
   )
 }

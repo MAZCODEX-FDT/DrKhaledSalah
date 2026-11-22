@@ -3,6 +3,6 @@ type W = Window & { gtag?: (...a: unknown[]) => void; fbq?: (...a: unknown[]) =>
 export function track(event: string, params: Record<string, unknown> = {}) {
   const w = window as W
   try { w.gtag?.('event', event, params) } catch { /* ignore */ }
-  const fb: Record<string, string> = { generate_lead: 'Lead', contact_whatsapp: 'Contact', contact_call: 'Contact', book_submit: 'Lead' }
+  const fb: Record<string, string> = { generate_lead: 'Lead', contact_whatsapp: 'Contact', contact_call: 'Contact', book_submit: 'Lead', video_play: 'ViewContent', guide_download: 'ViewContent' }
   try { if (fb[event]) w.fbq?.('track', fb[event], params); else w.fbq?.('trackCustom', event, params) } catch { /* ignore */ }
 }

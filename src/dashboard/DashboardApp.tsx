@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
-import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone, SquarePlay, ClipboardList, Newspaper } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone, SquarePlay, ClipboardList, Newspaper, ChartLine } from 'lucide-react'
 import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
 import type { BranchId } from '../lib/store'
@@ -20,6 +20,7 @@ import ContentMedia from './cms/ContentMedia'
 import ContentContact from './cms/ContentContact'
 import ContentVideos from './cms/ContentVideos'
 import { ContentArticles, ContentGuide } from './cms/ContentGuide'
+import ContentAnalytics from './cms/ContentAnalytics'
 
 type BranchFilter = 'all' | BranchId
 const BranchCtx = createContext<{ branch: BranchFilter; setBranch: (b: BranchFilter) => void }>({ branch: 'all', setBranch: () => {} })
@@ -45,6 +46,7 @@ const webItems = [
   { to: '/dashboard/website/guide', icon: ClipboardList, k: 'wGuide' },
   { to: '/dashboard/website/articles', icon: Newspaper, k: 'wArticles' },
   { to: '/dashboard/website/media', icon: Images, k: 'wMedia' },
+  { to: '/dashboard/website/analytics', icon: ChartLine, k: 'wAnalytics' },
 ] as const
 
 const AUTH_KEY = 'ks-dash-auth'
@@ -173,6 +175,7 @@ export default function DashboardApp() {
               <Route path="website/articles" element={<ContentArticles />} />
               <Route path="website/media" element={<ContentMedia />} />
               <Route path="website/contact" element={<ContentContact />} />
+              <Route path="website/analytics" element={<ContentAnalytics />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

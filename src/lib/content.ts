@@ -27,6 +27,8 @@ export type Video = { id: string; title: L; url: string; views: string; featured
 export type GuideSection = { id: string; title: L; items: L; enabled: boolean }
 /** A short article for parents. Body uses "## " lines for headings and blank lines between paragraphs. */
 export type Article = { id: string; slug: string; title: L; excerpt: L; body: L; image: string | null; procedure: string; date: string; enabled: boolean }
+/** Visitor analytics. IDs are public (they appear in every page's code), so they are fine to store here. */
+export type Tracking = { ga4: string; pixel: string; askConsent: boolean }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
@@ -44,6 +46,7 @@ export interface ContentDB {
   videos: Video[]
   youtube: YouTubeSync
   guide: GuideSection[]
+  tracking: Tracking
   articles: Article[]
   branches: CmsBranch[]
   stats: CmsStat[]
@@ -88,6 +91,7 @@ function seed(): ContentDB {
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
     videos: [],
     youtube: { channel: 'UCmHqUf0vI7lohE_7NbLd3DA', apiKey: '', autoShow: false, lastSync: null, lastError: null },
+    tracking: { ga4: '', pixel: '', askConsent: true },
     guide: guideSeed.map(g => ({ ...g, id: uid(), enabled: true })),
     articles: articleSeed.map((a, i) => ({ ...a, id: uid(), image: null, procedure: a.procedure ?? '', date: new Date(Date.UTC(2026, 10, 20 - i)).toISOString().slice(0, 10), enabled: true })),
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
@@ -150,6 +154,7 @@ function load(): ContentDB {
           contact: d.contact ?? s.contact,
           videos: d.videos ?? s.videos,
           guide: d.guide ?? s.guide,
+          tracking: { ...s.tracking, ...d.tracking },
           articles: d.articles ?? s.articles,
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
@@ -242,6 +247,7 @@ export const cms = {
     commit({ ...db, videos, youtube: { ...db.youtube, lastSync: new Date().toISOString(), lastError: null } })
     return added.length
   },
+  setTracking(p: Partial<Tracking>) { commit({ ...db, tracking: { ...db.tracking, ...p } }) },
   setFeaturedVideo(id: string) {
     commit({ ...db, videos: db.videos.map(v => ({ ...v, featured: v.id === id })) })
   },
