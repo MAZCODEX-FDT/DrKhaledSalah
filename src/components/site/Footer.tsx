@@ -81,6 +81,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 border-t hairline px-6 py-6 text-xs text-cloud/40">
         <span>© {new Date().getFullYear()} {t(doctor.name)}</span>
         <span>{lang === 'ar' ? 'المحتوى للتوعية ولا يغني عن الكشف الطبي' : 'Content is for awareness and does not replace a medical consultation'}</span>
+        <span>{lang === 'ar' ? 'تصميم وتطوير' : 'Designed & developed by'} <span dir="ltr" className="font-latin font-semibold tracking-wide text-cloud/70">MAZCODEX</span></span>
       </div>
     </footer>
   )
