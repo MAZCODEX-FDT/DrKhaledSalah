@@ -1,9 +1,11 @@
-import { createContext, useContext, useState, type FormEvent } from 'react'
+import { createContext, useContext, useEffect, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
 import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone, SquarePlay, ClipboardList, Newspaper, ChartLine, BadgeCheck } from 'lucide-react'
 import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
-import type { BranchId } from '../lib/store'
+import { clearDashboard, loadDashboard, type BranchId } from '../lib/store'
+import { BACKEND, getToken, login, logout as apiLogout, onSignedOut } from '../lib/api'
+import { loadFromServer, useAdminContentReady, useSaveState } from '../lib/content'
 import { nav, tr } from './labels'
 import Overview from './pages/Overview'
 import Appointments from './pages/Appointments'
@@ -55,13 +57,20 @@ const AUTH_KEY = 'ks-dash-auth'
 
 function Login({ onIn }: { onIn: () => void }) {
   const { t, toggle, lang } = useI18n()
-  const [email, setEmail] = useState('admin@drkhaledsalah.com')
+  const [email, setEmail] = useState(BACKEND ? '' : 'admin@drkhaledsalah.com')
   const [pass, setPass] = useState('')
-  const [err, setErr] = useState(false)
-  const submit = (e: FormEvent) => {
+  const [err, setErr] = useState<string | false>(false)
+  const [busy, setBusy] = useState(false)
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    // DEMO ONLY: client-side check. Replace with real authentication (e.g. Supabase Auth) before launch.
-    if (pass === 'demo2026') { try { sessionStorage.setItem(AUTH_KEY, '1') } catch { /* ignore */ } onIn() } else setErr(true)
+    if (BACKEND) {
+      // Real sign-in against the Laravel backend; users are created on the server with "php artisan clinic:admin"
+      setBusy(true)
+      try { await login(email, pass); onIn() } catch (x) { setErr((x as Error).message) } finally { setBusy(false) }
+      return
+    }
+    // Demo build (GitHub Pages): client-side check only
+    if (pass === 'demo2026') { try { sessionStorage.setItem(AUTH_KEY, '1') } catch { /* ignore */ } onIn() } else setErr('demo')
   }
   return (
     <div className="grid min-h-screen bg-night lg:grid-cols-2">
@@ -79,13 +88,13 @@ function Login({ onIn }: { onIn: () => void }) {
             <button type="button" onClick={toggle} className="ms-auto flex items-center gap-1.5 text-sm text-[#5e6a7a]"><Globe className="size-4" />{lang === 'ar' ? 'English' : 'عربي'}</button>
           </div>
           <h2 className="font-display text-3xl font-light">{t(tr('تسجيل الدخول', 'Sign in'))}</h2>
-          <input type="email" dir="ltr" value={email} onChange={e => setEmail(e.target.value)} />
-          <input type="password" dir="ltr" placeholder="••••••••" value={pass} onChange={e => { setPass(e.target.value); setErr(false) }} />
-          {err && <p className="text-sm text-rose-700">{t(tr('كلمة السر غلط', 'Wrong password'))}</p>}
-          <button className="w-full rounded-xl bg-[#163e7a] py-3 font-medium text-cloud hover:bg-[#2f6fd1]">{t(tr('دخول', 'Sign in'))}</button>
-          <p className="rounded-xl bg-[#e9eef2] p-3 text-xs leading-relaxed text-[#5e6a7a]">
+          <input type="email" dir="ltr" required autoComplete="username" aria-label="Email" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+          <input type="password" dir="ltr" required autoComplete="current-password" aria-label={t(tr('كلمة السر', 'Password'))} placeholder="••••••••" value={pass} onChange={e => { setPass(e.target.value); setErr(false) }} />
+          {err && <p role="alert" className="text-sm text-rose-700">{t(tr('الإيميل أو كلمة السر غلط', 'Wrong email or password'))}</p>}
+          <button disabled={busy} className="w-full rounded-xl bg-[#163e7a] py-3 font-medium text-cloud hover:bg-[#2f6fd1] disabled:opacity-60">{t(tr('دخول', 'Sign in'))}</button>
+          {!BACKEND && <p className="rounded-xl bg-[#e9eef2] p-3 text-xs leading-relaxed text-[#5e6a7a]">
             {t(tr('نسخة عرض: كلمة السر demo2026. الدخول الحقيقي هيتربط بنظام مصادقة قبل الإطلاق.', 'Demo build: password is demo2026. Real authentication will be wired in before launch.'))}
-          </p>
+          </p>}
           <Link to="/" className="block text-center text-sm text-[#5e6a7a] hover:text-[#1a2433]">{t(tr('رجوع للموقع', 'Back to website'))}</Link>
         </form>
       </div>
@@ -95,13 +104,26 @@ function Login({ onIn }: { onIn: () => void }) {
 
 export default function DashboardApp() {
   const { t, toggle, lang } = useI18n()
-  const [authed, setAuthed] = useState(() => { try { return sessionStorage.getItem(AUTH_KEY) === '1' } catch { return false } })
+  const [authed, setAuthed] = useState(() => BACKEND ? !!getToken() : (() => { try { return sessionStorage.getItem(AUTH_KEY) === '1' } catch { return false } })())
   const [branch, setBranch] = useState<BranchFilter>('all')
   const [open, setOpen] = useState(false)
 
+  // Server mode: load the editable content (with keys) and the patient data once signed in
+  useEffect(() => {
+    if (!BACKEND || !authed) return
+    loadFromServer().catch(() => { /* shown by the save indicator on the next change */ })
+    loadDashboard().catch(() => { /* a 401 signs out below */ })
+  }, [authed])
+  useEffect(() => onSignedOut(() => { clearDashboard(); setAuthed(false) }), [])
+  const ready = useAdminContentReady()
+
   if (!authed) return <Login onIn={() => setAuthed(true)} />
 
-  const logout = () => { try { sessionStorage.removeItem(AUTH_KEY) } catch { /* ignore */ } setAuthed(false) }
+  const logout = async () => {
+    if (BACKEND) { await apiLogout(); clearDashboard(); loadFromServer().catch(() => { /* public content */ }) }
+    else try { sessionStorage.removeItem(AUTH_KEY) } catch { /* ignore */ }
+    setAuthed(false)
+  }
 
   const Side = (
     <aside className="flex h-full flex-col bg-[#163e7a] p-5 text-cloud">
@@ -155,12 +177,13 @@ export default function DashboardApp() {
               ))}
             </div>
             <div className="ms-auto flex items-center gap-2">
+              {BACKEND && <SaveBadge />}
               <button onClick={toggle} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[#5e6a7a] hover:bg-white"><Globe className="size-4" />{lang === 'ar' ? 'EN' : 'ع'}</button>
               <div className="flex size-9 items-center justify-center rounded-full bg-blue text-sm font-semibold text-white">{lang === 'ar' ? 'خ' : 'KS'}</div>
             </div>
           </header>
           <main className="mx-auto max-w-[90rem] p-4 sm:p-8">
-            <Routes>
+            {!ready ? <p role="status" className="py-24 text-center text-sm text-[#5e6a7a]">{t(tr('بيحمّل…', 'Loading…'))}</p> : <Routes>
               <Route index element={<Overview />} />
               <Route path="appointments" element={<Appointments />} />
               <Route path="schedule" element={<Schedule />} />
@@ -180,10 +203,19 @@ export default function DashboardApp() {
               <Route path="website/analytics" element={<ContentAnalytics />} />
               <Route path="website/google" element={<ContentGoogle />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
+            </Routes>}
           </main>
         </div>
       </div>
     </BranchCtx.Provider>
   )
+}
+
+/** Shows whether website edits reached the server. */
+function SaveBadge() {
+  const { t } = useI18n()
+  const { state, error } = useSaveState()
+  if (state === 'idle') return null
+  const label = state === 'saving' ? tr('بيتحفظ…', 'Saving…') : state === 'saved' ? tr('اتحفظ ونزل على الموقع', 'Saved and live') : tr('ما اتحفظش، جرّب تاني', 'Not saved, try again')
+  return <span role="status" title={error || undefined} className={`hidden rounded-lg px-3 py-1.5 text-xs sm:inline ${state === 'error' ? 'bg-rose-50 text-rose-700' : 'text-[#5e6a7a]'}`}>{t(label)}</span>
 }

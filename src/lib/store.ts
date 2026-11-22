@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from 'react'
+import { api, BACKEND, getToken } from './api'
 
 /**
- * Demo data store for the dashboard, persisted in localStorage.
- * Swap these functions for real API calls (Supabase, Firebase, or a custom backend) before production.
- * Patient data is health data: the real backend must be access-controlled and encrypted.
+ * Dashboard data: patients, appointments, inquiries, review requests.
+ * With the Laravel backend (VITE_BACKEND=1) it lives on the server, encrypted, and only signed-in staff can read it.
+ * Without it (GitHub Pages demo) it is fictional sample data kept in this browser.
  */
 
 export type BranchId = 'tagamoa' | 'giza'
@@ -109,12 +110,50 @@ function load(): DB {
   return seed()
 }
 
-let db: DB = load()
+const empty = (): DB => ({ patients: [], appointments: [], inquiries: [], reviews: [], settings: { goalSurgeries: 25, goalReviews: 40, adBudget: 0, replyMinutes: 15 } })
+
+let db: DB = BACKEND ? empty() : load()
 const subs = new Set<() => void>()
+const emit = () => subs.forEach(f => f())
+
+// ---- Server mode ----
+let loadedAt = ''
+let timer: ReturnType<typeof setTimeout> | undefined
+let inflight: Promise<void> | null = null
+async function push() {
+  if (inflight) await inflight
+  const sent = db
+  inflight = (async () => {
+    try {
+      const r = await api<{ data: DB }>('/admin/dashboard', { method: 'PUT', json: { data: sent, loadedAt } })
+      loadedAt = new Date().toISOString()
+      // The server may add booking requests that arrived meanwhile
+      if (db === sent) { db = r.data; emit() }
+    } finally { inflight = null }
+  })()
+  return inflight
+}
+/** Loads the dashboard data after sign-in. */
+export async function loadDashboard() {
+  if (!BACKEND || !getToken()) return
+  const r = await api<{ data: DB }>('/admin/dashboard')
+  loadedAt = new Date().toISOString()
+  db = r.data
+  emit()
+}
+export const clearDashboard = () => { db = empty(); emit() }
+
+/** The website's booking form. On the server it lands in Dashboard → Inquiries for every staff member. */
+export async function submitBooking(i: Omit<Inquiry, 'id' | 'createdAt' | 'lastContact' | 'stage' | 'source'>) {
+  if (BACKEND) await api('/inquiries', { method: 'POST', json: i })
+  else actions.addInquiry({ ...i, source: 'website' })
+}
+
 function commit(next: DB) {
   db = next
-  try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ }
-  subs.forEach(f => f())
+  if (BACKEND) { clearTimeout(timer); timer = setTimeout(() => { push().catch(() => { /* retried on the next change */ }) }, 500) }
+  else try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ }
+  emit()
 }
 const subscribe = (f: () => void) => { subs.add(f); return () => subs.delete(f) }
 
@@ -166,7 +205,7 @@ export const actions = {
     commit({ ...db, reviews: db.reviews.map(r => (r.id === id ? { ...r, ...patch } : r)) })
   },
   updateSettings(patch: Partial<Settings>) { commit({ ...db, settings: { ...db.settings, ...patch } }) },
-  reset() { commit(seed()) },
+  reset() { commit(BACKEND ? empty() : seed()) },
 }
 
 export const todayISO = () => iso(new Date())

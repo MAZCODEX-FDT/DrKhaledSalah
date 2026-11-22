@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { RefreshCw, Search, Star } from 'lucide-react'
 import { useI18n } from '../../lib/i18n'
-import { cms, useContent } from '../../lib/content'
+import { cms, useContent, useServerKeys } from '../../lib/content'
 import { findPlaces, syncReviews, type PlaceHit } from '../../lib/googleReviews'
 import { Btn, Card, Field, PageTitle } from '../ui'
 import { tr } from '../labels'
@@ -16,7 +16,8 @@ export default function ContentGoogle() {
   const [busy, setBusy] = useState<'' | 'find' | 'sync'>('')
   const [err, setErr] = useState('')
   const run = async (kind: 'find' | 'sync', f: () => Promise<void>) => { setBusy(kind); setErr(''); try { await f() } catch (e) { setErr((e as Error).message) } finally { setBusy('') } }
-  const noKey = !g.apiKey && !ytKey
+  const sk = useServerKeys()
+  const noKey = !g.apiKey && !ytKey && !sk.places && !sk.youtube
   return (
     <>
       <PageTitle title={t(tr('تقييمات جوجل', 'Google reviews'))}

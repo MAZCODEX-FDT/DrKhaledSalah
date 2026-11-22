@@ -1,0 +1,9 @@
+# Only needed if the domain's document root cannot point at clinic/public (see DEPLOY.md, option B).
+# Put this file in public_html/ as ".htaccess", with the Laravel app in public_html/clinic/.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Never serve the app's code, .env or database files directly
+    RewriteRule ^clinic/(?!public/) - [F,L]
+    RewriteCond %{REQUEST_URI} !^/clinic/public/
+    RewriteRule ^(.*)$ clinic/public/$1 [L]
+</IfModule>

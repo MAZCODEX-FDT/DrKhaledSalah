@@ -5,7 +5,7 @@ import PageHero from './PageHero'
 import { useI18n } from '../lib/i18n'
 import { ui, waLink } from '../content/site'
 import { useSite } from '../lib/content'
-import { actions, type BranchId, type ProcedureId } from '../lib/store'
+import { submitBooking, type BranchId, type ProcedureId } from '../lib/store'
 import { setPreferredBranch, usePreferredBranch } from '../lib/branchPref'
 import { track } from '../lib/track'
 
@@ -24,7 +24,8 @@ export default function Book() {
   const submit = (e: FormEvent) => {
     e.preventDefault()
     // 1) Recorded in the dashboard's inquiry pipeline
-    actions.addInquiry({ name: form.name, phone: form.phone, branch, procedure: form.procedure, source: 'website', message: form.message })
+    // (not awaited: WhatsApp must open in the same click, or browsers block it; the message carries every detail anyway)
+    submitBooking({ name: form.name, phone: form.phone, branch, procedure: form.procedure, message: form.message }).catch(() => { /* WhatsApp still has it */ })
     // 2) Sent to the branch WhatsApp with every detail filled in, so the clinic has it even before anyone opens the dashboard
     const target = branches.find(x => x.id === branch) ?? branches[0]
     const proc = form.procedure === 'consultation' ? (lang === 'ar' ? 'استشارة عامة' : 'General consultation') : t(surgeries.find(s => s.slug === form.procedure)?.name ?? { ar: form.procedure, en: form.procedure })

@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "build:demo": "VITE_HASH_ROUTER=1 vite build --base ./ --outDir dist-demo",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:server": "tsc -b && node scripts/build-server.mjs",
+    "package:server": "bash scripts/package-server.sh"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from 'react'
+import { BACKEND } from '../../lib/api'
 import { ArrowDown, ArrowUp, ImagePlus, Pencil, Plus, Trash2, Upload, X, Eye, EyeOff } from 'lucide-react'
 import type { L } from '../../lib/i18n'
 import { useI18n } from '../../lib/i18n'
@@ -160,6 +161,7 @@ export function StatusPill({ on }: { on: boolean }) {
 
 export function DemoNote() {
   const { t } = useI18n()
+  if (BACKEND) return null // live site: edits publish to every visitor
   return (
     <p className="mb-6 rounded-xl bg-[#fff4d6] px-4 py-3 text-xs leading-relaxed text-[#5e4a12]">
       {t(tr('نسخة عرض: التعديلات بتتحفظ في المتصفح ده بس. بعد ربط قاعدة البيانات قبل الإطلاق، أي تعديل هنا هيظهر لكل زوار الموقع.',

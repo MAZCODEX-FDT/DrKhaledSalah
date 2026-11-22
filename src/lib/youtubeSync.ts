@@ -1,4 +1,5 @@
-import { cms, getContent } from './content'
+import { applyServerContent, cms, flushContent, getContent, type ContentDB } from './content'
+import { api, ApiError, BACKEND } from './api'
 
 const API = 'https://www.googleapis.com/youtube/v3'
 
@@ -26,6 +27,7 @@ async function get<T>(path: string, key: string): Promise<T> {
  * New videos arrive hidden unless "show new videos automatically" is on. Returns how many were added.
  */
 export async function syncChannel(max = Infinity): Promise<number> {
+  if (BACKEND) return serverSync<{ added: number }>('/admin/sync/youtube').then(r => r.added)
   const { channel, apiKey } = getContent().youtube
   if (!apiKey) throw new Error('No API key')
   try {
@@ -60,8 +62,23 @@ export async function syncChannel(max = Infinity): Promise<number> {
 
 /** Quietly re-syncs when the last sync is older than `hours`. Used when the site and dashboard open. */
 export function autoSync(hours = 6) {
+  if (BACKEND) return // the server refreshes on its own schedule
   const { apiKey, lastSync } = getContent().youtube
   if (!apiKey) return
   if (lastSync && Date.now() - Date.parse(lastSync) < hours * 3600e3) return
   syncChannel().catch(() => { /* error is shown in the dashboard */ })
+}
+
+/** Server mode: Laravel runs the sync and returns the updated content (also on failure, with lastError set). */
+export async function serverSync<T>(path: string): Promise<T> {
+  await flushContent()
+  try {
+    const r = await api<T & { content: ContentDB }>(path, { method: 'POST' })
+    applyServerContent(r.content)
+    return r
+  } catch (e) {
+    const c = e instanceof ApiError ? (e.body as { content?: ContentDB } | null)?.content : null
+    if (c) applyServerContent(c)
+    throw e
+  }
 }

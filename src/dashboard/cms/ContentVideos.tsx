@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Plus, Star, ExternalLink, RefreshCw, KeyRound } from 'lucide-react'
 import { syncChannel, autoSync } from '../../lib/youtubeSync'
 import { useI18n } from '../../lib/i18n'
-import { cms, uid, useContent, youtubeId, type Video } from '../../lib/content'
+import { cms, uid, useContent, youtubeId, type Video, useServerKeys } from '../../lib/content'
 import { Btn, Card, Field, Modal, PageTitle } from '../ui'
 import { tr } from '../labels'
 import { DemoNote, emptyL, LInput, RowActions, StatusPill, Toggle } from './kit'
@@ -39,6 +39,7 @@ export default function ContentVideos() {
   const vid = edit ? youtubeId(edit.url) : null
   const [reading, setReading] = useState(false)
   const yt = useContent(d => d.youtube)
+  const sk = useServerKeys()
   const [syncing, setSyncing] = useState(false)
   const [note, setNote] = useState('')
   useEffect(() => { autoSync() }, [])
@@ -86,7 +87,7 @@ export default function ContentVideos() {
             <h3 className="font-semibold">{t(tr('سحب الفيديوهات من القناة تلقائيًا', 'Import videos from the channel automatically'))}</h3>
             <p className="mt-1 max-w-2xl text-sm text-[#5e6a7a]">{t(tr('الموقع بيقرا القناة كل 6 ساعات، بيضيف الفيديوهات الجديدة بعناوينها وبيحدّث عدد المشاهدات. العناوين والترتيب اللي عدّلتهم بيفضلوا زي ما هم.', 'The site reads the channel every 6 hours, adds new videos with their titles and refreshes view counts. Titles and order you edited stay as they are.'))}</p>
           </div>
-          <Btn onClick={runSync} disabled={!yt.apiKey || syncing}><RefreshCw className={`size-4 ${syncing ? 'animate-spin' : ''}`} />{t(tr('اسحب دلوقتي', 'Sync now'))}</Btn>
+          <Btn onClick={runSync} disabled={(!yt.apiKey && !sk.youtube) || syncing}><RefreshCw className={`size-4 ${syncing ? 'animate-spin' : ''}`} />{t(tr('اسحب دلوقتي', 'Sync now'))}</Btn>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Field label={t(tr('القناة', 'Channel'))}><input dir="ltr" value={yt.channel} onChange={e => cms.setYouTube({ channel: e.target.value })} placeholder="@DrKhaledSalah" /></Field>
@@ -96,7 +97,7 @@ export default function ContentVideos() {
           <Toggle on={yt.autoShow} onClick={() => cms.setYouTube({ autoShow: !yt.autoShow })} />
           <span>{t(tr('اظهر الفيديوهات الجديدة على الموقع على طول (من غير مراجعة)', 'Show new videos on the site right away (no review)'))}</span>
         </div>
-        {!yt.apiKey && <p className="mt-4 flex items-start gap-2 rounded-xl bg-[#fff4d6] p-3 text-sm text-[#163e7a]"><KeyRound className="mt-0.5 size-4 shrink-0" />{t(tr('محتاج مفتاح مجاني من Google Cloud: مشروع جديد ← فعّل YouTube Data API v3 ← Credentials ← Create API key، وقصره على عنوان الموقع.', 'Needs a free key from Google Cloud: new project → enable YouTube Data API v3 → Credentials → Create API key, restricted to the website address.'))}</p>}
+        {!yt.apiKey && !sk.youtube && <p className="mt-4 flex items-start gap-2 rounded-xl bg-[#fff4d6] p-3 text-sm text-[#163e7a]"><KeyRound className="mt-0.5 size-4 shrink-0" />{t(tr('محتاج مفتاح مجاني من Google Cloud: مشروع جديد ← فعّل YouTube Data API v3 ← Credentials ← Create API key، وقصره على عنوان الموقع.', 'Needs a free key from Google Cloud: new project → enable YouTube Data API v3 → Credentials → Create API key, restricted to the website address.'))}</p>}
         {yt.lastError && <p className="mt-4 rounded-xl bg-[#fdecec] p-3 text-sm text-[#c0392b]">{t(tr('السحب فشل: ', 'Sync failed: '))}<span dir="ltr">{yt.lastError}</span></p>}
         {note && <p className="mt-4 text-sm text-[#1f7a4d]">{note}</p>}
         {yt.lastSync && <p className="mt-2 text-xs text-[#5e6a7a]">{t(tr('آخر سحب: ', 'Last sync: '))}{new Date(yt.lastSync).toLocaleString()}</p>}

@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { api, BACKEND, getToken } from './api'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
@@ -9,9 +10,8 @@ export type { SocialPlatform }
 
 /**
  * Website content store (CMS), edited from Dashboard → Website.
- * DEMO: persisted in this browser's localStorage, so edits are visible only in the same browser.
- * Before launch, swap load/commit for a real backend (e.g. Supabase tables + Storage for images)
- * so changes publish for every visitor.
+ * With the Laravel backend (VITE_BACKEND=1): loaded from /api/content and saved to /api/admin/content,
+ * so changes publish for every visitor. Without it (GitHub Pages demo): kept in this browser's localStorage.
  */
 
 export type MediaItem = { id: string; name: string; src: string; alt: L; enabled: boolean; createdAt: string; stock?: boolean; stockKey?: string }
@@ -143,11 +143,8 @@ function withStock(input: ContentDB): ContentDB {
   }
 }
 
-function load(): ContentDB {
-  try {
-    const raw = localStorage.getItem(KEY)
-    if (raw) {
-      const d = JSON.parse(raw) as ContentDB
+/** Brings content saved by an older version of the site up to date (fills new fields, refreshes sample illustrations). */
+function upgrade(d: ContentDB | null): ContentDB | null {
       if (d?.version === 1) {
         // Fill fields added after this browser first saved content
         const s = seed()
@@ -174,21 +171,111 @@ function load(): ContentDB {
         if (d.stockVersion === STOCK_VERSION) return base
         return d.stockApplied && !d.stockVersion && !d.media?.some(m => m.stock) ? { ...base, stockVersion: STOCK_VERSION } : withStock(base)
       }
-    }
+      return null
+}
+
+function load(): ContentDB {
+  try {
+    const raw = localStorage.getItem(KEY)
+    if (raw) return upgrade(JSON.parse(raw) as ContentDB) ?? seed()
   } catch { /* fall through */ }
   return seed()
 }
 
 let db: ContentDB = load()
 const subs = new Set<() => void>()
+const emit = () => subs.forEach(f => f())
 export class StorageFullError extends Error {}
 
+// ---- Server mode (Laravel backend) ----
+export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+let saveState: SaveState = 'idle'
+let saveError = ''
+const saveSubs = new Set<() => void>()
+const setSave = (s: SaveState, err = '') => { saveState = s; saveError = err; saveSubs.forEach(f => f()) }
+/** Dashboard indicator: whether the last change reached the server. */
+export function useSaveState() {
+  const state = useSyncExternalStore(f => { saveSubs.add(f); return () => { saveSubs.delete(f) } }, () => saveState)
+  return { state, error: saveError }
+}
+let saveTimer: ReturnType<typeof setTimeout> | undefined
+let saving: Promise<void> | null = null
+
+/** Replaces the content with what the server returned (keeps local edits made while a save was in flight). */
+function fromServer(c: ContentDB | null) {
+  const next = upgrade(c)
+  if (!next) return
+  db = next
+  // Visitors get the last published content instantly on their next visit, before the request returns
+  try { if (!getToken()) localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* full or private mode */ }
+  emit()
+}
+
+async function pushToServer() {
+  if (saving) await saving
+  const sent = db
+  setSave('saving')
+  saving = (async () => {
+    try {
+      const r = await api<{ content: ContentDB }>('/admin/content', { method: 'PUT', json: { content: sent } })
+      if (db === sent) { db = upgrade(r.content) ?? db; emit() }
+      else {
+        // Edited again meanwhile: only take the image URLs the server created for uploads
+        const srcs = new Map(r.content.media.map(m => [m.id, m.src]))
+        db = { ...db, media: db.media.map(m => (m.src.startsWith('data:') && srcs.get(m.id) && !srcs.get(m.id)!.startsWith('data:') ? { ...m, src: srcs.get(m.id)! } : m)) }
+        emit()
+      }
+      setSave('saved')
+    } catch (e) {
+      setSave('error', (e as Error).message)
+    } finally { saving = null }
+  })()
+}
+
+// The dashboard waits for the server copy before showing editors, so a form never starts from built-in text
+let adminReady = false
+const readySubs = new Set<() => void>()
+const setReady = (v: boolean) => { adminReady = v; readySubs.forEach(f => f()) }
+export const useAdminContentReady = () => useSyncExternalStore(f => { readySubs.add(f); return () => { readySubs.delete(f) } }, () => !BACKEND || adminReady)
+
+/** Loads the published content. In the dashboard (signed in) this includes the API keys. */
+export async function loadFromServer() {
+  if (!BACKEND) return
+  const signedIn = !!getToken()
+  if (!signedIn) setReady(false)
+  const r = await api<{ content: ContentDB | null; serverKeys?: typeof serverKeys }>(signedIn ? '/admin/content' : '/content')
+  if (r.serverKeys) { serverKeys = r.serverKeys; keySubs.forEach(f => f()) }
+  if (r.content) fromServer(r.content)
+  else if (signedIn) { await pushToServer() } // first run: publish the built-in content so it becomes editable
+  if (signedIn) setReady(true)
+}
+/** Sends any change still waiting in the save timer, so the server works with what's on screen. */
+export async function flushContent() {
+  if (!BACKEND) return
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = undefined; await pushToServer() }
+  if (saving) await saving
+}
+/** Keys set in the server's .env (they never reach the browser; only whether they exist). */
+let serverKeys = { youtube: false, places: false }
+const keySubs = new Set<() => void>()
+export const useServerKeys = () => useSyncExternalStore(f => { keySubs.add(f); return () => { keySubs.delete(f) } }, () => serverKeys)
+/** For the sync buttons: the server returns the whole updated content. */
+export const applyServerContent = (c: ContentDB) => fromServer(c)
+
+if (BACKEND) loadFromServer().catch(() => { /* the built-in or cached content stays on screen */ })
+
 function commit(next: ContentDB) {
+  if (BACKEND) {
+    db = next
+    emit()
+    if (getToken()) { clearTimeout(saveTimer); setSave('saving'); saveTimer = setTimeout(() => { saveTimer = undefined; pushToServer() }, 700) }
+    return
+  }
   try { localStorage.setItem(KEY, JSON.stringify(next)) } catch (e) {
     if (e instanceof DOMException && /quota/i.test(e.name + e.message)) throw new StorageFullError('Browser storage is full')
   }
   db = next
-  subs.forEach(f => f())
+  emit()
 }
 const subscribe = (f: () => void) => { subs.add(f); return () => subs.delete(f) }
 

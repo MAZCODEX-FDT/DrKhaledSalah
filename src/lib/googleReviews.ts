@@ -1,10 +1,12 @@
-import { cms, getContent, type GoogleReview } from './content'
+import { cms, flushContent, getContent, type GoogleReview } from './content'
+import { api, BACKEND } from './api'
+import { serverSync } from './youtubeSync'
 
 /**
  * Google rating and reviews via the Places API (New).
  * The key is the website key in Google Cloud with "Places API (New)" allowed; billing must be on for that project.
  * Google returns the 5 reviews it ranks "most relevant"; the dashboard can hide any of them.
- * TODO (backend): run this on the server on a schedule so the key stays private and every visitor sees the same data.
+ * With the Laravel backend this runs on the server (weekly), so the key stays private and every visitor sees the same data.
  */
 const API = 'https://places.googleapis.com/v1'
 const keyOf = () => { const c = getContent(); return c.google.apiKey || c.youtube.apiKey }
@@ -22,6 +24,7 @@ export type PlaceHit = { id: string; name: string; address: string; rating?: num
 
 /** Finds the clinic's listing by name, so the dashboard can pick the right one. */
 export async function findPlaces(query: string): Promise<PlaceHit[]> {
+  if (BACKEND) { await flushContent(); return (await api<{ places: PlaceHit[] }>(`/admin/places?q=${encodeURIComponent(query)}`)).places }
   const j = await call<{ places?: { id: string; displayName?: { text: string }; formattedAddress?: string; rating?: number; userRatingCount?: number }[] }>(
     `${API}/places:searchText`, 'places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount',
     { method: 'POST', body: JSON.stringify({ textQuery: query, languageCode: 'ar', regionCode: 'EG' }) })
@@ -32,6 +35,7 @@ type ApiReview = { name: string; rating: number; relativePublishTimeDescription?
 
 /** Pulls the live rating, review count and latest reviews. Hidden choices made in the dashboard are kept. */
 export async function syncReviews(): Promise<void> {
+  if (BACKEND) { await serverSync('/admin/sync/google'); return }
   const g = getContent().google
   if (!g.placeId) throw new Error('Choose the clinic listing first')
   try {
@@ -54,6 +58,7 @@ export async function syncReviews(): Promise<void> {
 
 /** Refreshes at most once a week. */
 export function autoSyncReviews(hours = 24 * 7) {
+  if (BACKEND) return // weekly cron on the server (backend/routes/console.php)
   const g = getContent().google
   if (!g.placeId || !keyOf()) return
   if (g.lastSync && Date.now() - Date.parse(g.lastSync) < hours * 3600e3) return
