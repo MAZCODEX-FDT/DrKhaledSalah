@@ -13,8 +13,17 @@ const links = [
   { to: '/branches', k: 'branches' },
   { to: '/videos', k: 'videos' },
   { to: '/faq', k: 'faq' },
+  { to: '/before-your-visit', k: 'guide' },
+  { to: '/articles', k: 'articles' },
   { to: '/contact', k: 'contact' },
 ] as const
+
+// Shorter labels so nine links fit the desktop bar (the menu sheet and footer keep the full names)
+const short: Partial<Record<(typeof links)[number]['k'], { ar: string; en: string }>> = {
+  faq: { ar: 'الأسئلة', en: 'FAQ' },
+  articles: { ar: 'المدونة', en: 'Blog' },
+  contact: { ar: 'تواصل', en: 'Contact' },
+}
 
 export default function Navbar() {
   const { t, toggle, lang } = useI18n()
@@ -40,17 +49,16 @@ export default function Navbar() {
         }`}
       >
         <Logo className={`transition-all duration-700 ease-lux ${scrolled ? 'h-12' : 'h-[4.75rem]'}`} />
-        <ul className="hidden items-center gap-1 lg:flex">
-          {links.map(l => (
+        <ul className="hidden items-center xl:flex">
+          {links.filter(l => l.k !== 'home').map(l => (
             <li key={l.to}>
               <NavLink
                 to={l.to}
-                end={l.to === '/'}
                 className={({ isActive }) =>
-                  `relative rounded-full px-4 py-2 text-sm transition-colors ${isActive ? 'text-mist' : 'text-cloud/75 hover:text-cloud'}`
+                  `relative whitespace-nowrap rounded-full px-3 py-2 text-sm transition-colors ${isActive ? 'text-mist' : 'text-cloud/75 hover:text-cloud'}`
                 }
               >
-                {t(ui.nav[l.k])}
+                {t(short[l.k] ?? ui.nav[l.k])}
               </NavLink>
             </li>
           ))}
@@ -63,28 +71,28 @@ export default function Navbar() {
           <Link to="/book" className="btn-gold hidden !px-5 !py-2.5 text-sm md:inline-flex">
             <CalendarHeart className="size-4" /> {t(ui.nav.book)}
           </Link>
-          <button className="rounded-full p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Menu">
+          <button className="flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 xl:hidden" onClick={() => setOpen(true)} aria-label="Menu">
             <Menu className="size-6" />
           </button>
         </div>
       </nav>
 
       {/* Mobile sheet */}
-      <div className={`fixed inset-0 z-50 bg-night/95 backdrop-blur-xl transition-all duration-700 ease-lux lg:hidden ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
+      <div data-lenis-prevent className={`fixed inset-0 z-50 bg-night/95 backdrop-blur-xl transition-all duration-700 ease-lux xl:hidden overflow-y-auto ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
         <div className="flex items-center justify-between px-6 pt-6">
           <Logo className="h-12" />
           <button onClick={() => setOpen(false)} className="rounded-full p-2" aria-label="Close"><X className="size-6" /></button>
         </div>
-        <ul className="mt-12 space-y-2 px-8">
+        <ul className="mt-8 space-y-1 px-8">
           {links.map((l, i) => (
             <li key={l.to} style={{ transitionDelay: open ? `${120 + i * 60}ms` : '0ms' }} className={`transition-all duration-700 ease-lux ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>
-              <NavLink to={l.to} end={l.to === '/'} onClick={() => setOpen(false)} className="block border-b hairline py-4 font-display text-3xl font-light">
-                {t(ui.nav[l.k])}
+              <NavLink to={l.to} end={l.to === '/'} onClick={() => setOpen(false)} className="block border-b hairline py-3 font-display text-2xl font-light sm:text-3xl">
+                {t(l.k === 'articles' ? short.articles! : ui.nav[l.k])}
               </NavLink>
             </li>
           ))}
         </ul>
-        <div className="px-8 pt-10">
+        <div className="px-8 pb-10 pt-8">
           <Link to="/book" onClick={() => setOpen(false)} className="btn-gold w-full justify-center">{t(ui.nav.book)}</Link>
         </div>
       </div>
