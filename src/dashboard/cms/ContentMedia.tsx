@@ -32,7 +32,7 @@ export default function ContentMedia() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h3 className="font-semibold">{t(tr('صور تجريبية', 'Sample photos'))}</h3>
-            <p className="mt-1 max-w-2xl text-sm text-[#5e6a7a]">{t(tr(`صور مجانية من Unsplash (من غير وشوش أطفال) عشان تتخيلوا شكل الموقع النهائي. بتتحط في البانر وصفحة الدكتور والفروع والعمليات اللي مالهاش صورة. ${stockCount ? `موجود دلوقتي ${stockCount} صورة.` : ''}`, `Free Unsplash photos (no children's faces) to preview the finished site. They fill the banner, About page, branches and any procedure without a photo. ${stockCount ? `${stockCount} in the library now.` : ''}`))}</p>
+            <p className="mt-1 max-w-2xl text-sm text-[#5e6a7a]">{t(tr(`رسومات تجريبية بألوان البراند (من غير أشخاص) عشان تتخيلوا شكل الموقع النهائي. بتتحط في الأماكن الفاضية بس. ${stockCount ? `موجود دلوقتي ${stockCount} صورة.` : ''}`, `Sample illustrations in the brand colours (no people) to preview the finished site. They only fill empty slots. ${stockCount ? `${stockCount} in the library now.` : ''}`))}</p>
           </div>
           <div className="flex gap-2">
             <Btn variant="ghost" onClick={() => cms.addStock()}><ImagePlus className="size-4" />{t(tr('حط الصور التجريبية', 'Add sample photos'))}</Btn>
@@ -52,7 +52,7 @@ export default function ContentMedia() {
                 <button onClick={() => setEdit(m)} className="block aspect-[4/3] w-full overflow-hidden bg-[#eef2f5]"><img src={m.src} alt={t(m.alt)} className={`size-full object-cover ${m.enabled ? '' : 'opacity-40 grayscale'}`} /></button>
                 <div className="space-y-2 p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-sm font-medium">{m.name}{m.stock && <span className="ms-1.5 rounded-full bg-[#fff4d6] px-1.5 py-0.5 text-[10px] text-[#163e7a]">Unsplash</span>}</span>
+                    <span className="truncate text-sm font-medium">{m.name}{m.stock && <span className="ms-1.5 rounded-full bg-[#fff4d6] px-1.5 py-0.5 text-[10px] text-[#163e7a]">{t(tr('تجريبي', 'Sample'))}</span>}</span>
                     <Toggle on={m.enabled} onClick={() => cms.toggle('media', m.id)} />
                   </div>
                   <p className="truncate text-xs text-[#98a2ac]">{used.length ? used.join(' · ') : t(tr('مش مستخدمة', 'Not used yet'))}</p>

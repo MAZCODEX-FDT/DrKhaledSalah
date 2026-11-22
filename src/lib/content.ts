@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
-import { stockPhotos } from '../content/stock'
+import { stockPhotos, STOCK_VERSION } from '../content/stock'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
 export type { SocialPlatform }
 
@@ -43,6 +43,7 @@ export interface ContentDB {
   media: MediaItem[]
   /** Set once the sample stock photos were offered to this browser, so removing them sticks. */
   stockApplied?: boolean
+  stockVersion?: number
 }
 
 const KEY = 'ks-content-v1'
@@ -94,19 +95,33 @@ function withRealSocials(saved: Social[], real: Social[]): Social[] {
   return out
 }
 
-/** Adds the sample stock photos to the library and puts them in every empty image slot. Existing photos are kept. */
-function withStock(d: ContentDB): ContentDB {
+/** Removes sample photos that are no longer in the stock list and clears the slots that used them. */
+function pruneStock(d: ContentDB, all = false): ContentDB {
+  const current = new Set(stockPhotos.map(p => p.key))
+  const gone = new Set(d.media.filter(m => m.stock && (all || !current.has(m.stockKey ?? ''))).map(m => m.id))
+  if (!gone.size) return d
+  const keep = (id: string | null) => (id && gone.has(id) ? null : id)
+  return {
+    ...d, media: d.media.filter(m => !gone.has(m.id)),
+    doctor: { ...d.doctor, portrait: keep(d.doctor.portrait), heroImage: keep(d.doctor.heroImage), aboutImage: keep(d.doctor.aboutImage) },
+    branches: d.branches.map(b => ({ ...b, image: keep(b.image) })),
+    surgeries: d.surgeries.map(x => ({ ...x, image: keep(x.image) })),
+  }
+}
+
+/** Adds the sample illustrations to the library and puts each in its slot if that slot is empty. */
+function withStock(input: ContentDB): ContentDB {
+  const d = pruneStock(input)
   const now = new Date().toISOString()
   const have = new Set(d.media.filter(m => m.stock).map(m => m.stockKey))
   const add: MediaItem[] = stockPhotos.filter(p => !have.has(p.key)).map(p => ({ id: uid(), name: p.key, src: p.src, alt: p.alt, enabled: true, createdAt: now, stock: true, stockKey: p.key }))
   const media = [...d.media, ...add]
-  const ids = (slot: string) => stockPhotos.filter(p => p.slot === slot).map(p => media.find(m => m.stock && m.stockKey === p.key)!.id)
-  const procs = ids('procedure'), branchImgs = ids('branch')
+  const idFor = (target: string) => { const p = stockPhotos.find(x => x.target === target); return p ? media.find(m => m.stock && m.stockKey === p.key)?.id ?? null : null }
   return {
-    ...d, media, stockApplied: true,
-    doctor: { ...d.doctor, heroImage: d.doctor.heroImage ?? ids('hero')[0], aboutImage: d.doctor.aboutImage ?? ids('about')[0] },
-    branches: d.branches.map((b, i) => ({ ...b, image: b.image ?? branchImgs[i % branchImgs.length] })),
-    surgeries: d.surgeries.map((s, i) => ({ ...s, image: s.image ?? procs[i % procs.length] })),
+    ...d, media, stockApplied: true, stockVersion: STOCK_VERSION,
+    doctor: { ...d.doctor, heroImage: d.doctor.heroImage ?? idFor('hero'), aboutImage: d.doctor.aboutImage ?? idFor('about') },
+    branches: d.branches.map((b, i) => ({ ...b, image: b.image ?? idFor(`branch:${i}`) })),
+    surgeries: d.surgeries.map(x => ({ ...x, image: x.image ?? idFor(`procedure:${x.slug}`) })),
   }
 }
 
@@ -129,7 +144,10 @@ function load(): ContentDB {
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
         }
         // Offer the sample photos once to browsers that saved content before they existed
-        return d.stockApplied ? merged : withStock({ ...merged, media: d.media ?? [] })
+        // Offer (or refresh) the sample illustrations unless this browser removed them on purpose
+        const base = { ...merged, media: d.media ?? [] }
+        if (d.stockVersion === STOCK_VERSION) return base
+        return d.stockApplied && !d.stockVersion && !d.media?.some(m => m.stock) ? { ...base, stockVersion: STOCK_VERSION } : withStock(base)
       }
     }
   } catch { /* fall through */ }
@@ -226,16 +244,7 @@ export const cms = {
   reset() { commit(seed()) },
   addStock() { commit(withStock(db)) },
   /** Deletes every sample stock photo and clears the slots that used them. */
-  removeStock() {
-    const gone = new Set(db.media.filter(m => m.stock).map(m => m.id))
-    const keep = (id: string | null) => (id && gone.has(id) ? null : id)
-    commit({
-      ...db, stockApplied: true, media: db.media.filter(m => !m.stock),
-      doctor: { ...db.doctor, portrait: keep(db.doctor.portrait), heroImage: keep(db.doctor.heroImage), aboutImage: keep(db.doctor.aboutImage) },
-      branches: db.branches.map(b => ({ ...b, image: keep(b.image) })),
-      surgeries: db.surgeries.map(x => ({ ...x, image: keep(x.image) })),
-    })
-  },
+  removeStock() { commit({ ...pruneStock(db, true), stockApplied: true, stockVersion: STOCK_VERSION }) },
 }
 
 /** Resolve an image id to a src, or null when missing or disabled. */
