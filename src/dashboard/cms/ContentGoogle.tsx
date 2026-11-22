@@ -20,7 +20,7 @@ export default function ContentGoogle() {
   return (
     <>
       <PageTitle title={t(tr('تقييمات جوجل', 'Google reviews'))}
-        sub={t(tr('التقييم وعدد التقييمات وكلام الأهالي بيتسحبوا من صفحة العيادة على جوجل وبيتحدثوا تلقائيًا مرتين في اليوم. مفيش أرقام مكتوبة بإيد.', 'The rating, review count and parents\' words are pulled from the clinic\'s Google listing and refresh automatically twice a day. No numbers are typed by hand.'))} />
+        sub={t(tr('التقييم وعدد التقييمات وكلام الأهالي بيتسحبوا من صفحة العيادة على جوجل وبيتحدثوا تلقائيًا مرة في الأسبوع. مفيش أرقام مكتوبة بإيد.', 'The rating, review count and parents\' words are pulled from the clinic\'s Google listing and refresh automatically once a week. No numbers are typed by hand.'))} />
       <DemoNote />
       <div className="grid gap-6 xl:grid-cols-2">
         <Card title={t(tr('الربط', 'Connection'))}>

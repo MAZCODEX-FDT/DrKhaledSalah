@@ -44,7 +44,7 @@ export default function GoogleReviews() {
             ))}
           </div>
         )}
-        <p className="mt-6 text-xs text-ink/45">{ar ? 'التقييمات من Google وبتتحدث تلقائيًا.' : 'Reviews from Google, updated automatically.'}</p>
+        <p className="mt-6 text-xs text-ink/45">{ar ? 'التقييمات من Google وبتتحدث تلقائيًا كل أسبوع.' : 'Reviews from Google, updated weekly.'}</p>
       </Reveal>
     </section>
   )

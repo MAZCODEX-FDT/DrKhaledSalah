@@ -52,8 +52,8 @@ export async function syncReviews(): Promise<void> {
   }
 }
 
-/** Refreshes at most twice a day. */
-export function autoSyncReviews(hours = 12) {
+/** Refreshes at most once a week. */
+export function autoSyncReviews(hours = 24 * 7) {
   const g = getContent().google
   if (!g.placeId || !keyOf()) return
   if (g.lastSync && Date.now() - Date.parse(g.lastSync) < hours * 3600e3) return
