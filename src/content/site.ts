@@ -57,7 +57,8 @@ export const waLink = (number: string, text: string) => `https://wa.me/${number}
 
 export const stats = [
   { value: 15, suffix: '+', label: { ar: 'سنة في جراحة الأطفال وحديثي الولادة', en: 'years in pediatric & neonatal surgery' } as L },
-  { value: 220, suffix: '', label: { ar: 'تقييم على Google بمتوسط 5.0', en: 'Google reviews, averaging 5.0' } as L },
+  // Filled live from Google (Dashboard → Google reviews); hidden until the first sync
+  { value: 0, suffix: '', source: 'google' as const, label: { ar: 'تقييم على Google', en: 'Google reviews' } as L },
   { value: 98, suffix: '%', label: { ar: 'من الأهالي بيرشّحوا على Facebook', en: 'of parents recommend on Facebook' } as L },
   { value: 104, suffix: 'K', label: { ar: 'متابع بيتعلّموا من شرح الدكتور', en: 'followers learning from his explanations' } as L },
 ]

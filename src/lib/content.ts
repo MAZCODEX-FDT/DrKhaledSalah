@@ -32,7 +32,10 @@ export type Tracking = { ga4: string; pixel: string; askConsent: boolean }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
-export type CmsStat = { id: string; value: number; suffix: string; label: L; enabled: boolean }
+export type CmsStat = { id: string; value: number; suffix: string; label: L; enabled: boolean; source?: 'google' }
+export type GoogleReview = { id: string; author: string; photo: string; rating: number; text: string; lang: string; time: string; when: string; hidden: boolean }
+/** Live rating and reviews from the clinic's Google Business listing (Places API). */
+export type GoogleSync = { placeId: string; placeName: string; apiKey: string; rating: number | null; count: number | null; mapsUrl: string; reviews: GoogleReview[]; lastSync: string | null; lastError: string | null }
 export type CmsDoctor = { name: L; title: L; promise: L; bio: L; highlights: L[]; portrait: string | null; heroImage: string | null; quote: L; story: L; values: TitledText[]; timeline: Milestone[]; aboutImage: string | null }
 
 export interface ContentDB {
@@ -45,6 +48,7 @@ export interface ContentDB {
   socials: Social[]
   videos: Video[]
   youtube: YouTubeSync
+  google: GoogleSync
   guide: GuideSection[]
   tracking: Tracking
   articles: Article[]
@@ -92,6 +96,7 @@ function seed(): ContentDB {
     videos: [],
     youtube: { channel: 'UCmHqUf0vI7lohE_7NbLd3DA', apiKey: '', autoShow: false, lastSync: null, lastError: null },
     tracking: { ga4: '', pixel: '', askConsent: true },
+    google: { placeId: '', placeName: '', apiKey: '', rating: null, count: null, mapsUrl: '', reviews: [], lastSync: null, lastError: null },
     guide: guideSeed.map(g => ({ ...g, id: uid(), enabled: true })),
     articles: articleSeed.map((a, i) => ({ ...a, id: uid(), image: null, procedure: a.procedure ?? '', date: new Date(Date.UTC(2026, 10, 20 - i)).toISOString().slice(0, 10), enabled: true })),
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
@@ -155,6 +160,9 @@ function load(): ContentDB {
           videos: d.videos ?? s.videos,
           guide: d.guide ?? s.guide,
           tracking: { ...s.tracking, ...d.tracking },
+          google: { ...s.google, ...d.google },
+          // The old hard-coded "220 reviews" stat now comes live from Google
+          stats: (d.stats ?? s.stats).map(x => x.source || !/google/i.test(x.label.en) ? x : { ...x, source: 'google' as const, value: 0, label: { ar: 'تقييم على Google', en: 'Google reviews' } }),
           articles: d.articles ?? s.articles,
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
@@ -247,6 +255,7 @@ export const cms = {
     commit({ ...db, videos, youtube: { ...db.youtube, lastSync: new Date().toISOString(), lastError: null } })
     return added.length
   },
+  setGoogle(p: Partial<GoogleSync>) { commit({ ...db, google: { ...db.google, ...p } }) },
   setTracking(p: Partial<Tracking>) { commit({ ...db, tracking: { ...db.tracking, ...p } }) },
   setFeaturedVideo(id: string) {
     commit({ ...db, videos: db.videos.map(v => ({ ...v, featured: v.id === id })) })
@@ -301,7 +310,11 @@ export function useSite() {
     faqs: d.faqs.filter(f => f.enabled),
     // Keep at least one branch so booking buttons always have a target
     branches: d.branches.some(b => b.enabled) ? d.branches.filter(b => b.enabled) : d.branches.slice(0, 1),
-    stats: d.stats.filter(s => s.enabled),
+    // The Google stat shows the live count and average, and stays hidden until the first sync
+    stats: d.stats.filter(s => s.enabled && (s.source !== 'google' || d.google.count)).map(s => s.source === 'google'
+      ? { ...s, value: d.google.count ?? 0, label: { ar: `تقييم على Google بمتوسط ${d.google.rating?.toFixed(1)}`, en: `Google reviews, averaging ${d.google.rating?.toFixed(1)}` } } : s),
+    google: d.google,
+    googleReviews: d.google.reviews.filter(r => !r.hidden && r.text),
     faqCategories: d.faqCategories.filter(c => c.enabled),
     contact: d.contact,
     socials: d.socials.filter(x => x.enabled && x.url),

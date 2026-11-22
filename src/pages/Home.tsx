@@ -7,6 +7,7 @@ import Procedures from '../components/site/Procedures'
 import Journey from '../components/site/Journey'
 import Videos from '../components/site/Videos'
 import Branches from '../components/site/Branches'
+import GoogleReviews from '../components/site/GoogleReviews'
 import Faq from '../components/site/Faq'
 import Reveal from '../components/site/Reveal'
 import { useI18n } from '../lib/i18n'
@@ -24,6 +25,7 @@ export default function Home() {
       <Procedures />
       <Journey />
       <Videos />
+      <GoogleReviews />
       <Branches />
       <section className="bg-cloud py-28 text-ink sm:py-36">
         <Reveal className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">

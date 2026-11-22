@@ -11,7 +11,7 @@ import PlayTiles from './PlayTiles'
 
 export default function Hero() {
   const { t, lang } = useI18n()
-  const { branches, doctor, img } = useSite()
+  const { branches, doctor, img, google } = useSite()
   const heroImg = img(doctor.heroImage)
   const root = useRef<HTMLElement>(null)
 
@@ -62,9 +62,14 @@ export default function Hero() {
             </Magnet>
             <Link to="/book" className="btn-ghost">{t(ui.bookGiza)}</Link>
           </div>
-          <div data-h="trust" className="mt-6 flex items-center gap-4 text-sm text-cloud/80">
-            <span className="flex gap-0.5 text-gold">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="size-4 fill-current" />)}</span>
-            <span>{lang === 'ar' ? '5.0 من 220 تقييم على Google' : '5.0 from 220 Google reviews'}</span>
+          {/* Live from Google (Dashboard → Google reviews); hidden until the first sync */}
+          <div data-h="trust" className="mt-6 min-h-6">
+            {google.count && google.rating ? (
+              <a href={google.mapsUrl || undefined} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-4 text-sm text-cloud/80 hover:text-cloud">
+                <span className="flex gap-0.5 text-gold" aria-hidden="true">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`size-4 ${i < Math.round(google.rating!) ? 'fill-current' : 'opacity-40'}`} />)}</span>
+                <span><span dir="ltr">{google.rating.toFixed(1)}</span> {lang === 'ar' ? `من ${google.count.toLocaleString('en')} تقييم على Google` : `from ${google.count.toLocaleString('en')} Google reviews`}</span>
+              </a>
+            ) : null}
           </div>
         </div>
 
