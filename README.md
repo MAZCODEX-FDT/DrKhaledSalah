@@ -28,6 +28,8 @@ npm run dev      # http://localhost:5173
 npm run build    # production build in dist/
 ```
 
+A static demo build with hash URLs (no server rewrites needed): `npm run build:demo` → `dist-demo/`.
+
 Deploy `dist/` to any static host. SPA rewrites are included for Vercel (`vercel.json`) and Netlify (`public/_redirects`).
 
 ## Content rules (from the strategy)
