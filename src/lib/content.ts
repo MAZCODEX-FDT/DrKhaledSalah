@@ -142,6 +142,7 @@ function load(): ContentDB {
           videos: d.videos ?? s.videos,
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
+          branches: (d.branches ?? s.branches).map(b => b.lat != null ? b : { ...b, ...(({ lat, lng }) => ({ lat, lng }))(s.branches.find(x => x.id === b.id) ?? { lat: 0, lng: 0 }) }),
         }
         // Offer the sample photos once to browsers that saved content before they existed
         // Offer (or refresh) the sample illustrations unless this browser removed them on purpose

@@ -1,5 +1,8 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { Check, MessageCircle, Play } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, MessageCircle, Play } from 'lucide-react'
+import YouTubePlayer from '../components/site/YouTubePlayer'
+import VideoCard from '../components/site/VideoCard'
+import { videosForProcedure } from '../lib/videoMatch'
 import PageHero from './PageHero'
 import Faq from '../components/site/Faq'
 import Reveal from '../components/site/Reveal'
@@ -12,11 +15,14 @@ import { useSite } from '../lib/content'
 export default function ProcedureDetail() {
   const { slug } = useParams()
   const { t, lang } = useI18n()
-  const { branches, surgeries, img } = useSite()
+  const { branches, surgeries, img, videos } = useSite()
   const s = surgeries.find(x => x.slug === slug)
   if (!s) return <Navigate to="/procedures" replace />
   const others = surgeries.filter(x => x.slug !== s.slug).slice(0, 6)
   const cover = img(s.image)
+  const vids = videosForProcedure(s.slug, videos, s.video || undefined)
+  const [main, ...more] = vids
+  const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight
 
   return (
     <>
@@ -70,11 +76,13 @@ export default function ProcedureDetail() {
             ))}
           </div>
 
-          {/* YouTube video ID is set per procedure in Dashboard → Website → Procedures */}
-          {s.video ? (
-            <div data-reveal className="relative mt-16 aspect-video overflow-hidden rounded-[2rem] bg-black">
-              <iframe className="absolute inset-0 size-full" src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(s.video)}`} title={t(s.name)} loading="lazy"
-                allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+          {/* Videos: the one pinned in Dashboard → Procedures first, then channel videos whose title matches this procedure */}
+          {main ? (
+            <div className="mt-16">
+              <div data-reveal className="overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-40px_rgba(22,62,122,.6)]">
+                <YouTubePlayer url={main.url} title={t(main.title) || t(s.name)} big />
+              </div>
+              {t(main.title) && <p data-reveal className="mt-4 font-display text-lg">{t(main.title)}</p>}
             </div>
           ) : (
           <div data-reveal className="calm-night brand-pattern relative mt-16 flex aspect-video items-center justify-center overflow-hidden rounded-[2rem]">
@@ -86,6 +94,18 @@ export default function ProcedureDetail() {
           )}
         </Reveal>
       </section>
+
+      {more.length > 0 && (
+        <section className="bg-cloud pb-24 text-ink">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+              <h2 className="font-display text-[clamp(1.8rem,3.4vw,2.6rem)] leading-tight">{lang === 'ar' ? `فيديوهات تانية عن ${t(s.name)}` : `More videos on ${t(s.name)}`}</h2>
+              <Link to={`/videos?q=${encodeURIComponent(t(s.name))}&p=${s.slug}`} className="btn-blue">{lang === 'ar' ? `كل الفيديوهات (${vids.length})` : `All videos (${vids.length})`} <Arrow className="size-4" /></Link>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{more.slice(0, 6).map(v => <VideoCard key={v.id} v={v} />)}</div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-night pb-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">

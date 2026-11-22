@@ -5,6 +5,8 @@ import { useI18n } from '../lib/i18n'
 import { ui, waLink } from '../content/site'
 import { useSite } from '../lib/content'
 import { actions, type BranchId, type ProcedureId } from '../lib/store'
+import { setPreferredBranch, usePreferredBranch } from '../lib/branchPref'
+import { track } from '../lib/track'
 
 const field = 'w-full rounded-2xl border border-ink/12 bg-white/70 px-5 py-4 text-ink outline-none transition focus:border-blue focus:ring-4 focus:ring-blue/15'
 
@@ -12,13 +14,26 @@ export default function Book() {
   const { t, lang } = useI18n()
   const { branches, surgeries } = useSite()
   const [done, setDone] = useState(false)
-  const [branch, setBranch] = useState<BranchId>('tagamoa')
+  const [sent, setSent] = useState('')
+  const pref = usePreferredBranch()
+  const [branch, setBranchState] = useState<BranchId>((pref as BranchId) ?? 'tagamoa')
+  const setBranch = (id: BranchId) => { setBranchState(id); setPreferredBranch(id) }
   const [form, setForm] = useState({ name: '', phone: '', procedure: 'consultation' as ProcedureId, message: '' })
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    // Demo: lands in the dashboard's inquiry pipeline. Wire to the real backend/WhatsApp API before launch.
+    // 1) Recorded in the dashboard's inquiry pipeline
     actions.addInquiry({ name: form.name, phone: form.phone, branch, procedure: form.procedure, source: 'website', message: form.message })
+    // 2) Sent to the branch WhatsApp with every detail filled in, so the clinic has it even before anyone opens the dashboard
+    const target = branches.find(x => x.id === branch) ?? branches[0]
+    const proc = form.procedure === 'consultation' ? (lang === 'ar' ? 'استشارة عامة' : 'General consultation') : t(surgeries.find(s => s.slug === form.procedure)?.name ?? { ar: form.procedure, en: form.procedure })
+    const text = lang === 'ar'
+      ? `طلب حجز جديد من الموقع\nالاسم: ${form.name}\nالموبايل: ${form.phone}\nالفرع: ${t(target.name)}\nالخدمة: ${proc}${form.message ? `\nرسالة: ${form.message}` : ''}`
+      : `New booking request from the website\nName: ${form.name}\nPhone: ${form.phone}\nBranch: ${t(target.name)}\nService: ${proc}${form.message ? `\nMessage: ${form.message}` : ''}`
+    const link = waLink(target.whatsapp, text)
+    setSent(link)
+    window.open(link, '_blank', 'noopener')
+    track('book_submit', { branch, procedure: form.procedure })
     setDone(true)
   }
   const b = branches.find(x => x.id === branch) ?? branches[0]
@@ -34,8 +49,8 @@ export default function Book() {
             <div className="rounded-[2rem] bg-white/70 p-12 text-center">
               <CheckCircle2 className="mx-auto size-14 text-navy" />
               <h2 className="mt-6 font-display text-3xl font-light">{lang === 'ar' ? 'وصلتنا رسالتك' : 'We have your message'}</h2>
-              <p className="mt-3 text-ink/60">{lang === 'ar' ? 'هنكلم حضرتك قريب. لو حابب أسرع، كلّمنا على واتساب.' : 'We will be in touch shortly. For a faster reply, message us on WhatsApp.'}</p>
-              <a href={waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="btn-gold mt-8"><MessageCircle className="size-4" />WhatsApp</a>
+              <p className="mt-3 text-ink/60">{lang === 'ar' ? 'اتسجّل طلبك، واتفتح واتساب الفرع والرسالة جاهزة. دوس إرسال عشان توصلنا على طول. لو الواتساب مفتحش، استخدم الزرار ده.' : 'Your request is recorded, and the branch WhatsApp opened with your message ready. Press send so it reaches us straight away. If WhatsApp did not open, use this button.'}</p>
+              <a href={sent || waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="btn-gold mt-8"><MessageCircle className="size-4" />WhatsApp</a>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-5">

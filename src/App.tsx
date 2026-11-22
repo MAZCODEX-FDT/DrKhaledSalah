@@ -3,6 +3,7 @@ import { Outlet, Route, Routes } from 'react-router-dom'
 import { SmoothScroll } from './lib/smooth'
 import Navbar from './components/site/Navbar'
 import Footer from './components/site/Footer'
+import ContactDock from './components/site/ContactDock'
 import Home from './pages/Home'
 import About from './pages/About'
 import ProceduresPage from './pages/ProceduresPage'
@@ -21,6 +22,7 @@ function SiteLayout() {
       <Navbar />
       <main><Outlet /></main>
       <Footer />
+      <ContactDock />
     </SmoothScroll>
   )
 }

@@ -6,30 +6,38 @@ import SocialIcon from '../components/site/SocialIcon'
 import { useI18n } from '../lib/i18n'
 import { useSite, viewsOf, CHANNEL_URL } from '../lib/content'
 import { autoSync } from '../lib/youtubeSync'
+import { useSearchParams } from 'react-router-dom'
+import { procedureKeywords, videosForProcedure } from '../lib/videoMatch'
 
 const PAGE = 24
 type Sort = 'views' | 'new'
 
 /** Every visible video from Dashboard → Website content → YouTube videos, searchable. */
 export default function VideosPage() {
-  const { lang } = useI18n()
+  const { t, lang } = useI18n()
   const ar = lang === 'ar'
   const { videos, socials } = useSite()
   const channel = socials.find(s => s.platform === 'youtube')?.url ?? CHANNEL_URL
   useEffect(() => { autoSync() }, [])
-  const [q, setQ] = useState('')
+  const [params] = useSearchParams()
+  const proc = params.get('p') ?? ''
+  const [q, setQ] = useState(proc ? '' : params.get('q') ?? '')
+  const [topic, setTopic] = useState(proc && procedureKeywords[proc] ? proc : '')
+  const { surgeries } = useSite()
   const [sort, setSort] = useState<Sort>('views')
   const [shown, setShown] = useState(PAGE)
 
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    const hits = needle ? videos.filter(v => `${v.title.ar} ${v.title.en}`.toLowerCase().includes(needle)) : videos
+    const pool = topic ? videosForProcedure(topic, videos) : videos
+    const hits = needle ? pool.filter(v => `${v.title.ar} ${v.title.en}`.toLowerCase().includes(needle)) : pool
     return sort === 'views'
       ? [...hits].sort((a, b) => viewsOf(b) - viewsOf(a))
       : [...hits].sort((a, b) => (b.published ?? '').localeCompare(a.published ?? ''))
-  }, [videos, q, sort])
-  useEffect(() => setShown(PAGE), [q, sort])
+  }, [videos, q, sort, topic])
+  useEffect(() => setShown(PAGE), [q, sort, topic])
 
+  const topics = useMemo(() => surgeries.map(x => ({ x, n: videosForProcedure(x.slug, videos).length })).filter(o => o.n), [surgeries, videos])
   const sorts: [Sort, string][] = [['views', ar ? 'الأكثر مشاهدة' : 'Most watched'], ['new', ar ? 'الأحدث' : 'Newest']]
 
   return (
@@ -54,7 +62,15 @@ export default function VideosPage() {
             <a href={channel} target="_blank" rel="noreferrer" className="btn-gold"><SocialIcon platform="youtube" />{ar ? 'اشترك في القناة' : 'Subscribe'}</a>
           </div>
 
-          {q && <p className="mb-6 text-sm text-ink/60">{ar ? `${list.length} نتيجة` : `${list.length} results`}</p>}
+          <div className="-mx-6 mb-8 overflow-x-auto px-6 [scrollbar-width:none]">
+            <div className="flex w-max gap-2">
+              <button onClick={() => setTopic('')} className={`min-h-11 rounded-full px-4 text-sm transition ${!topic ? 'bg-navy text-cloud' : 'bg-white text-ink/75 ring-1 ring-ink/10'}`}>{ar ? 'كل المواضيع' : 'All topics'}</button>
+              {topics.map(({ x, n }) => (
+                <button key={x.slug} onClick={() => setTopic(x.slug)} className={`min-h-11 whitespace-nowrap rounded-full px-4 text-sm transition ${topic === x.slug ? 'bg-navy text-cloud' : 'bg-white text-ink/75 ring-1 ring-ink/10'}`}>{t(x.name)} <span className="opacity-60">{n}</span></button>
+              ))}
+            </div>
+          </div>
+          {(q || topic) && <p className="mb-6 text-sm text-ink/60">{ar ? `${list.length} نتيجة` : `${list.length} results`}</p>}
           {list.length === 0
             ? <p className="py-16 text-center text-ink/60">{ar ? 'مفيش فيديو بالكلام ده. جرّب كلمة تانية.' : 'No video matches. Try another word.'}</p>
             : <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{list.slice(0, shown).map(v => <VideoCard key={v.id} v={v} />)}</div>}

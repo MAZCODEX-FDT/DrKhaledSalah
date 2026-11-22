@@ -7,7 +7,7 @@ import { tr } from '../labels'
 import { DemoNote, emptyL, ImagePicker, LInput, RowActions, StatusPill } from './kit'
 
 const blank = (): CmsBranch => ({
-  id: uid(), primary: false, enabled: true, image: null, whatsapp: '', phone: '', map: '',
+  id: uid(), primary: false, enabled: true, image: null, whatsapp: '', phone: '', map: '', lat: 0, lng: 0,
   name: emptyL(), area: emptyL(), address: emptyL(), hours: emptyL(), serves: emptyL(),
 })
 
@@ -50,6 +50,9 @@ export default function ContentBranches() {
               <Field label={t(tr('رقم التليفون', 'Phone'))}><input dir="ltr" value={edit.phone} onChange={e => set({ phone: e.target.value })} /></Field>
               <Field label={t(tr('رابط الخريطة', 'Map link'))}><input dir="ltr" value={edit.map} onChange={e => set({ map: e.target.value })} /></Field>
             </div>
+            <Field label={t(tr('الإحداثيات (لاختيار أقرب فرع للزائر) · خط العرض، خط الطول', 'Coordinates (to suggest the nearest branch) · latitude, longitude'))}>
+              <input dir="ltr" value={edit.lat || edit.lng ? `${edit.lat}, ${edit.lng}` : ''} placeholder="30.0074, 31.4913" onChange={e => { const [a, b] = e.target.value.split(',').map(x => parseFloat(x)); set({ lat: isNaN(a) ? 0 : a, lng: isNaN(b) ? 0 : b }) }} />
+            </Field>
             <ImagePicker label={t(tr('صورة الفرع', 'Branch photo'))} value={edit.image} onChange={image => set({ image })} />
             <div className="flex justify-end gap-2">
               <Btn variant="ghost" onClick={() => setEdit(null)}>{t(tr('إلغاء', 'Cancel'))}</Btn>

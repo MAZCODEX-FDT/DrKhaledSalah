@@ -35,6 +35,7 @@ export const branches = [
     whatsapp: '201000000000',
     phone: '+20 100 000 0000',
     map: 'https://maps.google.com/?q=Fifth+Settlement+North+90th',
+    lat: 30.0074, lng: 31.4913, // approximate, used to suggest the nearest branch
     serves: { ar: 'التجمع · الرحاب · مدينتي · الشروق', en: 'Settlement · Rehab · Madinaty · Shorouk' } as L,
   },
   {
@@ -47,6 +48,7 @@ export const branches = [
     whatsapp: '201000000001',
     phone: '+20 100 000 0001',
     map: 'https://maps.google.com/?q=Manial+Giza',
+    lat: 30.0219, lng: 31.2289,
     serves: { ar: 'الجيزة · المنيل · وسط البلد', en: 'Giza · Manial · Downtown' } as L,
   },
 ]
