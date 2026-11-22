@@ -1,12 +1,13 @@
-import { Play } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Play } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import SpotlightCard from '../reactbits/SpotlightCard'
 import Reveal from './Reveal'
 import { useI18n } from '../../lib/i18n'
 import type { L } from '../../lib/i18n'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { autoSync } from '../../lib/youtubeSync'
-import { useSite } from '../../lib/content'
-import YouTubePlayer from './YouTubePlayer'
+import { useSite, viewsOf } from '../../lib/content'
+import VideoCard from './VideoCard'
 
 // Fallback shown only until videos are added in Dashboard → Website content → Videos.
 const placeholders: { title: L; views: string; q: string }[] = [
@@ -19,33 +20,34 @@ export default function Videos() {
   const { t, lang } = useI18n()
   const { videos } = useSite()
   useEffect(() => { autoSync() }, [])
-  const [all, setAll] = useState(false)
-  const list = all ? videos : videos.slice(0, 6)
+  // Home shows the 20 most watched; the full library lives on /videos
+  const top = useMemo(() => [...videos].sort((a, b) => viewsOf(b) - viewsOf(a)).slice(0, 20), [videos])
+  const strip = useRef<HTMLDivElement>(null)
+  const ar = lang === 'ar'
+  const Arrow = ar ? ArrowLeft : ArrowRight
+  // dir: 1 = toward the end of the list (left in Arabic, right in English)
+  const slide = (dir: 1 | -1) => { const el = strip.current; if (el) el.scrollBy({ left: dir * (ar ? -1 : 1) * el.clientWidth * 0.8, behavior: 'smooth' }) }
   return (
     <section className="bg-cloud py-28 text-ink sm:py-36">
       <Reveal className="mx-auto max-w-7xl px-6">
-        <p data-reveal className="eyebrow mb-5 text-blue">{lang === 'ar' ? 'الدكتور بيشرح' : 'The doctor explains'}</p>
+        <p data-reveal className="eyebrow mb-5 text-blue">{lang === 'ar' ? 'الدكتور بيشرح · الأكثر مشاهدة' : 'The doctor explains · most watched'}</p>
         <h2 data-reveal className="mb-14 max-w-3xl font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
           {lang === 'ar' ? 'الإجابات اللي الأهالي بيدوّروا عليها، بصوت الدكتور' : 'The answers parents search for, in the doctor\'s own voice'}
         </h2>
         {videos.length > 0 ? (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((v, i) => (
-                <article key={v.id} data-reveal data-delay={(i % 3) * 0.08} className="overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-navy/5 shadow-[0_20px_40px_-30px_rgba(22,62,122,.35)]">
-                  <YouTubePlayer url={v.url} title={t(v.title)} />
-                  <div className="flex items-start justify-between gap-4 p-6">
-                    <h3 className="font-display text-xl leading-snug">{t(v.title)}</h3>
-                    {v.views && <span className="shrink-0 rounded-full bg-mist px-3 py-1 text-xs font-medium text-blue">{v.views} {lang === 'ar' ? 'مشاهدة' : 'views'}</span>}
-                  </div>
-                </article>
-              ))}
+            <div ref={strip} data-lenis-prevent className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-6 px-6 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {top.map(v => <VideoCard key={v.id} v={v} className="w-[82%] shrink-0 snap-start sm:w-[calc(50%-.625rem)] lg:w-[calc(33.333%-.84rem)]" />)}
             </div>
-            {videos.length > 6 && (
-              <div className="mt-10 flex justify-center">
-                <button onClick={() => setAll(!all)} className="btn-blue">{all ? (lang === 'ar' ? 'عرض أقل' : 'Show fewer') : (lang === 'ar' ? `كل الفيديوهات (${videos.length})` : `All videos (${videos.length})`)}</button>
-              </div>
-            )}
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+              <Link to="/videos" className="btn-blue">{ar ? `كل الفيديوهات (${videos.length})` : `All videos (${videos.length})`} <Arrow className="size-4" /></Link>
+              {top.length > 1 && (
+                <div className="flex gap-2">
+                  <button onClick={() => slide(-1)} aria-label={ar ? 'السابق' : 'Previous'} className="flex size-12 items-center justify-center rounded-full bg-white text-navy ring-1 ring-navy/10 transition hover:bg-navy hover:text-cloud">{ar ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}</button>
+                  <button onClick={() => slide(1)} aria-label={ar ? 'التالي' : 'Next'} className="flex size-12 items-center justify-center rounded-full bg-white text-navy ring-1 ring-navy/10 transition hover:bg-navy hover:text-cloud">{ar ? <ChevronLeft className="size-5" /> : <ChevronRight className="size-5" />}</button>
+                </div>
+              )}
+            </div>
           </>
         ) : (
         <div className="grid gap-5 md:grid-cols-3">

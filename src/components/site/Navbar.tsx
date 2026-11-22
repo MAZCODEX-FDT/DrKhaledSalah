@@ -11,6 +11,7 @@ const links = [
   { to: '/about', k: 'about' },
   { to: '/procedures', k: 'surgeries' },
   { to: '/branches', k: 'branches' },
+  { to: '/videos', k: 'videos' },
   { to: '/faq', k: 'faq' },
   { to: '/contact', k: 'contact' },
 ] as const

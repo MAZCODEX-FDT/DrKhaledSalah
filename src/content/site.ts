@@ -234,6 +234,7 @@ export const ui = {
     surgeries: { ar: 'العمليات', en: 'Procedures' },
     branches: { ar: 'الفروع', en: 'Branches' },
     faq: { ar: 'أسئلة الأهالي', en: 'Parents\' Questions' },
+    videos: { ar: 'الفيديوهات', en: 'Videos' },
     contact: { ar: 'تواصل معنا', en: 'Contact' },
     book: { ar: 'احجز كشف', en: 'Book a Visit' },
     dashboard: { ar: 'لوحة التحكم', en: 'Dashboard' },

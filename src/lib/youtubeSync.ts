@@ -25,27 +25,33 @@ async function get<T>(path: string, key: string): Promise<T> {
  * Reads every upload on the doctor's channel and adds the new ones to the video list.
  * New videos arrive hidden unless "show new videos automatically" is on. Returns how many were added.
  */
-export async function syncChannel(max = 200): Promise<number> {
+export async function syncChannel(max = Infinity): Promise<number> {
   const { channel, apiKey } = getContent().youtube
   if (!apiKey) throw new Error('No API key')
   try {
     const ch = await get<{ items?: { contentDetails: { relatedPlaylists: { uploads: string } } }[] }>(`channels?part=contentDetails&${channelQuery(channel)}`, apiKey)
     const uploads = ch.items?.[0]?.contentDetails.relatedPlaylists.uploads
     if (!uploads) throw new Error('Channel not found')
-    const found: { id: string; title: string }[] = []
+    const found: { id: string; title: string; published?: string }[] = []
+    const seen = new Set<string>()
     let page = ''
     do {
-      const pl = await get<{ nextPageToken?: string; items: { snippet: { title: string; resourceId: { videoId: string } } }[] }>(
-        `playlistItems?part=snippet&maxResults=50&playlistId=${uploads}${page ? `&pageToken=${page}` : ''}`, apiKey)
-      for (const it of pl.items) if (it.snippet.title !== 'Private video' && it.snippet.title !== 'Deleted video') found.push({ id: it.snippet.resourceId.videoId, title: it.snippet.title })
+      const pl = await get<{ nextPageToken?: string; items: { snippet: { title: string; resourceId: { videoId: string } }; contentDetails?: { videoPublishedAt?: string } }[] }>(
+        `playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${uploads}${page ? `&pageToken=${page}` : ''}`, apiKey)
+      for (const it of pl.items) {
+        const id = it.snippet.resourceId.videoId
+        if (seen.has(id) || it.snippet.title === 'Private video' || it.snippet.title === 'Deleted video') continue
+        seen.add(id)
+        found.push({ id, title: it.snippet.title, published: it.contentDetails?.videoPublishedAt })
+      }
       page = pl.nextPageToken ?? ''
     } while (page && found.length < max)
-    const views = new Map<string, string>()
+    const views = new Map<string, number>()
     for (let i = 0; i < found.length; i += 50) {
       const st = await get<{ items: { id: string; statistics: { viewCount?: string } }[] }>(`videos?part=statistics&id=${found.slice(i, i + 50).map(f => f.id).join(',')}`, apiKey)
-      for (const it of st.items) if (it.statistics.viewCount) views.set(it.id, compact(+it.statistics.viewCount))
+      for (const it of st.items) if (it.statistics.viewCount) views.set(it.id, +it.statistics.viewCount)
     }
-    return cms.importVideos(found.map(f => ({ ...f, views: views.get(f.id) ?? '' })))
+    return cms.importVideos(found.map(f => { const n = views.get(f.id); return { ...f, viewCount: n, views: n != null ? compact(n) : '' } }))
   } catch (e) {
     cms.setYouTube({ lastError: e instanceof Error ? e.message : String(e) })
     throw e

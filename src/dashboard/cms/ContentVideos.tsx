@@ -28,6 +28,12 @@ async function fetchTitle(id: string): Promise<string | null> {
 export default function ContentVideos() {
   const { t } = useI18n()
   const list = useContent(d => d.videos)
+  const [q, setQ] = useState('')
+  const [filter, setFilter] = useState<'all' | 'shown' | 'hidden'>('all')
+  const [limit, setLimit] = useState(50)
+  const needle = q.trim().toLowerCase()
+  const rows = list.filter(v => (filter === 'all' || (filter === 'shown') === v.enabled) && (!needle || `${v.title.ar} ${v.title.en} ${v.url}`.toLowerCase().includes(needle)))
+  const shownCount = list.filter(v => v.enabled).length
   const [edit, setEdit] = useState<Video | null>(null)
   const set = (p: Partial<Video>) => setEdit(e => (e ? { ...e, ...p } : e))
   const vid = edit ? youtubeId(edit.url) : null
@@ -96,11 +102,21 @@ export default function ContentVideos() {
         {yt.lastSync && <p className="mt-2 text-xs text-[#5e6a7a]">{t(tr('آخر سحب: ', 'Last sync: '))}{new Date(yt.lastSync).toLocaleString()}</p>}
       </Card>
       <Card>
+        {list.length > 0 && (
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <input value={q} onChange={e => { setQ(e.target.value); setLimit(50) }} placeholder={t(tr('دوّر بالعنوان…', 'Search by title…'))} className="min-w-[14rem] flex-1 rounded-xl border border-[#dbe2e8] px-4 py-2.5 text-sm" />
+            <div className="flex gap-1 rounded-xl bg-[#f3f6f9] p-1 text-sm">
+              {([['all', tr(`الكل (${list.length})`, `All (${list.length})`)], ['shown', tr(`ظاهر (${shownCount})`, `Shown (${shownCount})`)], ['hidden', tr(`مخفي (${list.length - shownCount})`, `Hidden (${list.length - shownCount})`)]] as const).map(([k, l]) => (
+                <button key={k} onClick={() => { setFilter(k); setLimit(50) }} className={`rounded-lg px-3 py-1.5 ${filter === k ? 'bg-white text-[#163e7a] shadow-sm' : 'text-[#5e6a7a]'}`}>{t(l)}</button>
+              ))}
+            </div>
+          </div>
+        )}
         {list.length === 0 ? (
           <p className="py-8 text-center text-sm text-[#5e6a7a]">{t(tr('لسه مفيش فيديوهات. دوس "فيديو جديد" والصق رابط الفيديو من يوتيوب.', 'No videos yet. Press "New video" and paste the YouTube link.'))}</p>
         ) : (
           <ul className="divide-y divide-[#eef2f5]">
-            {list.map(v => {
+            {rows.slice(0, limit).map(v => {
               const id = youtubeId(v.url)
               const isDefault = v.featured || (!hasFeatured && v === list.find(x => x.enabled && youtubeId(x.url)))
               return (
@@ -108,7 +124,7 @@ export default function ContentVideos() {
                   <button title={t(tr('اجعله الفيديو الأساسي', 'Make default video'))} onClick={() => cms.setFeaturedVideo(v.id)}
                     className={`flex size-8 items-center justify-center rounded-lg ${isDefault ? 'bg-[#ffc83d] text-[#163e7a]' : 'text-[#cfd8e1] hover:text-[#ffc83d]'}`}><Star className="size-4 fill-current" /></button>
                   {id
-                    ? <img src={thumb(id)} alt="" onError={e => { e.currentTarget.style.visibility = 'hidden' }} className="aspect-video w-28 bg-[#e3f2fb] rounded-lg object-cover" />
+                    ? <img src={thumb(id)} alt="" loading="lazy" onError={e => { e.currentTarget.style.visibility = 'hidden' }} className="aspect-video w-28 bg-[#e3f2fb] rounded-lg object-cover" />
                     : <div className="flex aspect-video w-28 items-center justify-center rounded-lg bg-[#fdecec] text-xs text-[#c0392b]">{t(tr('رابط غلط', 'Bad link'))}</div>}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -125,6 +141,7 @@ export default function ContentVideos() {
             })}
           </ul>
         )}
+        {rows.length > limit && <div className="mt-4 flex justify-center"><Btn variant="ghost" onClick={() => setLimit(n => n + 50)}>{t(tr(`اعرض ${Math.min(50, rows.length - limit)} كمان`, `Show ${Math.min(50, rows.length - limit)} more`))}</Btn></div>}
       </Card>
       <Modal open={!!edit} onClose={() => setEdit(null)} title={edit ? t(edit.title) || t(tr('فيديو جديد', 'New video')) : ''} wide>
         {edit && (

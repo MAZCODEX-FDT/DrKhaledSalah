@@ -20,7 +20,7 @@ export type CmsContact = { email: string; website: string; whatsapp: string; sho
 export type TitledText = { t: L; d: L }
 /** Automatic import from the doctor's channel (YouTube Data API v3). */
 export type YouTubeSync = { channel: string; apiKey: string; autoShow: boolean; lastSync: string | null; lastError: string | null }
-export type Video = { id: string; title: L; url: string; views: string; featured: boolean; enabled: boolean }
+export type Video = { id: string; title: L; url: string; views: string; featured: boolean; enabled: boolean; viewCount?: number; published?: string }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
@@ -179,11 +179,11 @@ export const cms = {
     commit({ ...db, youtube: { ...db.youtube, ...p } })
   },
   /** Adds channel videos that aren't in the list yet and refreshes view counts. Titles and order you edited are kept. */
-  importVideos(items: { id: string; title: string; views: string }[]) {
+  importVideos(items: { id: string; title: string; views: string; viewCount?: number; published?: string }[]) {
     const byId = new Map(db.videos.map(v => [youtubeId(v.url), v]))
-    const updated = db.videos.map(v => { const f = items.find(i => i.id === youtubeId(v.url)); return f ? { ...v, views: f.views || v.views } : v })
+    const updated = db.videos.map(v => { const f = items.find(i => i.id === youtubeId(v.url)); return f ? { ...v, views: f.views || v.views, viewCount: f.viewCount ?? v.viewCount, published: v.published ?? f.published } : v })
     const added: Video[] = items.filter(i => !byId.has(i.id)).map(i => ({
-      id: uid(), url: `https://www.youtube.com/watch?v=${i.id}`, views: i.views, featured: false, enabled: db.youtube.autoShow,
+      id: uid(), url: `https://www.youtube.com/watch?v=${i.id}`, views: i.views, viewCount: i.viewCount, published: i.published, featured: false, enabled: db.youtube.autoShow,
       // Same YouTube title in both languages until someone translates it in the dashboard
       title: { ar: i.title, en: i.title },
     }))
@@ -253,6 +253,14 @@ export function useSite() {
 }
 
 /** Extract the 11-character YouTube id from a link (watch, youtu.be, shorts, embed, live) or a bare id. */
+/** Numeric views for sorting: the synced count, else parsed from text like "171K" or "1.2M". */
+export function viewsOf(v: Pick<Video, 'views' | 'viewCount'>): number {
+  if (v.viewCount != null) return v.viewCount
+  const m = (v.views ?? '').replace(/,/g, '').match(/([\d.]+)\s*([KkMm]?)/)
+  if (!m) return 0
+  return parseFloat(m[1]) * (/k/i.test(m[2]) ? 1e3 : /m/i.test(m[2]) ? 1e6 : 1)
+}
+
 export const CHANNEL_URL = 'https://www.youtube.com/channel/UCmHqUf0vI7lohE_7NbLd3DA'
 
 export function youtubeId(input: string | undefined | null): string | null {
