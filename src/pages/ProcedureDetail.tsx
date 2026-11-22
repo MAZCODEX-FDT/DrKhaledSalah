@@ -38,16 +38,16 @@ export default function ProcedureDetail() {
             <div data-reveal className="mt-14 grid gap-4 sm:grid-cols-2">
               {s.signs.map((x, i) => (
                 <div key={i} className="rounded-2xl border hairline-dark bg-white/60 p-6">
-                  <span className="font-serif text-sm font-bold text-gold">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-serif text-sm font-bold text-blue">{String(i + 1).padStart(2, '0')}</span>
                   <p className="mt-2 text-lg">{t(x)}</p>
                 </div>
               ))}
             </div>
             <p data-reveal className="mt-4 text-sm text-ink/50">{lang === 'ar' ? 'كل النقط دي بتتشرح بالتفصيل في الكشف.' : 'All of these are explained in detail at the consultation.'}</p>
           </div>
-          <aside data-reveal className="relative h-fit overflow-hidden rounded-[2rem] bg-navy p-8 text-cloud sm:p-10 lg:sticky lg:top-28">
+          <div role="group" aria-label={lang === 'ar' ? 'احجز' : 'Book'} data-reveal className="relative h-fit overflow-hidden rounded-[2rem] bg-navy p-8 text-cloud sm:p-10 lg:sticky lg:top-28">
             <ProcedureArt slug={s.slug} tone={s.tone} className="absolute -end-24 -top-24 size-80 opacity-60" />
-            <h3 className="relative font-display text-2xl font-light">{lang === 'ar' ? 'اللي هتلاقيه معانا' : 'What you can expect'}</h3>
+            <h2 className="relative font-display text-2xl font-light">{lang === 'ar' ? 'اللي هتلاقيه معانا' : 'What you can expect'}</h2>
             <ul className="relative mt-6 space-y-4">
               {s.approach.map((a, i) => (
                 <li key={i} className="flex gap-3 text-cloud/80"><Check className="mt-1 size-4 shrink-0 text-gold" />{t(a)}</li>
@@ -60,11 +60,11 @@ export default function ProcedureDetail() {
                   <MessageCircle className="size-4" /> {b.primary ? t(ui.bookTagamoa) : t(ui.bookGiza)}
                 </a>
               ))}
-              <Link to="/before-your-visit" className="flex items-center justify-center gap-2 pt-2 text-sm text-cloud/70 underline-offset-4 hover:text-gold hover:underline">
+              <Link to="/before-your-visit" className="flex min-h-11 items-center justify-center gap-2 text-sm text-cloud/70 underline-offset-4 hover:text-gold hover:underline">
                 <ClipboardList className="size-4" />{lang === 'ar' ? 'اقرا دليل قبل الزيارة' : 'Read the before-your-visit guide'}
               </Link>
             </div>
-          </aside>
+          </div>
         </Reveal>
       </section>
 
@@ -74,7 +74,7 @@ export default function ProcedureDetail() {
           <div className="grid gap-px overflow-hidden rounded-[2rem] border hairline bg-cloud/10 md:grid-cols-4">
             {s.steps.map((st, i) => (
               <div key={i} data-reveal data-delay={i * .08} className="bg-night p-8">
-                <span className="font-latin text-5xl font-extralight text-cloud/15">0{i + 1}</span>
+                <span aria-hidden="true" className="font-latin text-5xl font-extralight text-cloud/30">0{i + 1}</span>
                 <h3 className="mt-6 font-display text-2xl font-light text-mist">{t(st.t)}</h3>
                 <p className="mt-3 text-cloud/65">{t(st.d)}</p>
               </div>

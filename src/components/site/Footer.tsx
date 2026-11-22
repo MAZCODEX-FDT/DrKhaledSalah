@@ -46,28 +46,28 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <h4 className="mb-5 text-sm text-mist">{t(ui.nav.surgeries)}</h4>
-            <ul className="space-y-3 text-sm text-cloud/65">
-              {surgeries.slice(0, 8).map(s => <li key={s.slug}><Link className="hover:text-cloud" to={`/procedures/${s.slug}`}>{t(s.name)}</Link></li>)}
+            <h2 className="mb-3 text-sm text-mist">{t(ui.nav.surgeries)}</h2>
+            <ul className="text-sm text-cloud/65">
+              {surgeries.slice(0, 8).map(s => <li key={s.slug}><Link className="inline-flex min-h-11 items-center hover:text-cloud" to={`/procedures/${s.slug}`}>{t(s.name)}</Link></li>)}
             </ul>
           </div>
           <div>
-            <h4 className="mb-5 text-sm text-mist">{t(ui.nav.branches)}</h4>
+            <h2 className="mb-3 text-sm text-mist">{t(ui.nav.branches)}</h2>
             <ul className="space-y-3 text-sm text-cloud/65">
               {branches.map(b => <li key={b.id}>{t(b.name)}<span className="block text-cloud/40 rtl:text-right" dir="ltr">{b.phone}</span></li>)}
             </ul>
           </div>
           <div>
-            <h4 className="mb-5 text-sm text-mist">{lang === 'ar' ? 'روابط' : 'Links'}</h4>
-            <ul className="space-y-3 text-sm text-cloud/65">
-              <li><Link className="hover:text-cloud" to="/about">{t(ui.nav.about)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/videos">{t(ui.nav.videos)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/faq">{t(ui.nav.faq)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/before-your-visit">{t(ui.nav.guide)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/articles">{t(ui.nav.articles)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/contact">{t(ui.nav.contact)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/book">{t(ui.nav.book)}</Link></li>
-              <li><Link className="hover:text-cloud" to="/dashboard">{t(ui.nav.dashboard)}</Link></li>
+            <h2 className="mb-3 text-sm text-mist">{lang === 'ar' ? 'روابط' : 'Links'}</h2>
+            <ul className="text-sm text-cloud/65">
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/about">{t(ui.nav.about)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/videos">{t(ui.nav.videos)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/faq">{t(ui.nav.faq)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/before-your-visit">{t(ui.nav.guide)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/articles">{t(ui.nav.articles)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/contact">{t(ui.nav.contact)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/book">{t(ui.nav.book)}</Link></li>
+              <li><Link className="inline-flex min-h-11 items-center hover:text-cloud" to="/dashboard">{t(ui.nav.dashboard)}</Link></li>
             </ul>
           </div>
         </div>

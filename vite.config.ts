@@ -10,7 +10,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('recharts') || id.includes('d3-')) return 'charts'
+          // recharts stays inside the lazy dashboard chunk, so the public site never downloads it
           if (id.includes('gsap') || id.includes('lenis')) return 'motion-gsap'
         },
       },

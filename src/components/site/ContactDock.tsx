@@ -37,7 +37,7 @@ export default function ContactDock() {
   ) : null
 
   return (
-    <>
+    <div role="region" aria-label={ar ? 'تواصل سريع' : 'Quick contact'} className="print:hidden">
       {/* Desktop */}
       <div className="fixed bottom-6 end-6 z-40 hidden flex-col items-end gap-3 md:flex">
         <div className="group flex flex-col items-end gap-3">
@@ -60,10 +60,10 @@ export default function ContactDock() {
         </div>
         <div className="grid grid-cols-3 gap-2">
           <a href={tel} onClick={() => track('contact_call', { branch: b.id, page: pathname })} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white/10 text-sm font-semibold"><Phone className="size-5" />{ar ? 'اتصل' : 'Call'}</a>
-          <a href={wa} target="_blank" rel="noreferrer" onClick={() => track('contact_whatsapp', { branch: b.id, page: pathname })} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#25d366] text-sm font-semibold text-white"><MessageCircle className="size-5" />{ar ? 'واتساب' : 'WhatsApp'}</a>
+          <a href={wa} target="_blank" rel="noreferrer" onClick={() => track('contact_whatsapp', { branch: b.id, page: pathname })} className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#25d366] text-sm font-bold text-navy"><MessageCircle className="size-5" />{ar ? 'واتساب' : 'WhatsApp'}</a>
           <Link to="/book" className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-gold text-sm font-semibold text-navy"><CalendarCheck className="size-5" />{ar ? 'احجز' : 'Book'}</Link>
         </div>
       </div>
-    </>
+    </div>
   )
 }

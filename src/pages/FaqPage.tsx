@@ -70,7 +70,7 @@ export default function FaqPage() {
             <div className="flex w-max gap-2">
               {groups.map(g => {
                 const on = !needle && g.id === active?.id
-                return <button key={g.id} onClick={() => pick(g.id)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm transition ${on ? 'bg-navy text-cloud' : 'bg-white text-ink/75 ring-1 ring-ink/10'}`}>{t(g.name)}</button>
+                return <button key={g.id} onClick={() => pick(g.id)} className={`min-h-11 whitespace-nowrap rounded-full px-4 py-2 text-sm transition ${on ? 'bg-navy text-cloud' : 'bg-white text-ink/75 ring-1 ring-ink/10'}`}>{t(g.name)}</button>
               })}
             </div>
           </div>

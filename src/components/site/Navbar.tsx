@@ -56,7 +56,7 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-2">
-          <button onClick={toggle} className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-cloud/80 hover:text-cloud" aria-label="Change language">
+          <button onClick={toggle} className="flex min-h-11 items-center gap-1.5 rounded-full px-3 py-2 text-sm text-cloud/80 hover:text-cloud" aria-label="Change language">
             <Globe className="size-4" />
             <span className="font-latin">{lang === 'ar' ? 'EN' : 'ع'}</span>
           </button>

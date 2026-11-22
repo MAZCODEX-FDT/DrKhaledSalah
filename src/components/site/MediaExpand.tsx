@@ -49,7 +49,7 @@ export default function MediaExpand() {
           <div className="grid items-end gap-10 lg:grid-cols-[1fr_1.1fr]">
             <div className="max-w-2xl">
               {!fv && (
-                <a href={channel} target="_blank" rel="noreferrer"
+                <a href={channel} target="_blank" rel="noreferrer" aria-label="YouTube"
                   className="group mb-8 inline-flex size-20 items-center justify-center rounded-full bg-cloud/10 backdrop-blur-md transition-all duration-700 ease-lux hover:scale-110 hover:bg-blue">
                   <Play className="size-7 fill-cloud text-cloud transition-colors group-hover:fill-white group-hover:text-white" />
                 </a>

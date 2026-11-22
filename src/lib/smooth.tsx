@@ -7,6 +7,10 @@ import { useGSAP } from '@gsap/react'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
+/** Visitors who ask their phone for less motion get near-instant animations everywhere. */
+export const reduceMotion = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
+if (reduceMotion) gsap.globalTimeline.timeScale(20)
+
 let lenis: Lenis | null = null
 export const getLenis = () => lenis
 
@@ -15,7 +19,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    lenis = new Lenis({ lerp: 0.09, anchors: { offset: -90 }, allowNestedScroll: true, autoToggle: true, stopInertiaOnNavigate: true })
+    lenis = new Lenis({ lerp: 0.09, respectReducedMotion: true, anchors: { offset: -90 }, allowNestedScroll: true, autoToggle: true, stopInertiaOnNavigate: true })
     lenis.on('scroll', ScrollTrigger.update)
     const tick = (t: number) => lenis?.raf(t * 1000)
     gsap.ticker.add(tick)

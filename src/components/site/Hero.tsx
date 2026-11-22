@@ -18,7 +18,7 @@ export default function Hero() {
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
     tl.from('[data-h="eyebrow"]', { y: 20, opacity: 0, duration: 1.2, delay: .2 })
-      .from('[data-h="sub"]', { y: 24, opacity: 0, duration: 1.4 }, '-=.7')
+      .from('[data-h="sub"]', { y: 24, opacity: .35, duration: 1.2 }, '-=.9')
       .from('[data-h="cta"] > *', { y: 24, opacity: 0, duration: 1.2, stagger: .1 }, '-=1')
       .from('[data-h="trust"]', { opacity: 0, duration: 1.4 }, '-=.8')
       .from('[data-h="tiles"] > div > *', { scale: .6, opacity: 0, duration: 1, stagger: { each: .03, from: 'random' } }, 0)
