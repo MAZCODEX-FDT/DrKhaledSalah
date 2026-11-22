@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
+import { stockPhotos } from '../content/stock'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
 export type { SocialPlatform }
 
@@ -12,7 +13,7 @@ export type { SocialPlatform }
  * so changes publish for every visitor.
  */
 
-export type MediaItem = { id: string; name: string; src: string; alt: L; enabled: boolean; createdAt: string }
+export type MediaItem = { id: string; name: string; src: string; alt: L; enabled: boolean; createdAt: string; stock?: boolean; stockKey?: string }
 export type QA = { id: string; q: L; a: L; enabled: boolean; category?: string }
 export type FaqCategory = { id: string; name: L; enabled: boolean }
 export type Social = { id: string; platform: SocialPlatform; label: string; url: string; enabled: boolean }
@@ -40,6 +41,8 @@ export interface ContentDB {
   branches: CmsBranch[]
   stats: CmsStat[]
   media: MediaItem[]
+  /** Set once the sample stock photos were offered to this browser, so removing them sticks. */
+  stockApplied?: boolean
 }
 
 const KEY = 'ks-content-v1'
@@ -49,7 +52,7 @@ function seed(): ContentDB {
   const qa = (x: { q: L; a: L }): QA => ({ id: uid(), q: x.q, a: x.a, enabled: true })
   const cats: FaqCategory[] = faqCategorySeed.map(c => ({ id: c.key, name: c.name, enabled: true }))
   const catId = (k: string) => cats.find(c => c.id === k)?.id
-  return {
+  return withStock({
     version: 1,
     doctor: {
       ...seedDoctor,
@@ -80,7 +83,7 @@ function seed(): ContentDB {
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
-  }
+  })
 }
 
 /** Swap the early placeholder social links for the doctor's real accounts, and add any platform that is missing. */
@@ -91,6 +94,22 @@ function withRealSocials(saved: Social[], real: Social[]): Social[] {
   return out
 }
 
+/** Adds the sample stock photos to the library and puts them in every empty image slot. Existing photos are kept. */
+function withStock(d: ContentDB): ContentDB {
+  const now = new Date().toISOString()
+  const have = new Set(d.media.filter(m => m.stock).map(m => m.stockKey))
+  const add: MediaItem[] = stockPhotos.filter(p => !have.has(p.key)).map(p => ({ id: uid(), name: p.key, src: p.src, alt: p.alt, enabled: true, createdAt: now, stock: true, stockKey: p.key }))
+  const media = [...d.media, ...add]
+  const ids = (slot: string) => stockPhotos.filter(p => p.slot === slot).map(p => media.find(m => m.stock && m.stockKey === p.key)!.id)
+  const procs = ids('procedure'), branchImgs = ids('branch')
+  return {
+    ...d, media, stockApplied: true,
+    doctor: { ...d.doctor, heroImage: d.doctor.heroImage ?? ids('hero')[0], aboutImage: d.doctor.aboutImage ?? ids('about')[0] },
+    branches: d.branches.map((b, i) => ({ ...b, image: b.image ?? branchImgs[i % branchImgs.length] })),
+    surgeries: d.surgeries.map((s, i) => ({ ...s, image: s.image ?? procs[i % procs.length] })),
+  }
+}
+
 function load(): ContentDB {
   try {
     const raw = localStorage.getItem(KEY)
@@ -99,7 +118,7 @@ function load(): ContentDB {
       if (d?.version === 1) {
         // Fill fields added after this browser first saved content
         const s = seed()
-        return {
+        const merged: ContentDB = {
           ...s, ...d,
           doctor: { ...s.doctor, ...d.doctor },
           faqCategories: d.faqCategories ?? s.faqCategories,
@@ -109,6 +128,8 @@ function load(): ContentDB {
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
         }
+        // Offer the sample photos once to browsers that saved content before they existed
+        return d.stockApplied ? merged : withStock({ ...merged, media: d.media ?? [] })
       }
     }
   } catch { /* fall through */ }
@@ -203,6 +224,18 @@ export const cms = {
     commit({ ...db, media: [item, ...db.media] }); return item
   },
   reset() { commit(seed()) },
+  addStock() { commit(withStock(db)) },
+  /** Deletes every sample stock photo and clears the slots that used them. */
+  removeStock() {
+    const gone = new Set(db.media.filter(m => m.stock).map(m => m.id))
+    const keep = (id: string | null) => (id && gone.has(id) ? null : id)
+    commit({
+      ...db, stockApplied: true, media: db.media.filter(m => !m.stock),
+      doctor: { ...db.doctor, portrait: keep(db.doctor.portrait), heroImage: keep(db.doctor.heroImage), aboutImage: keep(db.doctor.aboutImage) },
+      branches: db.branches.map(b => ({ ...b, image: keep(b.image) })),
+      surgeries: db.surgeries.map(x => ({ ...x, image: keep(x.image) })),
+    })
+  },
 }
 
 /** Resolve an image id to a src, or null when missing or disabled. */
