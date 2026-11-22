@@ -18,6 +18,7 @@ export type FaqCategory = { id: string; name: L; enabled: boolean }
 export type Social = { id: string; platform: SocialPlatform; label: string; url: string; enabled: boolean }
 export type CmsContact = { email: string; website: string; whatsapp: string; showEmail: boolean; showWebsite: boolean; showWhatsapp: boolean }
 export type TitledText = { t: L; d: L }
+export type Video = { id: string; title: L; url: string; views: string; featured: boolean; enabled: boolean }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
@@ -32,6 +33,7 @@ export interface ContentDB {
   faqCategories: FaqCategory[]
   contact: CmsContact
   socials: Social[]
+  videos: Video[]
   branches: CmsBranch[]
   stats: CmsStat[]
   media: MediaItem[]
@@ -70,6 +72,7 @@ function seed(): ContentDB {
     ],
     contact: { email: contactSeed.email, website: contactSeed.website, whatsapp: contactSeed.whatsapp, showEmail: true, showWebsite: true, showWhatsapp: true },
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
+    videos: [],
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
@@ -91,6 +94,7 @@ function load(): ContentDB {
           faqs: d.faqCategories ? d.faqs : s.faqs,
           contact: d.contact ?? s.contact,
           socials: d.socials ?? s.socials,
+          videos: d.videos ?? s.videos,
         }
       }
     }
@@ -122,7 +126,7 @@ const move = <T,>(list: T[], i: number, dir: -1 | 1) => {
   const j = i + dir; if (j < 0 || j >= list.length) return list
   const next = [...list]; [next[i], next[j]] = [next[j], next[i]]; return next
 }
-type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media' | 'faqCategories' | 'socials'
+type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media' | 'faqCategories' | 'socials' | 'videos'
 
 export const cms = {
   setDoctor(patch: Partial<CmsDoctor>) { commit({ ...db, doctor: { ...db.doctor, ...patch } }) },
@@ -157,6 +161,9 @@ export const cms = {
     let next = move(list, list.findIndex(x => (x.id ?? x.slug) === id), dir)
     if (key === 'surgeries') next = renumber(next as CmsSurgery[])
     commit({ ...db, [key]: next })
+  },
+  setFeaturedVideo(id: string) {
+    commit({ ...db, videos: db.videos.map(v => ({ ...v, featured: v.id === id })) })
   },
   setPrimaryBranch(id: string) {
     const list = db.branches.map(b => ({ ...b, primary: b.id === id }))
@@ -209,6 +216,18 @@ export function useSite() {
     faqCategories: d.faqCategories.filter(c => c.enabled),
     contact: d.contact,
     socials: d.socials.filter(x => x.enabled && x.url),
+    videos: d.videos.filter(v => v.enabled && youtubeId(v.url)),
+    // The featured video, or the first live one when none is marked
+    featuredVideo: d.videos.find(v => v.featured && v.enabled && youtubeId(v.url)) ?? d.videos.find(v => v.enabled && youtubeId(v.url)) ?? null,
     img: (id: string | null | undefined) => imageSrc(d, id),
   }
+}
+
+/** Extract the 11-character YouTube id from a link (watch, youtu.be, shorts, embed, live) or a bare id. */
+export function youtubeId(input: string | undefined | null): string | null {
+  if (!input) return null
+  const v = input.trim()
+  if (/^[\w-]{11}$/.test(v)) return v
+  const m = v.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})/)
+  return m ? m[1] : null
 }

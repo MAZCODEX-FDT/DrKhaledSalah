@@ -3,10 +3,14 @@ import { Play } from 'lucide-react'
 import { useI18n } from '../../lib/i18n'
 import { gsap, useGSAP } from '../../lib/smooth'
 import { Mark } from './Logo'
+import { useSite } from '../../lib/content'
+import YouTubePlayer from './YouTubePlayer'
 
 /** Scroll-driven media expansion: a framed card grows to full bleed while the headline splits apart. */
 export default function MediaExpand() {
-  const { lang } = useI18n()
+  const { lang, t } = useI18n()
+  const { featuredVideo: fv, socials } = useSite()
+  const channel = socials.find(s => s.platform === 'youtube')?.url ?? 'https://www.youtube.com/'
   const root = useRef<HTMLElement>(null)
   const ar = lang === 'ar'
 
@@ -42,19 +46,30 @@ export default function MediaExpand() {
             <Mark className="h-8 w-10" />
             <span>{ar ? 'قناة د. خالد صلاح على YouTube' : 'Dr. Khaled Salah on YouTube'}</span>
           </div>
-          <div className="max-w-2xl">
-            <a href="https://www.youtube.com/results?search_query=%D8%AF.+%D8%AE%D8%A7%D9%84%D8%AF+%D8%B5%D9%84%D8%A7%D8%AD+%D8%AC%D8%B1%D8%A7%D8%AD%D8%A9+%D8%A7%D9%84%D8%A3%D8%B7%D9%81%D8%A7%D9%84" target="_blank" rel="noreferrer"
-              className="group mb-8 inline-flex size-20 items-center justify-center rounded-full bg-cloud/10 backdrop-blur-md transition-all duration-700 ease-lux hover:scale-110 hover:bg-blue">
-              <Play className="size-7 fill-cloud text-cloud transition-colors group-hover:fill-white group-hover:text-white" />
-            </a>
-            <h2 className="font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
-              {ar ? 'أكتر من 500 فيديو بيشرح لحضرتك قبل ما تيجي' : 'Over 500 videos that explain before you even visit'}
-            </h2>
-            <p className="mt-5 max-w-lg text-cloud/70">
-              {ar
-                ? 'الأول على YouTube في شرح الفتق الإربي عند الأطفال، وفيديو الخصية المعلقة وصل 171 ألف مشاهدة.'
-                : 'The top YouTube result for pediatric inguinal hernia, and the undescended testis video passed 171K views.'}
-            </p>
+          <div className="grid items-end gap-10 lg:grid-cols-[1fr_1.1fr]">
+            <div className="max-w-2xl">
+              {!fv && (
+                <a href={channel} target="_blank" rel="noreferrer"
+                  className="group mb-8 inline-flex size-20 items-center justify-center rounded-full bg-cloud/10 backdrop-blur-md transition-all duration-700 ease-lux hover:scale-110 hover:bg-blue">
+                  <Play className="size-7 fill-cloud text-cloud transition-colors group-hover:fill-white group-hover:text-white" />
+                </a>
+              )}
+              <h2 className="font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
+                {ar ? 'أكتر من 500 فيديو بيشرح لحضرتك قبل ما تيجي' : 'Over 500 videos that explain before you even visit'}
+              </h2>
+              <p className="mt-5 max-w-lg text-cloud/70">
+                {ar
+                  ? 'الأول على YouTube في شرح الفتق الإربي عند الأطفال، وفيديو الخصية المعلقة وصل 171 ألف مشاهدة.'
+                  : 'The top YouTube result for pediatric inguinal hernia, and the undescended testis video passed 171K views.'}
+              </p>
+              <a href={channel} target="_blank" rel="noreferrer" className="btn-ghost mt-8">{ar ? 'افتح القناة' : 'Open the channel'}</a>
+            </div>
+            {fv && (
+              <div>
+                <YouTubePlayer url={fv.url} title={t(fv.title)} big className="rounded-[1.5rem] shadow-[0_40px_80px_-40px_rgba(0,0,0,.7)]" />
+                <p className="mt-3 text-sm text-cloud/80">{t(fv.title)}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
