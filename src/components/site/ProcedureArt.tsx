@@ -1,3 +1,20 @@
+const KNOWN = ['circumcision', 'inguinal-hernia', 'undescended-testis', 'hypospadias']
+
+/** Fallback for procedures added later: soft arcs whose rhythm comes from the slug. */
+function Generic({ seed, ...p }: { seed: string } & React.SVGProps<SVGGElement>) {
+  const h = [...seed].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7)
+  const n = 5 + (h % 5), rot = h % 360
+  return (
+    <g {...p} transform={`rotate(${rot} 200 200)`}>
+      {Array.from({ length: n }).map((_, i) => (
+        <path key={i} d={`M ${200 - (40 + i * 24)} 200 A ${40 + i * 24} ${40 + i * 24} 0 0 1 ${200 + (40 + i * 24)} 200`} opacity={1 - i * 0.08} />
+      ))}
+      <circle cx="200" cy="200" r={12 + (h % 14)} strokeWidth="1.6" />
+      {Array.from({ length: 3 }).map((_, i) => <circle key={`d${i}`} cx={200 + (i - 1) * 40} cy={260} r="3" fill={String(p.stroke)} />)}
+    </g>
+  )
+}
+
 /** Abstract, non-anatomical line art per procedure (the strategy forbids real photos for sensitive cases). */
 export default function ProcedureArt({ slug, tone = '#ffc83d', className = '' }: { slug: string; tone?: string; className?: string }) {
   const common = { fill: 'none', stroke: tone, strokeWidth: 1.2, strokeLinecap: 'round' as const }
@@ -10,6 +27,7 @@ export default function ProcedureArt({ slug, tone = '#ffc83d', className = '' }:
         </radialGradient>
       </defs>
       <circle cx="200" cy="200" r="190" fill={`url(#glow-${slug})`} />
+      {!KNOWN.includes(slug) && <Generic seed={slug} {...common} />}
       {slug === 'circumcision' && (
         <g {...common}>
           {Array.from({ length: 9 }).map((_, i) => <circle key={i} cx="200" cy="200" r={30 + i * 18} opacity={1 - i * 0.09} />)}

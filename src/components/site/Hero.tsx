@@ -4,12 +4,15 @@ import { Star, ArrowDown, MessageCircle } from 'lucide-react'
 import BlurText from '../reactbits/BlurText'
 import Magnet from '../reactbits/Magnet'
 import { useI18n } from '../../lib/i18n'
-import { branches, doctor, ui, waLink } from '../../content/site'
+import { ui, waLink } from '../../content/site'
+import { useSite } from '../../lib/content'
 import { gsap, useGSAP } from '../../lib/smooth'
 import PlayTiles from './PlayTiles'
 
 export default function Hero() {
   const { t, lang } = useI18n()
+  const { branches, doctor, img } = useSite()
+  const heroImg = img(doctor.heroImage)
   const root = useRef<HTMLElement>(null)
 
   useGSAP(() => {
@@ -66,9 +69,16 @@ export default function Hero() {
         </div>
 
         {/* KS Play mosaic: edge decoration, no text on it */}
-        <div data-h="tiles" className="hidden overflow-hidden rounded-[2rem] shadow-[0_40px_80px_-40px_rgba(0,0,0,.5)] lg:block">
-          <PlayTiles cols={4} rows={5} />
-        </div>
+        {heroImg ? (
+          <div data-h="tiles" className="relative hidden lg:block">
+            <div><img src={heroImg} alt={t(doctor.name)} className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-[0_40px_80px_-40px_rgba(0,0,0,.5)]" /></div>
+            <PlayTiles cols={2} rows={1} offset={1} className="absolute -bottom-6 -start-6 w-40 overflow-hidden rounded-2xl" />
+          </div>
+        ) : (
+          <div data-h="tiles" className="hidden overflow-hidden rounded-[2rem] shadow-[0_40px_80px_-40px_rgba(0,0,0,.5)] lg:block">
+            <PlayTiles cols={4} rows={5} />
+          </div>
+        )}
         <PlayTiles cols={6} rows={1} offset={4} className="-mx-6 lg:hidden" />
       </div>
 

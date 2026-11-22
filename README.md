@@ -47,3 +47,12 @@ All copy lives in `src/content/site.ts`.
 - [ ] Settlement Google review short link (`dashboard/pages/Reviews.tsx`)
 - [ ] Replace the demo localStorage store (`src/lib/store.ts`) and demo login with a real backend and authentication (patient data is health data)
 - [ ] Final domain (drkhaledsalah.com vs dr-khaledsalah.com) and redirect from the old site
+
+## Website content (CMS)
+
+Dashboard → **Website content** edits the public site: procedures (add, edit, delete, reorder, show/hide, cover image, YouTube video, FAQs), general FAQs, branches (photo, main branch), the doctor (name, title, bio, highlights, portrait, home banner image, numbers) and an image library.
+
+- Store: `src/lib/content.ts` (`useSite()` for the site, `cms.*` for edits). Seed copy lives in `src/content/site.ts` and `src/content/surgeries-extra.ts`.
+- Demo: content and uploaded images (compressed to WebP) are kept in this browser's localStorage, so edits are only visible in the same browser.
+- Before launch: replace `load`/`commit` with a backend (for example Supabase tables plus Storage for images) so edits publish for every visitor.
+- The 12 added procedures are draft copy for Dr. Khaled Salah to review.

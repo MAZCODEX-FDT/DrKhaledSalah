@@ -2,13 +2,15 @@ import { useState, type FormEvent } from 'react'
 import { CheckCircle2, MessageCircle } from 'lucide-react'
 import PageHero from './PageHero'
 import { useI18n } from '../lib/i18n'
-import { branches, surgeries, ui, waLink } from '../content/site'
+import { ui, waLink } from '../content/site'
+import { useSite } from '../lib/content'
 import { actions, type BranchId, type ProcedureId } from '../lib/store'
 
 const field = 'w-full rounded-2xl border border-ink/12 bg-white/70 px-5 py-4 text-ink outline-none transition focus:border-blue focus:ring-4 focus:ring-blue/15'
 
 export default function Book() {
   const { t, lang } = useI18n()
+  const { branches, surgeries } = useSite()
   const [done, setDone] = useState(false)
   const [branch, setBranch] = useState<BranchId>('tagamoa')
   const [form, setForm] = useState({ name: '', phone: '', procedure: 'consultation' as ProcedureId, message: '' })
@@ -19,7 +21,7 @@ export default function Book() {
     actions.addInquiry({ name: form.name, phone: form.phone, branch, procedure: form.procedure, source: 'website', message: form.message })
     setDone(true)
   }
-  const b = branches.find(x => x.id === branch)!
+  const b = branches.find(x => x.id === branch) ?? branches[0]
 
   return (
     <>

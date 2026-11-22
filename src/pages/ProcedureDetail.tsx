@@ -6,14 +6,17 @@ import Reveal from '../components/site/Reveal'
 import ProcedureArt from '../components/site/ProcedureArt'
 import Branches from '../components/site/Branches'
 import { useI18n } from '../lib/i18n'
-import { branches, surgeries, ui, waLink } from '../content/site'
+import { ui, waLink } from '../content/site'
+import { useSite } from '../lib/content'
 
 export default function ProcedureDetail() {
   const { slug } = useParams()
   const { t, lang } = useI18n()
+  const { branches, surgeries, img } = useSite()
   const s = surgeries.find(x => x.slug === slug)
   if (!s) return <Navigate to="/procedures" replace />
-  const others = surgeries.filter(x => x.slug !== s.slug)
+  const others = surgeries.filter(x => x.slug !== s.slug).slice(0, 6)
+  const cover = img(s.image)
 
   return (
     <>
@@ -22,6 +25,7 @@ export default function ProcedureDetail() {
       <section className="bg-cloud py-24 text-ink sm:py-32">
         <Reveal className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-[1.3fr_1fr]">
           <div>
+            {cover && <img data-reveal src={cover} alt={t(s.name)} className="mb-12 aspect-[16/9] w-full rounded-[2rem] object-cover" />}
             <p data-reveal className="font-display text-[clamp(1.4rem,2.4vw,2.1rem)] font-light leading-[1.6]">{t(s.what)}</p>
             <div data-reveal className="mt-14 grid gap-4 sm:grid-cols-2">
               {s.signs.map((x, i) => (
@@ -66,20 +70,27 @@ export default function ProcedureDetail() {
             ))}
           </div>
 
-          {/* TODO: embed the matching YouTube video ID for this procedure */}
+          {/* YouTube video ID is set per procedure in Dashboard → Website → Procedures */}
+          {s.video ? (
+            <div data-reveal className="relative mt-16 aspect-video overflow-hidden rounded-[2rem] bg-black">
+              <iframe className="absolute inset-0 size-full" src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(s.video)}`} title={t(s.name)} loading="lazy"
+                allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+            </div>
+          ) : (
           <div data-reveal className="calm-night brand-pattern relative mt-16 flex aspect-video items-center justify-center overflow-hidden rounded-[2rem]">
             <div className="relative text-center">
               <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-cloud/10 backdrop-blur"><Play className="size-7 fill-cloud" /></span>
               <p className="mt-5 font-display text-xl font-light">{lang === 'ar' ? `الدكتور بيشرح: ${t(s.name)}` : `The doctor explains: ${t(s.name)}`}</p>
             </div>
           </div>
+          )}
         </Reveal>
       </section>
 
       <section className="bg-night pb-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">
           <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light leading-tight">{lang === 'ar' ? 'أسئلة الأهالي' : 'Parents ask'}</h2>
-          <Faq items={s.faqs} />
+          <Faq items={s.faqs.filter(f => f.enabled)} />
         </div>
         <div className="mx-auto mt-24 max-w-7xl px-6">
           <p className="eyebrow mb-6 text-mist">{lang === 'ar' ? 'عمليات تانية' : 'Other procedures'}</p>

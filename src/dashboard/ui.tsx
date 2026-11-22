@@ -36,7 +36,7 @@ export function Btn({ children, variant = 'primary', className = '', ...rest }: 
   return <button className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${v} ${className}`} {...rest}>{children}</button>
 }
 
-export function Modal({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
+export function Modal({ open, onClose, title, children, wide = false }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean }) {
   useEffect(() => {
     if (!open) return
     const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
@@ -45,7 +45,7 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0f2d5c]/40 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
-      <div className="dash-card max-h-[92vh] w-full max-w-xl overflow-y-auto !rounded-b-none p-6 sm:!rounded-[1.25rem]" onClick={e => e.stopPropagation()} role="dialog" aria-modal>
+      <div className={`dash-card max-h-[92vh] w-full ${wide ? 'max-w-4xl' : 'max-w-xl'} overflow-y-auto !rounded-b-none p-6 sm:!rounded-[1.25rem]`} onClick={e => e.stopPropagation()} role="dialog" aria-modal>
         <div className="mb-5 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
           <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[#e3f2fb]" aria-label="Close"><X className="size-5" /></button>

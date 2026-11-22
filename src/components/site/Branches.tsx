@@ -2,10 +2,12 @@ import { MapPin, Clock, MessageCircle, Phone, Navigation } from 'lucide-react'
 import Reveal from './Reveal'
 import { RingBadge } from './PlayTiles'
 import { useI18n } from '../../lib/i18n'
-import { branches, ui, waLink } from '../../content/site'
+import { ui, waLink } from '../../content/site'
+import { useSite } from '../../lib/content'
 
 export default function Branches() {
   const { t, lang } = useI18n()
+  const { branches, img } = useSite()
   return (
     <section id="branches" className="bg-sand py-28 text-ink sm:py-36">
       <Reveal className="mx-auto max-w-7xl px-6">
@@ -17,6 +19,7 @@ export default function Branches() {
           {branches.map((b, i) => (
             <article key={b.id} data-reveal data-delay={i * 0.12}
               className={`relative overflow-hidden rounded-[2rem] p-8 sm:p-10 ${b.primary ? 'calm-night brand-pattern text-cloud' : 'border hairline-dark bg-white'}`}>
+              {img(b.image) && <img src={img(b.image)!} alt={t(b.name)} className="relative -mx-8 -mt-8 mb-8 aspect-[16/7] w-[calc(100%+4rem)] max-w-none object-cover sm:-mx-10 sm:-mt-10 sm:w-[calc(100%+5rem)]" />}
               {b.primary && (
                 <>
                   <span className="relative mb-6 inline-block pill bg-gold text-navy">{lang === 'ar' ? 'الفرع الرئيسي' : 'Main branch'}</span>

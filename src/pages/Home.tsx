@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Hero from '../components/site/Hero'
+import MeetDoctor from '../components/site/MeetDoctor'
 import MediaExpand from '../components/site/MediaExpand'
 import PromiseStats from '../components/site/PromiseStats'
 import Procedures from '../components/site/Procedures'
@@ -9,13 +10,15 @@ import Branches from '../components/site/Branches'
 import Faq from '../components/site/Faq'
 import Reveal from '../components/site/Reveal'
 import { useI18n } from '../lib/i18n'
-import { generalFaqs } from '../content/site'
+import { useSite } from '../lib/content'
 
 export default function Home() {
   const { lang } = useI18n()
+  const { faqs: generalFaqs } = useSite()
   return (
     <>
       <Hero />
+      <MeetDoctor />
       <MediaExpand />
       <PromiseStats />
       <Procedures />

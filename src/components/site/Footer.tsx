@@ -5,11 +5,13 @@ import ShinyText from '../reactbits/ShinyText'
 import Logo from './Logo'
 import PlayTiles from './PlayTiles'
 import { useI18n } from '../../lib/i18n'
-import { branches, doctor, surgeries, ui, waLink } from '../../content/site'
+import { ui, waLink } from '../../content/site'
+import { useSite } from '../../lib/content'
 import { gsap, useGSAP } from '../../lib/smooth'
 
 export default function Footer() {
   const { t, lang } = useI18n()
+  const { branches, doctor, surgeries } = useSite()
   const root = useRef<HTMLElement>(null)
   useGSAP(() => {
     gsap.from('[data-f="big"]', {
@@ -45,7 +47,7 @@ export default function Footer() {
           <div>
             <h4 className="mb-5 text-sm text-mist">{t(ui.nav.surgeries)}</h4>
             <ul className="space-y-3 text-sm text-cloud/65">
-              {surgeries.map(s => <li key={s.slug}><Link className="hover:text-cloud" to={`/procedures/${s.slug}`}>{t(s.name)}</Link></li>)}
+              {surgeries.slice(0, 8).map(s => <li key={s.slug}><Link className="hover:text-cloud" to={`/procedures/${s.slug}`}>{t(s.name)}</Link></li>)}
             </ul>
           </div>
           <div>

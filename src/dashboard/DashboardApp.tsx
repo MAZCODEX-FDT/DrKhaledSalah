@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
-import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images } from 'lucide-react'
 import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
 import type { BranchId } from '../lib/store'
@@ -12,6 +12,11 @@ import Patients from './pages/Patients'
 import Inquiries from './pages/Inquiries'
 import Reviews from './pages/Reviews'
 import Settings from './pages/Settings'
+import ContentProcedures from './cms/ContentProcedures'
+import ContentFaqs from './cms/ContentFaqs'
+import ContentBranches from './cms/ContentBranches'
+import ContentDoctor from './cms/ContentDoctor'
+import ContentMedia from './cms/ContentMedia'
 
 type BranchFilter = 'all' | BranchId
 const BranchCtx = createContext<{ branch: BranchFilter; setBranch: (b: BranchFilter) => void }>({ branch: 'all', setBranch: () => {} })
@@ -25,6 +30,14 @@ const items = [
   { to: '/dashboard/inquiries', icon: Inbox, k: 'inquiries' },
   { to: '/dashboard/reviews', icon: Star, k: 'reviews' },
   { to: '/dashboard/settings', icon: Cog, k: 'settings' },
+] as const
+
+const webItems = [
+  { to: '/dashboard/website/procedures', icon: Stethoscope, k: 'wProcedures' },
+  { to: '/dashboard/website/faqs', icon: MessagesSquare, k: 'wFaqs' },
+  { to: '/dashboard/website/branches', icon: MapPin, k: 'wBranches' },
+  { to: '/dashboard/website/doctor', icon: UserRound, k: 'wDoctor' },
+  { to: '/dashboard/website/media', icon: Images, k: 'wMedia' },
 ] as const
 
 const AUTH_KEY = 'ks-dash-auth'
@@ -81,16 +94,23 @@ export default function DashboardApp() {
 
   const Side = (
     <aside className="flex h-full flex-col bg-[#163e7a] p-5 text-cloud">
-      <div className="mb-10 flex items-center gap-3 px-2">
+      <div className="mb-8 flex items-center gap-3 px-2">
         <Mark className="h-10 w-12" />
         <div className="leading-tight">
           <div className="font-display">{lang === 'ar' ? 'د. خالد صلاح' : 'Dr. Khaled Salah'}</div>
           <div className="text-[.7rem] text-mist">{t(tr('لوحة التحكم', 'Dashboard'))}</div>
         </div>
       </div>
-      <nav className="flex-1 space-y-1">
+      <nav className="flex-1 space-y-1 overflow-y-auto">
         {items.map(i => (
           <NavLink key={i.k} to={i.to} end={i.to === '/dashboard'} onClick={() => setOpen(false)}
+            className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition ${isActive ? 'bg-blue text-white' : 'text-cloud/70 hover:bg-white/5 hover:text-cloud'}`}>
+            <i.icon className="size-[1.1rem]" />{t(nav[i.k])}
+          </NavLink>
+        ))}
+        <p className="px-3.5 pb-1 pt-5 text-[.7rem] font-semibold uppercase tracking-wider text-sky">{t(tr('محتوى الموقع', 'Website content'))}</p>
+        {webItems.map(i => (
+          <NavLink key={i.k} to={i.to} onClick={() => setOpen(false)}
             className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition ${isActive ? 'bg-blue text-white' : 'text-cloud/70 hover:bg-white/5 hover:text-cloud'}`}>
             <i.icon className="size-[1.1rem]" />{t(nav[i.k])}
           </NavLink>
@@ -137,6 +157,11 @@ export default function DashboardApp() {
               <Route path="inquiries" element={<Inquiries />} />
               <Route path="reviews" element={<Reviews />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="website/procedures" element={<ContentProcedures />} />
+              <Route path="website/faqs" element={<ContentFaqs />} />
+              <Route path="website/branches" element={<ContentBranches />} />
+              <Route path="website/doctor" element={<ContentDoctor />} />
+              <Route path="website/media" element={<ContentMedia />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

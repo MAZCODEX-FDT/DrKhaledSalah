@@ -2,10 +2,11 @@ import ScrollReveal from '../reactbits/ScrollReveal'
 import CountUp from '../reactbits/CountUp'
 import Reveal from './Reveal'
 import { useI18n } from '../../lib/i18n'
-import { doctor, stats } from '../../content/site'
+import { useSite } from '../../lib/content'
 
 export default function PromiseStats() {
   const { t, lang } = useI18n()
+  const { doctor, stats } = useSite()
   return (
     <section className="relative bg-cloud py-28 text-ink sm:py-40">
       <div className="mx-auto max-w-6xl px-6">

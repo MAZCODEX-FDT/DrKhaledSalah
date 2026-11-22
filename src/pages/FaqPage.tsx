@@ -1,10 +1,11 @@
 import PageHero from './PageHero'
 import Faq from '../components/site/Faq'
 import { useI18n } from '../lib/i18n'
-import { generalFaqs, surgeries } from '../content/site'
+import { useSite } from '../lib/content'
 
 export default function FaqPage() {
   const { t, lang } = useI18n()
+  const { faqs: generalFaqs, surgeries } = useSite()
   return (
     <>
       <PageHero eyebrow={lang === 'ar' ? 'أسئلة الأهالي' : 'Parents\' questions'} title={lang === 'ar' ? 'اسأل قبل ما تقرر' : 'Ask before you decide'} />
@@ -14,10 +15,10 @@ export default function FaqPage() {
             <h2 className="mb-6 font-display text-3xl font-light">{lang === 'ar' ? 'عن الحجز والزيارة' : 'Booking & visits'}</h2>
             <Faq items={generalFaqs} light />
           </div>
-          {surgeries.map(s => (
+          {surgeries.filter(s => s.faqs.some(f => f.enabled)).map(s => (
             <div key={s.slug}>
               <h2 className="mb-6 font-display text-3xl font-light">{t(s.name)}</h2>
-              <Faq items={s.faqs} light />
+              <Faq items={s.faqs.filter(f => f.enabled)} light />
             </div>
           ))}
         </div>
