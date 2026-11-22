@@ -41,7 +41,7 @@ export default function Inquiries() {
                 <div className="mb-3 flex items-center gap-2 px-1.5 pt-1">
                   <span className={`size-2 rounded-full ${stageTone[s]}`} />
                   <span className="text-sm font-semibold">{t(stageLabel[s])}</span>
-                  <span className="ms-auto font-latin text-xs text-[#5b6773]">{col.length}</span>
+                  <span className="ms-auto font-latin text-xs text-[#5e6a7a]">{col.length}</span>
                 </div>
                 <div className="flex-1 space-y-2">
                   {col.map(q => (
@@ -49,14 +49,14 @@ export default function Inquiries() {
                       className={`dash-card cursor-grab !rounded-xl p-3 text-sm active:cursor-grabbing ${drag === q.id ? 'opacity-50' : ''}`}>
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium">{q.name}</p>
-                        <Pill className="bg-[#eaf1f7] !px-2 !py-0.5 text-[.65rem] text-[#5b6773]">{t(sourceLabel[q.source])}</Pill>
+                        <Pill className="bg-[#e3f2fb] !px-2 !py-0.5 text-[.65rem] text-[#5e6a7a]">{t(sourceLabel[q.source])}</Pill>
                       </div>
-                      <p className="mt-1 text-xs text-[#5b6773]">{t(procLabel[q.procedure])} · {t(branchLabel[q.branch])}</p>
+                      <p className="mt-1 text-xs text-[#5e6a7a]">{t(procLabel[q.procedure])} · {t(branchLabel[q.branch])}</p>
                       {q.message && <p className="mt-2 line-clamp-2 text-xs text-[#3a4652]">{q.message}</p>}
-                      <div className="mt-3 flex items-center gap-1 border-t border-[#eaf1f7] pt-2">
-                        <a href={`https://wa.me/${q.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="rounded-lg p-1.5 text-[#13917f] hover:bg-[#eaf1f7]" aria-label="WhatsApp"><MessageCircle className="size-4" /></a>
-                        {q.stage !== 'booked' && <button onClick={() => setConvert(q.id)} className="rounded-lg p-1.5 text-[#14304a] hover:bg-[#eaf1f7]" aria-label="Book"><CalendarCheck className="size-4" /></button>}
-                        <select value={q.stage} onChange={e => actions.moveInquiry(q.id, e.target.value as InquiryStage)} className="ms-auto !w-auto !border-0 !bg-transparent !p-0 text-[.7rem] text-[#5b6773]" aria-label="Stage">
+                      <div className="mt-3 flex items-center gap-1 border-t border-[#e3f2fb] pt-2">
+                        <a href={`https://wa.me/${q.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="rounded-lg p-1.5 text-[#13917f] hover:bg-[#e3f2fb]" aria-label="WhatsApp"><MessageCircle className="size-4" /></a>
+                        {q.stage !== 'booked' && <button onClick={() => setConvert(q.id)} className="rounded-lg p-1.5 text-[#163e7a] hover:bg-[#e3f2fb]" aria-label="Book"><CalendarCheck className="size-4" /></button>}
+                        <select value={q.stage} onChange={e => actions.moveInquiry(q.id, e.target.value as InquiryStage)} className="ms-auto !w-auto !border-0 !bg-transparent !p-0 text-[.7rem] text-[#5e6a7a]" aria-label="Stage">
                           {stageOrder.map(x => <option key={x} value={x}>{t(stageLabel[x])}</option>)}
                         </select>
                         <button onClick={() => actions.deleteInquiry(q.id)} className="rounded-lg p-1.5 text-[#98a2ac] hover:text-rose-700" aria-label="Delete"><Trash2 className="size-3.5" /></button>
@@ -69,7 +69,7 @@ export default function Inquiries() {
           })}
         </div>
       </div>
-      <Card className="mt-2 !bg-[#14304a] !border-0 text-cloud">
+      <Card className="mt-2 !bg-[#163e7a] !border-0 text-cloud">
         <p className="text-sm text-cloud/80">{t(tr('القاعدة: رد خلال 15 دقيقة، وسؤال «أنهي فرع أقرب؟»، ومتابعة بعد 24 و72 ساعة لأي حد سأل ومحجزش.', 'Rule: reply within 15 minutes, ask "which branch is closer?", and follow up at 24 and 72 hours with anyone who asked but did not book.'))}</p>
       </Card>
 

@@ -26,7 +26,7 @@ export default function ProcedureDetail() {
             <div data-reveal className="mt-14 grid gap-4 sm:grid-cols-2">
               {s.signs.map((x, i) => (
                 <div key={i} className="rounded-2xl border hairline-dark bg-white/60 p-6">
-                  <span className="font-serif text-sm italic text-gold">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-serif text-sm font-bold text-gold">{String(i + 1).padStart(2, '0')}</span>
                   <p className="mt-2 text-lg">{t(x)}</p>
                 </div>
               ))}
@@ -87,7 +87,7 @@ export default function ProcedureDetail() {
             {others.map(o => (
               <Link key={o.slug} to={`/procedures/${o.slug}`} className="group relative overflow-hidden rounded-[1.5rem] border hairline bg-navy-2 p-7 transition-colors duration-700 hover:bg-navy">
                 <ProcedureArt slug={o.slug} tone={o.tone} className="absolute -bottom-20 -end-20 size-56 opacity-40 transition-opacity group-hover:opacity-80" />
-                <span className="font-serif text-sm italic text-mist">{o.index}</span>
+                <span className="font-serif text-sm font-bold text-mist">{o.index}</span>
                 <h3 className="relative mt-8 font-display text-2xl font-light">{t(o.name)}</h3>
               </Link>
             ))}

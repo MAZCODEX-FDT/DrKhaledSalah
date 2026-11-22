@@ -44,11 +44,11 @@ export default function Procedures({ heading = true }: { heading?: boolean }) {
                   on ? 'lg:flex-[3.2] bg-navy text-cloud' : 'lg:flex-[1] bg-sand/70 text-ink'
                 } min-h-[16rem] lg:min-h-0`}
               >
-                <ProcedureArt slug={s.slug} tone={on ? '#d8e7f2' : s.tone}
+                <ProcedureArt slug={s.slug} tone={on ? '#e3f2fb' : s.tone}
                   className={`absolute -bottom-16 -end-16 size-[26rem] transition-all duration-[1200ms] ease-lux ${on ? 'opacity-90 scale-100' : 'opacity-30 scale-90'}`} />
                 <div className="relative flex h-full flex-col justify-between p-7 sm:p-9">
                   <div className="flex items-start justify-between">
-                    <span className={`font-serif text-base italic ${on ? 'text-mist' : 'text-gold'}`}>{s.index}</span>
+                    <span className={`font-serif text-base font-bold ${on ? 'text-gold' : 'text-blue'}`}>{s.index}</span>
                     <span className={`flex size-11 items-center justify-center rounded-full border transition-all duration-700 ${on ? 'bg-blue text-white border-transparent' : 'border-navy/20'}`}>
                       <Arrow className="size-4" />
                     </span>

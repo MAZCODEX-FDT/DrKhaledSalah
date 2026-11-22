@@ -78,7 +78,7 @@ export const surgeries: Surgery[] = [
   {
     slug: 'circumcision',
     index: '01',
-    tone: '#2e6a96',
+    tone: '#2f6fd1',
     name: { ar: 'طهارة الأطفال', en: 'Pediatric Circumcision' },
     short: { ar: 'طهارة آمنة لحديثي الولادة والأطفال، والطريقة والتخدير بيتشرحوا قبل أي قرار.', en: 'Safe circumcision for newborns and children, with method and anesthesia explained before anything is decided.' },
     hero: { ar: 'الطهارة، بهدوء وبطريقة واضحة', en: 'Circumcision, calmly and clearly' },
@@ -112,7 +112,7 @@ export const surgeries: Surgery[] = [
   {
     slug: 'inguinal-hernia',
     index: '02',
-    tone: '#b89a62',
+    tone: '#ffc83d',
     name: { ar: 'الفتق الإربي', en: 'Inguinal Hernia' },
     short: { ar: 'بنفهّم حضرتك العملية خطوة بخطوة قبل أي قرار، من الشكل والأعراض لحد التعافي.', en: 'We walk you through the operation step by step before any decision, from signs to recovery.' },
     hero: { ar: 'الفتق الإربي، مفهوم قبل ما يتقرر', en: 'Inguinal hernia, understood before decided' },
@@ -146,7 +146,7 @@ export const surgeries: Surgery[] = [
   {
     slug: 'undescended-testis',
     index: '03',
-    tone: '#6e9cc0',
+    tone: '#7cc4ee',
     name: { ar: 'الخصية المعلقة', en: 'Undescended Testis' },
     short: { ar: 'خطة لكل حالة، وإجابة واضحة على أسئلة المستقبل اللي بتشغل الأهل.', en: 'A plan for each case, and clear answers to the questions about the future that worry parents.' },
     hero: { ar: 'الخصية المعلقة، ومستقبل مطمّن', en: 'Undescended testis, and a reassured future' },
@@ -179,7 +179,7 @@ export const surgeries: Surgery[] = [
   {
     slug: 'hypospadias',
     index: '04',
-    tone: '#8aa6bf',
+    tone: '#7cc4ee',
     name: { ar: 'الإحليل السفلي', en: 'Hypospadias' },
     short: { ar: 'خبرة في العمليات الدقيقة، وخطة مخصصة لكل حالة، ونوريك حالات شبهها بموافقة أصحابها.', en: 'Experience in delicate repairs, a tailored plan for every case, and similar cases shown with consent.' },
     hero: { ar: 'الإحليل السفلي، بدقة وخطة لكل حالة', en: 'Hypospadias, with precision and a plan per case' },

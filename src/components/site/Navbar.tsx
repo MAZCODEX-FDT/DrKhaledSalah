@@ -34,7 +34,7 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
       <nav
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-700 ease-lux sm:px-6 ${
-          scrolled ? 'bg-night/75 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_-30px_rgba(0,0,0,.7)]' : 'bg-transparent'
+          scrolled ? 'bg-navy/95 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_-30px_rgba(0,0,0,.7)]' : 'bg-transparent'
         }`}
       >
         <Logo className={`transition-all duration-700 ease-lux ${scrolled ? 'h-12' : 'h-[4.75rem]'}`} />

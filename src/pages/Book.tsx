@@ -5,7 +5,7 @@ import { useI18n } from '../lib/i18n'
 import { branches, surgeries, ui, waLink } from '../content/site'
 import { actions, type BranchId, type ProcedureId } from '../lib/store'
 
-const field = 'w-full rounded-2xl border border-ink/12 bg-white/70 px-5 py-4 text-ink outline-none transition focus:border-gold focus:ring-4 focus:ring-gold/15'
+const field = 'w-full rounded-2xl border border-ink/12 bg-white/70 px-5 py-4 text-ink outline-none transition focus:border-blue focus:ring-4 focus:ring-blue/15'
 
 export default function Book() {
   const { t, lang } = useI18n()
@@ -67,7 +67,7 @@ export default function Book() {
             <div className="mt-8 space-y-4">
               {branches.map(x => (
                 <a key={x.id} href={waLink(x.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl border hairline px-5 py-4 transition hover:bg-cloud/5">
-                  <span>{t(x.name)}</span><MessageCircle className="size-4 text-gold" />
+                  <span>{t(x.name)}</span><MessageCircle className="size-4 text-blue" />
                 </a>
               ))}
             </div>

@@ -60,9 +60,9 @@ export default function Schedule() {
           <div className="grid min-w-[900px]" style={{ gridTemplateColumns: '4.5rem repeat(7, 1fr)' }}>
             <div className="border-b border-[#e9eef2]" />
             {days.map(d => (
-              <div key={d} className={`border-b border-s border-[#e9eef2] px-3 py-3 text-center ${d === today ? 'bg-[#eaf1f8]' : ''}`}>
-                <div className="text-xs text-[#5b6773]">{fmt(d, { weekday: 'short' })}</div>
-                <div className={`mx-auto mt-1 flex size-8 items-center justify-center rounded-full font-latin text-sm ${d === today ? 'bg-[#14304a] text-cloud' : ''}`}>{fmt(d, { day: 'numeric' })}</div>
+              <div key={d} className={`border-b border-s border-[#e9eef2] px-3 py-3 text-center ${d === today ? 'bg-[#e3f2fb]' : ''}`}>
+                <div className="text-xs text-[#5e6a7a]">{fmt(d, { weekday: 'short' })}</div>
+                <div className={`mx-auto mt-1 flex size-8 items-center justify-center rounded-full font-latin text-sm ${d === today ? 'bg-[#163e7a] text-cloud' : ''}`}>{fmt(d, { day: 'numeric' })}</div>
               </div>
             ))}
             {HOURS.map(h => (
@@ -77,8 +77,8 @@ export default function Schedule() {
                         const c = procColor(a.type)
                         return (
                           <div key={a.id} className="mb-1 rounded-lg px-2 py-1.5 text-[.72rem] leading-tight" style={{ background: `${c}14`, borderInlineStart: `3px solid ${c}` }}>
-                            <div className="truncate font-medium text-[#1c2630]">{pmap.get(a.patientId)?.childName}</div>
-                            <div className="truncate text-[#5b6773]">{a.time} · {t(kindLabel[a.kind])}</div>
+                            <div className="truncate font-medium text-[#1a2433]">{pmap.get(a.patientId)?.childName}</div>
+                            <div className="truncate text-[#5e6a7a]">{a.time} · {t(kindLabel[a.kind])}</div>
                           </div>
                         )
                       })}
@@ -90,7 +90,7 @@ export default function Schedule() {
           </div>
         </div>
       </Card>
-      <div className="mt-4 flex flex-wrap gap-4 text-xs text-[#5b6773]">
+      <div className="mt-4 flex flex-wrap gap-4 text-xs text-[#5e6a7a]">
         {procOrder.slice(0, 5).map(p => <span key={p} className="flex items-center gap-2"><Dot color={procColor(p)} />{t(procLabel[p])}</span>)}
         <span className="ms-auto">{t(tr('دوس على أي خانة فاضية عشان تضيف ميعاد', 'Click any empty slot to add an appointment'))}</span>
       </div>

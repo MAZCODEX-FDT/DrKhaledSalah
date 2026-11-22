@@ -2,38 +2,41 @@
 @import "lenis/dist/lenis.css";
 
 /*
- * Brand tokens from the Dr. Khaled Salah Brand Guidelines (v1.0, Nov 2026).
- * Ratio: Cloud White & Sand ~60%, Midnight Navy ~30%, Calm Blue ~6%, Soft Gold ~4% (thin lines only).
- * Calm Night is the only gradient.
+ * Brand tokens from the Dr. Khaled Salah Brand Guidelines v2 (playful pediatric, Nov 2026).
+ * Token names are kept from v1 so components did not need renaming:
+ * navy = Deep Blue, blue = Kids Blue, gold = Sunny Yellow, mist = Sky Tint, sand = Butter Tint.
+ * Sunny Yellow always carries Deep Blue text, never white.
  */
 @theme {
-  --color-navy: #14304a;      /* Midnight Navy (primary) */
-  --color-navy-2: #112a41;
-  --color-night: #0d2236;     /* Calm Night, deepest stop */
-  --color-blue: #2e6a96;      /* Calm Blue (accent of the mark) */
-  --color-blue-2: #1f4c73;    /* Calm Night, light stop */
-  --color-cloud: #f7f8f6;     /* Cloud White */
-  --color-sand: #eadfcf;      /* Warm Sand */
-  --color-mist: #d8e7f2;      /* Sky Mist */
-  --color-gold: #b89a62;      /* Soft Gold: thin lines and small details only */
-  --color-slate: #6e7a86;     /* Slate Grey: captions / large text */
-  --color-ink: #1c2630;       /* Ink: body text on light */
+  --color-navy: #163e7a;      /* Deep Blue: logo, headlines, trust */
+  --color-navy-2: #12356a;
+  --color-night: #0f2d5c;     /* Blue Sky gradient, deep stop */
+  --color-blue: #2f6fd1;      /* Kids Blue: primary */
+  --color-blue-2: #2559ad;
+  --color-sky: #7cc4ee;       /* Sky: secondary */
+  --color-gold: #ffc83d;      /* Sunny Yellow: happy accent, one highlight per view */
+  --color-sun: #ffc83d;
+  --color-cloud: #fafbfd;     /* Cloud White */
+  --color-sand: #fff4d6;      /* Butter Tint */
+  --color-mist: #e3f2fb;      /* Sky Tint */
+  --color-slate: #6b7685;     /* Grey */
+  --color-ink: #1a2433;       /* Ink */
 
   --font-display: var(--ff-display);
   --font-body: var(--ff-body);
   --font-latin: "Inter", system-ui, sans-serif;
-  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Nunito", system-ui, sans-serif;
 
-  --ease-lux: cubic-bezier(0.45, 0, 0.55, 1); /* smooth ease-in-out, no bounce (brand motion rule) */
+  --ease-lux: cubic-bezier(0.45, 0, 0.55, 1);
 }
 
-/* Arabic: El Messiri headlines, IBM Plex Sans Arabic body. English: Cormorant Garamond headlines, Inter body. */
+/* Arabic: El Messiri headlines, IBM Plex Sans Arabic body. English: Nunito headlines, Inter body. */
 :root {
   --ff-display: "El Messiri", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --ff-body: "IBM Plex Sans Arabic", system-ui, sans-serif;
 }
 html[lang="en"] {
-  --ff-display: "Cormorant Garamond", Georgia, serif;
+  --ff-display: "Nunito", system-ui, sans-serif;
   --ff-body: "Inter", system-ui, sans-serif;
 }
 
@@ -48,28 +51,25 @@ body {
 ::selection { background: var(--color-blue); color: #fff; }
 
 .font-display { font-family: var(--ff-display); }
-/* El Messiri: SemiBold for headlines. Cormorant: Regular for headlines. */
+/* El Messiri SemiBold and Nunito Bold for headlines. */
 html[lang="ar"] .font-display { font-weight: 600; letter-spacing: 0; }
-html[lang="en"] .font-display { font-weight: 400; letter-spacing: -0.01em; }
+html[lang="en"] .font-display { font-weight: 700; letter-spacing: -0.015em; }
 html[lang="ar"] .font-display.display-soft { font-weight: 500; }
+html[lang="en"] .font-display.display-soft { font-weight: 600; }
 
-/* Rounded line icons, 1.5 stroke */
-svg.lucide { stroke-width: 1.5; }
+/* Lucide rounded, 1.75 stroke */
+svg.lucide { stroke-width: 1.75; }
 
-/* Calm Night: the only gradient */
-.calm-night { background: linear-gradient(160deg, #1f4c73 0%, #14304a 50%, #0d2236 100%); }
+/* Blue Sky gradient (class name kept from v1) */
+.calm-night { background: linear-gradient(160deg, #2f6fd1 0%, #163e7a 55%, #0f2d5c 100%); }
 
-/* Brand pattern: the mark tone-on-tone on a half-drop grid */
+/* Soft dot grid for dark sections; the KS Play tiles (PlayTiles.tsx) carry the pattern on edges */
 .brand-pattern::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background-image: url("/brand/pattern-white.png"); background-size: 220px 220px; opacity: .03;
-}
-.brand-pattern-light::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background-image: url("/brand/pattern-white.png"); background-size: 200px 200px; opacity: .5; filter: brightness(.86) sepia(.25);
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: .07;
+  background-image: radial-gradient(circle, #fff 1.6px, transparent 2px); background-size: 34px 34px;
 }
 
-/* The arch frame: one per layout */
+/* Arch: one of the KS Play shapes */
 .arch { border-radius: 999px 999px 1.75rem 1.75rem; }
 
 .grain::after {
@@ -89,22 +89,29 @@ html[lang="ar"] .eyebrow { font-family: var(--ff-body); letter-spacing: 0; font-
 
 .gold-text { color: var(--color-mist); }
 
-/* Primary action: Calm Blue. Ghost: outline. */
+/* Pill buttons. Primary: Sunny Yellow with Deep Blue text. Ghost: outline. */
 .btn-gold {
   display: inline-flex; align-items: center; gap: .6rem; border-radius: 999px;
-  padding: .95rem 1.6rem; font-weight: 500; color: #fff;
-  background: var(--color-blue);
-  box-shadow: 0 12px 30px -14px rgba(46,106,150,.8);
-  transition: transform .5s var(--ease-lux), background .5s var(--ease-lux), box-shadow .5s var(--ease-lux);
+  padding: .95rem 1.7rem; font-weight: 700; color: var(--color-navy);
+  background: var(--color-sun);
+  box-shadow: 0 12px 28px -14px rgba(255,200,61,.9);
+  transition: transform .4s var(--ease-lux), background .4s var(--ease-lux), box-shadow .4s var(--ease-lux);
 }
-.btn-gold:hover { background: #357aab; transform: translateY(-2px); box-shadow: 0 18px 40px -16px rgba(46,106,150,.9); }
+.btn-gold:hover { background: #ffd35f; transform: translateY(-2px); box-shadow: 0 18px 36px -16px rgba(255,200,61,1); }
+.btn-blue {
+  display: inline-flex; align-items: center; gap: .6rem; border-radius: 999px;
+  padding: .95rem 1.7rem; font-weight: 600; color: #fff; background: var(--color-blue);
+  transition: transform .4s var(--ease-lux), background .4s var(--ease-lux);
+}
+.btn-blue:hover { background: var(--color-blue-2); transform: translateY(-2px); }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: .6rem; border-radius: 999px;
-  padding: .95rem 1.6rem; font-weight: 500;
-  border: 1px solid color-mix(in oklab, var(--color-cloud) 24%, transparent);
-  backdrop-filter: blur(8px); transition: background .4s var(--ease-lux), border-color .4s;
+  padding: .95rem 1.6rem; font-weight: 600;
+  border: 1.5px solid color-mix(in oklab, var(--color-cloud) 40%, transparent);
+  transition: background .4s var(--ease-lux), border-color .4s;
 }
-.btn-ghost:hover { background: color-mix(in oklab, var(--color-cloud) 8%, transparent); border-color: color-mix(in oklab, var(--color-cloud) 45%, transparent); }
+.btn-ghost:hover { background: color-mix(in oklab, var(--color-cloud) 10%, transparent); border-color: var(--color-cloud); }
+.pill { display: inline-flex; align-items: center; gap: .4rem; border-radius: 999px; padding: .35rem .9rem; font-size: .8rem; font-weight: 600; }
 
 .glass {
   background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
@@ -113,14 +120,14 @@ html[lang="ar"] .eyebrow { font-family: var(--ff-body); letter-spacing: 0; font-
 }
 }
 
-/* Dashboard: Cloud White, Midnight Navy, Calm Blue */
-.dash { background: #f4f6f8; color: #1c2630; color-scheme: light; }
+/* Dashboard: Cloud White, Deep Blue, Kids Blue */
+.dash { background: #f5f8fc; color: #1a2433; color-scheme: light; }
 .dash-card { background: #fff; border: 1px solid #e1e7ec; border-radius: 1.25rem; box-shadow: 0 1px 0 rgba(20,48,74,.03), 0 12px 32px -24px rgba(20,48,74,.25); }
 .dash input, .dash select, .dash textarea {
   background: #fff; border: 1px solid #dbe2e8; border-radius: .8rem; padding: .6rem .85rem; outline: none; width: 100%;
   transition: border-color .2s, box-shadow .2s;
 }
-.dash input:focus, .dash select:focus, .dash textarea:focus { border-color: #2e6a96; box-shadow: 0 0 0 4px rgba(46,106,150,.16); }
+.dash input:focus, .dash select:focus, .dash textarea:focus { border-color: #2f6fd1; box-shadow: 0 0 0 4px rgba(46,106,150,.16); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

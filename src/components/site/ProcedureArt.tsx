@@ -1,5 +1,5 @@
 /** Abstract, non-anatomical line art per procedure (the strategy forbids real photos for sensitive cases). */
-export default function ProcedureArt({ slug, tone = '#b89a62', className = '' }: { slug: string; tone?: string; className?: string }) {
+export default function ProcedureArt({ slug, tone = '#ffc83d', className = '' }: { slug: string; tone?: string; className?: string }) {
   const common = { fill: 'none', stroke: tone, strokeWidth: 1.2, strokeLinecap: 'round' as const }
   return (
     <svg viewBox="0 0 400 400" className={className} aria-hidden>

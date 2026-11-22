@@ -62,11 +62,11 @@ export default function Overview() {
         {kpis.map((k, i) => (
           <Card key={i} className="relative overflow-hidden">
             <div className="flex items-start justify-between">
-              <p className="text-sm text-[#5b6773]">{t(k.label)}</p>
-              <span className="flex size-9 items-center justify-center rounded-xl bg-[#eaf1f7] text-[#14304a]"><k.icon className="size-4" /></span>
+              <p className="text-sm text-[#5e6a7a]">{t(k.label)}</p>
+              <span className="flex size-9 items-center justify-center rounded-xl bg-[#e3f2fb] text-[#163e7a]"><k.icon className="size-4" /></span>
             </div>
             <p className="mt-3 font-latin text-4xl font-light tracking-tight">{k.value}</p>
-            <p className="mt-1 text-xs text-[#5b6773]">{k.sub}</p>
+            <p className="mt-1 text-xs text-[#5e6a7a]">{k.sub}</p>
             {k.bar !== undefined && (
               <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#e9eef2]"><div className="h-full rounded-full bg-blue" style={{ width: `${Math.min(100, k.bar)}%` }} /></div>
             )}
@@ -75,7 +75,7 @@ export default function Overview() {
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[1.6fr_1fr]">
-        <Card title={t(tr('المواعيد يوم بيوم', 'Appointments per day'))} action={<span className="text-xs text-[#5b6773]">{t(tr('آخر 10 أيام والجاي', 'Last 10 days and upcoming'))}</span>}>
+        <Card title={t(tr('المواعيد يوم بيوم', 'Appointments per day'))} action={<span className="text-xs text-[#5e6a7a]">{t(tr('آخر 10 أيام والجاي', 'Last 10 days and upcoming'))}</span>}>
           <div className="h-64" dir="ltr">
             <ResponsiveContainer>
               <AreaChart data={m.trend} margin={{ left: -24, right: 8, top: 8 }}>
@@ -83,9 +83,9 @@ export default function Overview() {
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={SERIES[0]} stopOpacity=".25" /><stop offset="1" stopColor={SERIES[0]} stopOpacity="0" /></linearGradient>
                 </defs>
                 <CartesianGrid stroke="#e9eef2" vertical={false} />
-                <XAxis dataKey="d" tick={{ fontSize: 11, fill: '#5b6773' }} axisLine={false} tickLine={false} interval={1} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5b6773' }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={tip} formatter={(v) => [v, t(tr('مواعيد', 'Appointments'))]} cursor={{ stroke: '#b89a62', strokeDasharray: '3 3' }} />
+                <XAxis dataKey="d" tick={{ fontSize: 11, fill: '#5e6a7a' }} axisLine={false} tickLine={false} interval={1} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5e6a7a' }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={tip} formatter={(v) => [v, t(tr('مواعيد', 'Appointments'))]} cursor={{ stroke: '#ffc83d', strokeDasharray: '3 3' }} />
                 <Area type="monotone" dataKey="v" stroke={SERIES[0]} strokeWidth={2} fill="url(#g1)" activeDot={{ r: 5, stroke: '#fff', strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
@@ -115,18 +115,18 @@ export default function Overview() {
 
       <div className="mt-4 grid gap-4 xl:grid-cols-3">
         <Card title={t(tr('جدول النهارده', 'Today\'s schedule'))} className="xl:col-span-2"
-          action={<Link to="/dashboard/schedule" className="flex items-center gap-1 text-xs text-[#14304a] hover:underline">{t(tr('الجدول كامل', 'Full schedule'))}<ArrowUpRight className="size-3.5 rtl:-scale-x-100" /></Link>}>
-          {m.todays.length === 0 ? <p className="py-8 text-center text-sm text-[#5b6773]">{t(tr('مفيش مواعيد النهارده', 'No appointments today'))}</p> : (
+          action={<Link to="/dashboard/schedule" className="flex items-center gap-1 text-xs text-[#163e7a] hover:underline">{t(tr('الجدول كامل', 'Full schedule'))}<ArrowUpRight className="size-3.5 rtl:-scale-x-100" /></Link>}>
+          {m.todays.length === 0 ? <p className="py-8 text-center text-sm text-[#5e6a7a]">{t(tr('مفيش مواعيد النهارده', 'No appointments today'))}</p> : (
             <ul className="divide-y divide-[#e9eef2]">
               {m.todays.map(a => {
                 const p = patient(a.patientId)
                 return (
                   <li key={a.id} className="flex items-center gap-4 py-3">
-                    <span className="flex w-16 items-center gap-1.5 font-latin text-sm text-[#5b6773]"><Clock3 className="size-3.5" />{a.time}</span>
+                    <span className="flex w-16 items-center gap-1.5 font-latin text-sm text-[#5e6a7a]"><Clock3 className="size-3.5" />{a.time}</span>
                     <Dot color={procColor(a.type)} />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{p?.childName} <span className="font-normal text-[#5b6773]">· {p?.guardian}</span></p>
-                      <p className="text-xs text-[#5b6773]">{t(kindLabel[a.kind])} · {t(procLabel[a.type])}</p>
+                      <p className="truncate text-sm font-medium">{p?.childName} <span className="font-normal text-[#5e6a7a]">· {p?.guardian}</span></p>
+                      <p className="text-xs text-[#5e6a7a]">{t(kindLabel[a.kind])} · {t(procLabel[a.type])}</p>
                     </div>
                     <Pill className={statusTone[a.status]}>{t(statusLabel[a.status])}</Pill>
                   </li>
@@ -137,30 +137,30 @@ export default function Overview() {
         </Card>
 
         <Card title={t(tr('متابعات مستحقة', 'Follow-ups due'))}
-          action={<Link to="/dashboard/inquiries" className="text-xs text-[#14304a] hover:underline">{t(tr('كل الاستفسارات', 'All inquiries'))}</Link>}>
+          action={<Link to="/dashboard/inquiries" className="text-xs text-[#163e7a] hover:underline">{t(tr('كل الاستفسارات', 'All inquiries'))}</Link>}>
           <ul className="space-y-3">
             {m.followDue.slice(0, 5).map(q => (
               <li key={q.id} className="flex items-center justify-between gap-3 rounded-xl bg-[#f3f6f9] px-3.5 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{q.name}</p>
-                  <p className="text-xs text-[#5b6773]">{t(procLabel[q.procedure])}</p>
+                  <p className="text-xs text-[#5e6a7a]">{t(procLabel[q.procedure])}</p>
                 </div>
                 <Pill className="bg-amber-50 text-amber-800">{t(stageLabel[q.stage])}</Pill>
               </li>
             ))}
-            {!m.followDue.length && <p className="py-6 text-center text-sm text-[#5b6773]">{t(tr('مفيش متابعات', 'All caught up'))}</p>}
+            {!m.followDue.length && <p className="py-6 text-center text-sm text-[#5e6a7a]">{t(tr('مفيش متابعات', 'All caught up'))}</p>}
           </ul>
         </Card>
       </div>
 
       <div className="mt-4">
-        <Card title={t(tr('مصدر الاستفسارات', 'Where inquiries come from'))} action={<span className="text-xs text-[#5b6773]">{m.inqTotal} {t(tr('استفسار', 'inquiries'))}</span>}>
+        <Card title={t(tr('مصدر الاستفسارات', 'Where inquiries come from'))} action={<span className="text-xs text-[#5e6a7a]">{m.inqTotal} {t(tr('استفسار', 'inquiries'))}</span>}>
           <div className="h-56" dir="ltr">
             <ResponsiveContainer>
               <BarChart data={m.sources.map(s => ({ ...s, name: t(sourceLabel[s.s as keyof typeof sourceLabel]) }))} margin={{ left: -24, right: 8, top: 8 }}>
                 <CartesianGrid stroke="#e9eef2" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5b6773' }} axisLine={false} tickLine={false} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5b6773' }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5e6a7a' }} axisLine={false} tickLine={false} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#5e6a7a' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tip} cursor={{ fill: '#f3f6f9' }} formatter={(v) => [v, t(tr('استفسار', 'Inquiries'))]} />
                 <Bar dataKey="v" fill={SERIES[0]} radius={[4, 4, 0, 0]} maxBarSize={36} />
               </BarChart>

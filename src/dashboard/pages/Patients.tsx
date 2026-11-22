@@ -82,11 +82,11 @@ export default function Patients() {
           <ul className="grid gap-2 sm:grid-cols-2">
             {rows.map(p => (
               <li key={p.id}>
-                <button onClick={() => setSel(p.id)} className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-start transition ${sel === p.id ? 'border-[#2e6a96] bg-[#eef4fa]' : 'border-[#e9eef2] hover:bg-[#f7f9fb]'}`}>
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#14304a] font-display text-cloud">{p.childName.slice(0, 1)}</span>
+                <button onClick={() => setSel(p.id)} className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-start transition ${sel === p.id ? 'border-[#2f6fd1] bg-[#eef4fa]' : 'border-[#e9eef2] hover:bg-[#f7f9fb]'}`}>
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#163e7a] font-display text-cloud">{p.childName.slice(0, 1)}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-medium">{p.childName} <span className="text-xs font-normal text-[#5b6773]">· {ageOf(p.birthDate, lang === 'ar')}</span></span>
-                    <span className="block truncate text-xs text-[#5b6773]">{p.guardian} · {t(branchLabel[p.branch])}</span>
+                    <span className="block truncate font-medium">{p.childName} <span className="text-xs font-normal text-[#5e6a7a]">· {ageOf(p.birthDate, lang === 'ar')}</span></span>
+                    <span className="block truncate text-xs text-[#5e6a7a]">{p.guardian} · {t(branchLabel[p.branch])}</span>
                   </span>
                   <Dot color={procColor(p.procedure)} />
                 </button>
@@ -96,20 +96,20 @@ export default function Patients() {
         </Card>
 
         <Card className="h-fit xl:sticky xl:top-24">
-          {!cur ? <p className="py-16 text-center text-sm text-[#5b6773]">{t(tr('اختار مريض عشان تشوف ملفه', 'Select a patient to see their record'))}</p> : (
+          {!cur ? <p className="py-16 text-center text-sm text-[#5e6a7a]">{t(tr('اختار مريض عشان تشوف ملفه', 'Select a patient to see their record'))}</p> : (
             <div>
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-display text-2xl font-light">{cur.childName}</h3>
-                  <p className="text-sm text-[#5b6773]">{cur.guardian} · {ageOf(cur.birthDate, lang === 'ar')}</p>
+                  <p className="text-sm text-[#5e6a7a]">{cur.guardian} · {ageOf(cur.birthDate, lang === 'ar')}</p>
                 </div>
-                <button onClick={() => setSel(null)} className="rounded-lg p-1 hover:bg-[#eaf1f7]" aria-label="Close"><X className="size-4" /></button>
+                <button onClick={() => setSel(null)} className="rounded-lg p-1 hover:bg-[#e3f2fb]" aria-label="Close"><X className="size-4" /></button>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Pill className="bg-[#eaf1f7] text-[#14304a]"><Dot color={procColor(cur.procedure)} />{t(procLabel[cur.procedure])}</Pill>
-                <Pill className="bg-[#eaf1f7] text-[#14304a]">{t(branchLabel[cur.branch])}</Pill>
+                <Pill className="bg-[#e3f2fb] text-[#163e7a]"><Dot color={procColor(cur.procedure)} />{t(procLabel[cur.procedure])}</Pill>
+                <Pill className="bg-[#e3f2fb] text-[#163e7a]">{t(branchLabel[cur.branch])}</Pill>
               </div>
-              <a href={`tel:${cur.phone}`} className="mt-5 flex items-center gap-2 text-sm text-[#14304a]" dir="ltr"><Phone className="size-4" />{cur.phone}</a>
+              <a href={`tel:${cur.phone}`} className="mt-5 flex items-center gap-2 text-sm text-[#163e7a]" dir="ltr"><Phone className="size-4" />{cur.phone}</a>
               <div className="mt-5 grid grid-cols-2 gap-2">
                 <Btn variant="ghost" onClick={() => setBooking(true)}><CalendarPlus className="size-4" />{t(tr('ميعاد', 'Book'))}</Btn>
                 <Btn variant="ghost" onClick={() => actions.addReviewRequest(cur.id, cur.branch)}><Star className="size-4" />{t(tr('طلب تقييم', 'Ask review'))}</Btn>
@@ -125,7 +125,7 @@ export default function Patients() {
                     <Pill className={statusTone[a.status]}>{t(statusLabel[a.status])}</Pill>
                   </li>
                 ))}
-                {!history.length && <li className="text-sm text-[#5b6773]">—</li>}
+                {!history.length && <li className="text-sm text-[#5e6a7a]">—</li>}
               </ul>
             </div>
           )}

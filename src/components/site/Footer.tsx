@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { MessageCircle, Play, Camera, ThumbsUp } from 'lucide-react'
 import ShinyText from '../reactbits/ShinyText'
 import Logo from './Logo'
+import PlayTiles from './PlayTiles'
 import { useI18n } from '../../lib/i18n'
 import { branches, doctor, surgeries, ui, waLink } from '../../content/site'
 import { gsap, useGSAP } from '../../lib/smooth'
@@ -19,6 +20,8 @@ export default function Footer() {
 
   return (
     <footer ref={root} className="brand-pattern relative overflow-hidden bg-navy pt-28">
+      <PlayTiles cols={20} rows={1} offset={2} className="absolute inset-x-0 top-0 hidden md:grid" />
+      <PlayTiles cols={8} rows={1} offset={2} className="absolute inset-x-0 top-0 md:hidden" />
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-start justify-between gap-10 border-b hairline pb-16 lg:flex-row lg:items-end">
           <h2 className="max-w-2xl font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
@@ -65,7 +68,7 @@ export default function Footer() {
 
       <div className="pointer-events-none select-none overflow-hidden px-4">
         <div data-f="big" className="whitespace-nowrap text-center font-display text-[clamp(4rem,15vw,16rem)] font-light leading-[.9]">
-          <ShinyText text={lang === 'ar' ? 'د. خالد صلاح' : 'Khaled Salah'} color="#1d4466" shineColor="#d8e7f2" speed={5} />
+          <ShinyText text={lang === 'ar' ? 'د. خالد صلاح' : 'Khaled Salah'} color="#1d4f9a" shineColor="#e3f2fb" speed={5} />
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 border-t hairline px-6 py-6 text-xs text-cloud/40">

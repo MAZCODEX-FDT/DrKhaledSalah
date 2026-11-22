@@ -1,5 +1,6 @@
 import { MapPin, Clock, MessageCircle, Phone, Navigation } from 'lucide-react'
 import Reveal from './Reveal'
+import { RingBadge } from './PlayTiles'
 import { useI18n } from '../../lib/i18n'
 import { branches, ui, waLink } from '../../content/site'
 
@@ -18,18 +19,18 @@ export default function Branches() {
               className={`relative overflow-hidden rounded-[2rem] p-8 sm:p-10 ${b.primary ? 'calm-night brand-pattern text-cloud' : 'border hairline-dark bg-white'}`}>
               {b.primary && (
                 <>
-                  <span className="relative mb-6 inline-block rounded-full bg-blue/40 px-3 py-1 text-xs text-mist">{lang === 'ar' ? 'الفرع الرئيسي' : 'Main branch'}</span>
+                  <span className="relative mb-6 inline-block pill bg-gold text-navy">{lang === 'ar' ? 'الفرع الرئيسي' : 'Main branch'}</span>
                 </>
               )}
               <h3 className="relative font-display text-3xl font-light sm:text-4xl">{t(b.name)}</h3>
               <p className={`relative mt-2 ${b.primary ? 'text-cloud/60' : 'text-ink/55'}`}>{t(b.serves)}</p>
-              <ul className={`relative mt-8 space-y-3 text-sm ${b.primary ? 'text-cloud/80' : 'text-ink/70'}`}>
-                <li className="flex items-start gap-3"><MapPin className="mt-0.5 size-4 shrink-0 text-gold" />{t(b.address)}</li>
-                <li className="flex items-start gap-3"><Clock className="mt-0.5 size-4 shrink-0 text-gold" />{t(b.hours)}</li>
-                <li className="flex items-start gap-3"><Phone className="mt-0.5 size-4 shrink-0 text-gold" /><span dir="ltr">{b.phone}</span></li>
+              <ul className={`relative mt-8 space-y-4 text-sm ${b.primary ? 'text-cloud/80' : 'text-ink/70'}`}>
+                <li className="flex items-center gap-4"><RingBadge className='size-9' tone={b.primary ? 'sun' : 'blue'} bg={b.primary ? 'bg-cloud/10 !text-gold' : 'bg-mist'}><MapPin className='size-4' /></RingBadge>{t(b.address)}</li>
+                <li className="flex items-center gap-4"><RingBadge className='size-9' tone={b.primary ? 'sun' : 'blue'} bg={b.primary ? 'bg-cloud/10 !text-gold' : 'bg-mist'}><Clock className='size-4' /></RingBadge>{t(b.hours)}</li>
+                <li className="flex items-center gap-4"><RingBadge className='size-9' tone={b.primary ? 'sun' : 'blue'} bg={b.primary ? 'bg-cloud/10 !text-gold' : 'bg-mist'}><Phone className='size-4' /></RingBadge><span dir="ltr">{b.phone}</span></li>
               </ul>
               <div className="relative mt-10 flex flex-wrap gap-3">
-                <a href={waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className={b.primary ? 'btn-gold' : 'btn-gold'}>
+                <a href={waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className={b.primary ? 'btn-gold' : 'btn-blue'}>
                   <MessageCircle className="size-4" /> {b.primary ? t(ui.bookTagamoa) : t(ui.bookGiza)}
                 </a>
                 <a href={b.map} target="_blank" rel="noreferrer" className={`btn-ghost ${b.primary ? '' : '!border-ink/15 hover:!bg-night/5'}`}>

@@ -24,8 +24,13 @@ export default function About() {
       <section className="bg-night py-28">
         <Reveal className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           {/* TODO: replace with the doctor's portrait from the photo shoot */}
-          <div data-reveal className="arch calm-night brand-pattern relative aspect-[4/5] overflow-hidden">
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center text-cloud/50">
+          <div data-reveal className="relative mx-auto aspect-square w-full max-w-md">
+            {/* Circle portrait with a two-colour ring (brand book v2) */}
+            <svg viewBox="0 0 100 100" className="absolute inset-0 size-full -rotate-90" aria-hidden>
+              <circle cx="50" cy="50" r="48" fill="none" stroke="#2f6fd1" strokeWidth="2.2" strokeDasharray="190 400" strokeLinecap="round" />
+              <circle cx="50" cy="50" r="48" fill="none" stroke="#ffc83d" strokeWidth="2.2" strokeDasharray="88 400" strokeDashoffset="-205" strokeLinecap="round" />
+            </svg>
+            <div className="calm-night brand-pattern absolute inset-[6%] flex flex-col items-center justify-center gap-4 overflow-hidden rounded-full text-center text-cloud/60">
               <Mark className="h-24 w-28" />
               <span className="text-sm">{lang === 'ar' ? 'صورة الدكتور من يوم التصوير' : 'Doctor\'s portrait from the shoot'}</span>
             </div>
@@ -38,7 +43,7 @@ export default function About() {
             <div className="mt-12 space-y-8">
               {values.map((v, i) => (
                 <div key={i} data-reveal data-delay={i * .08} className="flex gap-6 border-t hairline pt-8">
-                  <span className="font-serif text-lg italic text-gold">0{i + 1}</span>
+                  <span className="font-serif text-lg font-bold text-gold">0{i + 1}</span>
                   <div>
                     <h3 className="font-display text-2xl font-light">{t(v.t)}</h3>
                     <p className="mt-2 text-cloud/65">{t(v.d)}</p>

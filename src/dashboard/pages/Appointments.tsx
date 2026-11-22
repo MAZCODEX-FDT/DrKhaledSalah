@@ -41,7 +41,7 @@ export default function Appointments() {
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="flex rounded-xl border border-[#dbe2e8] p-1 text-sm">
             {ranges.map(([k, l]) => (
-              <button key={k} onClick={() => setRange(k)} className={`rounded-lg px-3 py-1.5 ${range === k ? 'bg-[#eaf1f7] font-medium' : 'text-[#5b6773]'}`}>{l}</button>
+              <button key={k} onClick={() => setRange(k)} className={`rounded-lg px-3 py-1.5 ${range === k ? 'bg-[#e3f2fb] font-medium' : 'text-[#5e6a7a]'}`}>{l}</button>
             ))}
           </div>
           <select className="!w-auto" value={status} onChange={e => setStatus(e.target.value as 'all' | ApptStatus)}>
@@ -57,7 +57,7 @@ export default function Appointments() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
-              <tr className="border-b border-[#e9eef2] text-start text-xs text-[#5b6773]">
+              <tr className="border-b border-[#e9eef2] text-start text-xs text-[#5e6a7a]">
                 {[tr('التاريخ', 'Date'), tr('المريض', 'Patient'), tr('الإجراء', 'Procedure'), tr('النوع', 'Type'), tr('الفرع', 'Branch'), tr('الحالة', 'Status'), tr('', '')].map((h, i) => (
                   <th key={i} className="px-3 py-3 text-start font-medium">{t(h)}</th>
                 ))}
@@ -68,9 +68,9 @@ export default function Appointments() {
                 <tr key={a.id} className="border-b border-[#eef2f5] hover:bg-[#f7f9fb]">
                   <td className="px-3 py-3.5 font-latin whitespace-nowrap">
                     <span className="block">{new Date(a.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short' })}</span>
-                    <span className="text-xs text-[#5b6773]">{a.time}</span>
+                    <span className="text-xs text-[#5e6a7a]">{a.time}</span>
                   </td>
-                  <td className="px-3 py-3.5"><span className="font-medium">{p?.childName}</span><span className="block text-xs text-[#5b6773]">{p?.guardian}</span></td>
+                  <td className="px-3 py-3.5"><span className="font-medium">{p?.childName}</span><span className="block text-xs text-[#5e6a7a]">{p?.guardian}</span></td>
                   <td className="px-3 py-3.5"><span className="flex items-center gap-2"><Dot color={procColor(a.type)} />{t(procLabel[a.type])}</span></td>
                   <td className="px-3 py-3.5">{t(kindLabel[a.kind])}</td>
                   <td className="px-3 py-3.5">{t(branchLabel[a.branch])}</td>
@@ -87,7 +87,7 @@ export default function Appointments() {
               ))}
             </tbody>
           </table>
-          {!rows.length && <p className="py-12 text-center text-sm text-[#5b6773]">{t(tr('مفيش مواعيد', 'No appointments'))}</p>}
+          {!rows.length && <p className="py-12 text-center text-sm text-[#5e6a7a]">{t(tr('مفيش مواعيد', 'No appointments'))}</p>}
         </div>
       </Card>
       {open && <AppointmentForm open onClose={() => setOpen(false)} />}

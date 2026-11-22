@@ -52,17 +52,17 @@ function Login({ onIn }: { onIn: () => void }) {
         <form onSubmit={submit} className="w-full max-w-sm space-y-5">
           <div className="flex items-center justify-between">
             <Mark tone="navy" className="h-10 w-12 lg:hidden" />
-            <button type="button" onClick={toggle} className="ms-auto flex items-center gap-1.5 text-sm text-[#5b6773]"><Globe className="size-4" />{lang === 'ar' ? 'English' : 'عربي'}</button>
+            <button type="button" onClick={toggle} className="ms-auto flex items-center gap-1.5 text-sm text-[#5e6a7a]"><Globe className="size-4" />{lang === 'ar' ? 'English' : 'عربي'}</button>
           </div>
           <h2 className="font-display text-3xl font-light">{t(tr('تسجيل الدخول', 'Sign in'))}</h2>
           <input type="email" dir="ltr" value={email} onChange={e => setEmail(e.target.value)} />
           <input type="password" dir="ltr" placeholder="••••••••" value={pass} onChange={e => { setPass(e.target.value); setErr(false) }} />
           {err && <p className="text-sm text-rose-700">{t(tr('كلمة السر غلط', 'Wrong password'))}</p>}
-          <button className="w-full rounded-xl bg-[#14304a] py-3 font-medium text-cloud hover:bg-[#1f4c73]">{t(tr('دخول', 'Sign in'))}</button>
-          <p className="rounded-xl bg-[#e9eef2] p-3 text-xs leading-relaxed text-[#5b6773]">
+          <button className="w-full rounded-xl bg-[#163e7a] py-3 font-medium text-cloud hover:bg-[#2f6fd1]">{t(tr('دخول', 'Sign in'))}</button>
+          <p className="rounded-xl bg-[#e9eef2] p-3 text-xs leading-relaxed text-[#5e6a7a]">
             {t(tr('نسخة عرض: كلمة السر demo2026. الدخول الحقيقي هيتربط بنظام مصادقة قبل الإطلاق.', 'Demo build: password is demo2026. Real authentication will be wired in before launch.'))}
           </p>
-          <Link to="/" className="block text-center text-sm text-[#5b6773] hover:text-[#1c2630]">{t(tr('رجوع للموقع', 'Back to website'))}</Link>
+          <Link to="/" className="block text-center text-sm text-[#5e6a7a] hover:text-[#1a2433]">{t(tr('رجوع للموقع', 'Back to website'))}</Link>
         </form>
       </div>
     </div>
@@ -80,7 +80,7 @@ export default function DashboardApp() {
   const logout = () => { try { sessionStorage.removeItem(AUTH_KEY) } catch { /* ignore */ } setAuthed(false) }
 
   const Side = (
-    <aside className="flex h-full flex-col bg-[#14304a] p-5 text-cloud">
+    <aside className="flex h-full flex-col bg-[#163e7a] p-5 text-cloud">
       <div className="mb-10 flex items-center gap-3 px-2">
         <Mark className="h-10 w-12" />
         <div className="leading-tight">
@@ -114,17 +114,17 @@ export default function DashboardApp() {
           </div>
         )}
         <div className="min-w-0">
-          <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#e1e7ec] bg-[#f4f6f8]/85 px-4 py-3 backdrop-blur sm:px-8">
+          <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#e1e7ec] bg-[#f5f8fc]/85 px-4 py-3 backdrop-blur sm:px-8">
             <button className="rounded-lg p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Menu">{open ? <X /> : <Menu className="size-5" />}</button>
             <div className="flex rounded-xl border border-[#dbe2e8] bg-white p-1 text-sm">
               {(['all', 'tagamoa', 'giza'] as const).map(b => (
-                <button key={b} onClick={() => setBranch(b)} className={`whitespace-nowrap rounded-lg px-3 py-1.5 transition ${branch === b ? 'bg-[#14304a] text-cloud' : 'text-[#5b6773] hover:text-[#1c2630]'}`}>
+                <button key={b} onClick={() => setBranch(b)} className={`whitespace-nowrap rounded-lg px-3 py-1.5 transition ${branch === b ? 'bg-[#163e7a] text-cloud' : 'text-[#5e6a7a] hover:text-[#1a2433]'}`}>
                   {t(b === 'all' ? tr('كل الفروع', 'All branches') : b === 'tagamoa' ? tr('التجمع', 'Settlement') : tr('الجيزة', 'Giza'))}
                 </button>
               ))}
             </div>
             <div className="ms-auto flex items-center gap-2">
-              <button onClick={toggle} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[#5b6773] hover:bg-white"><Globe className="size-4" />{lang === 'ar' ? 'EN' : 'ع'}</button>
+              <button onClick={toggle} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[#5e6a7a] hover:bg-white"><Globe className="size-4" />{lang === 'ar' ? 'EN' : 'ع'}</button>
               <div className="flex size-9 items-center justify-center rounded-full bg-blue text-sm font-semibold text-white">{lang === 'ar' ? 'خ' : 'KS'}</div>
             </div>
           </header>
