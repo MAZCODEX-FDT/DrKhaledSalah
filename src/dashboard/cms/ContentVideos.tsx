@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Star, ExternalLink } from 'lucide-react'
 import { useI18n } from '../../lib/i18n'
 import { cms, uid, useContent, youtubeId, type Video } from '../../lib/content'
@@ -9,6 +9,20 @@ import { DemoNote, emptyL, LInput, RowActions, StatusPill } from './kit'
 const blank = (): Video => ({ id: uid(), title: emptyL(), url: '', views: '', featured: false, enabled: true })
 const thumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 
+/** Video title from YouTube's public oEmbed endpoint (no key needed), with noembed.com as a CORS-friendly fallback. */
+async function fetchTitle(id: string): Promise<string | null> {
+  const watch = encodeURIComponent(`https://www.youtube.com/watch?v=${id}`)
+  for (const u of [`https://www.youtube.com/oembed?format=json&url=${watch}`, `https://noembed.com/embed?url=${watch}`]) {
+    try {
+      const r = await fetch(u)
+      if (!r.ok) continue
+      const j = await r.json()
+      if (j?.title) return String(j.title)
+    } catch { /* try the next source */ }
+  }
+  return null
+}
+
 /** YouTube library: videos show in "الدكتور بيشرح"; the starred one plays in the channel section. */
 export default function ContentVideos() {
   const { t } = useI18n()
@@ -16,6 +30,21 @@ export default function ContentVideos() {
   const [edit, setEdit] = useState<Video | null>(null)
   const set = (p: Partial<Video>) => setEdit(e => (e ? { ...e, ...p } : e))
   const vid = edit ? youtubeId(edit.url) : null
+  const [reading, setReading] = useState(false)
+
+  // Read the title (and channel) from YouTube as soon as a valid link is pasted, unless a title is already typed.
+  useEffect(() => {
+    if (!vid || !edit || (edit.title.ar && edit.title.en)) return
+    let live = true
+    setReading(true)
+    fetchTitle(vid).then(title => {
+      if (!live || !title) return
+      const arabic = /[\u0600-\u06FF]/.test(title)
+      setEdit(e => e && youtubeId(e.url) === vid ? { ...e, title: { ar: e.title.ar || (arabic ? title : ''), en: e.title.en || (arabic ? '' : title) } } : e)
+    }).finally(() => live && setReading(false))
+    return () => { live = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vid])
   const hasFeatured = list.some(v => v.featured && v.enabled && youtubeId(v.url))
 
   const save = () => {
@@ -71,6 +100,7 @@ export default function ContentVideos() {
             </Field>
             {edit.url && !vid && <p className="text-sm text-[#c0392b]">{t(tr('الرابط ده مش رابط فيديو يوتيوب. انسخ الرابط من زرار "مشاركة" على الفيديو.', 'This is not a YouTube video link. Copy the link from the video\'s "Share" button.'))}</p>}
             {vid && <img src={thumb(vid)} alt="" onError={e => { e.currentTarget.style.visibility = 'hidden' }} className="aspect-video w-full max-w-sm rounded-xl object-cover" />}
+            {reading && <p className="text-xs text-[#5e6a7a]">{t(tr('بنقرا عنوان الفيديو من يوتيوب…', 'Reading the video title from YouTube…'))}</p>}
             <LInput label={t(tr('عنوان الفيديو', 'Video title'))} value={edit.title} onChange={title => set({ title })} />
             <Field label={t(tr('عدد المشاهدات (اختياري)', 'Views (optional)'))}>
               <input value={edit.views} placeholder="171K" onChange={e => set({ views: e.target.value })} />
