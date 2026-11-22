@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, ClipboardList, MessageCircle } from 'lucide-react'
 import PageHero from './PageHero'
@@ -67,14 +66,8 @@ export function ArticlesPage() {
 export function ArticlePage() {
   const { slug } = useParams()
   const { t, lang } = useI18n()
-  const { articles, img, surgeries, doctor } = useSite()
+  const { articles, img, surgeries } = useSite()
   const a = articles.find(x => x.slug === slug)
-  useEffect(() => {
-    if (!a) return
-    const prev = document.title
-    document.title = `${t(a.title)} | ${t(doctor.name)}`
-    return () => { document.title = prev }
-  }, [a, t, doctor])
   if (!a) return <Navigate to="/articles" replace />
   const s = surgeries.find(x => x.slug === a.procedure)
   const more = articles.filter(x => x.id !== a.id).slice(0, 3)

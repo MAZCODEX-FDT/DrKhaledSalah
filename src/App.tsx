@@ -5,6 +5,7 @@ import Navbar from './components/site/Navbar'
 import Footer from './components/site/Footer'
 import ContactDock from './components/site/ContactDock'
 import Analytics from './components/site/Analytics'
+import Seo from './components/site/Seo'
 import Home from './pages/Home'
 import About from './pages/About'
 import ProceduresPage from './pages/ProceduresPage'
@@ -27,6 +28,7 @@ function SiteLayout() {
       <Footer />
       <ContactDock />
       <Analytics />
+      <Seo />
     </SmoothScroll>
   )
 }
