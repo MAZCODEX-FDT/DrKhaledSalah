@@ -33,7 +33,7 @@ export function Btn({ children, variant = 'primary', className = '', ...rest }: 
     gold: 'bg-[#2f6fd1] text-white hover:bg-[#2559ad]',
     ghost: 'border border-[#dbe2e8] bg-white text-[#1a2433] hover:bg-[#f3f6f9]',
   }[variant]
-  return <button className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${v} ${className}`} {...rest}>{children}</button>
+  return <button className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:opacity-40 disabled:pointer-events-none ${v} ${className}`} {...rest}>{children}</button>
 }
 
 export function Modal({ open, onClose, title, children, wide = false }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean }) {

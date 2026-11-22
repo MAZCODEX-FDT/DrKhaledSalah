@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Check, MessageCircle, Play } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, ClipboardList, MessageCircle, Play } from 'lucide-react'
+import { ArticleCard } from './Articles'
 import YouTubePlayer from '../components/site/YouTubePlayer'
 import VideoCard from '../components/site/VideoCard'
 import { videosForProcedure } from '../lib/videoMatch'
@@ -15,7 +16,7 @@ import { useSite } from '../lib/content'
 export default function ProcedureDetail() {
   const { slug } = useParams()
   const { t, lang } = useI18n()
-  const { branches, surgeries, img, videos } = useSite()
+  const { branches, surgeries, img, videos, articles } = useSite()
   const s = surgeries.find(x => x.slug === slug)
   if (!s) return <Navigate to="/procedures" replace />
   const others = surgeries.filter(x => x.slug !== s.slug).slice(0, 6)
@@ -23,6 +24,7 @@ export default function ProcedureDetail() {
   const vids = videosForProcedure(s.slug, videos, s.video || undefined)
   const [main, ...more] = vids
   const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight
+  const reads = articles.filter(a => a.procedure === s.slug)
 
   return (
     <>
@@ -58,6 +60,9 @@ export default function ProcedureDetail() {
                   <MessageCircle className="size-4" /> {b.primary ? t(ui.bookTagamoa) : t(ui.bookGiza)}
                 </a>
               ))}
+              <Link to="/before-your-visit" className="flex items-center justify-center gap-2 pt-2 text-sm text-cloud/70 underline-offset-4 hover:text-gold hover:underline">
+                <ClipboardList className="size-4" />{lang === 'ar' ? 'اقرا دليل قبل الزيارة' : 'Read the before-your-visit guide'}
+              </Link>
             </div>
           </aside>
         </Reveal>
@@ -103,6 +108,15 @@ export default function ProcedureDetail() {
               <Link to={`/videos?q=${encodeURIComponent(t(s.name))}&p=${s.slug}`} className="btn-blue">{lang === 'ar' ? `كل الفيديوهات (${vids.length})` : `All videos (${vids.length})`} <Arrow className="size-4" /></Link>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{more.slice(0, 6).map(v => <VideoCard key={v.id} v={v} />)}</div>
+          </div>
+        </section>
+      )}
+
+      {reads.length > 0 && (
+        <section className={`bg-cloud pb-24 text-ink ${more.length ? '' : 'pt-24'}`}>
+          <div className="mx-auto max-w-7xl px-6">
+            <h2 className="mb-8 font-display text-[clamp(1.8rem,3.4vw,2.6rem)] leading-tight">{lang === 'ar' ? `اقرا عن ${t(s.name)}` : `Read about ${t(s.name)}`}</h2>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{reads.slice(0, 3).map(a => <div key={a.id} className="flex"><ArticleCard a={a} /></div>)}</div>
           </div>
         </section>
       )}

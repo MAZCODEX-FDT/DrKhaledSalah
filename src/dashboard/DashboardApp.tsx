@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
-import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone, SquarePlay } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone, SquarePlay, ClipboardList, Newspaper } from 'lucide-react'
 import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
 import type { BranchId } from '../lib/store'
@@ -19,6 +19,7 @@ import ContentDoctor from './cms/ContentDoctor'
 import ContentMedia from './cms/ContentMedia'
 import ContentContact from './cms/ContentContact'
 import ContentVideos from './cms/ContentVideos'
+import { ContentArticles, ContentGuide } from './cms/ContentGuide'
 
 type BranchFilter = 'all' | BranchId
 const BranchCtx = createContext<{ branch: BranchFilter; setBranch: (b: BranchFilter) => void }>({ branch: 'all', setBranch: () => {} })
@@ -41,6 +42,8 @@ const webItems = [
   { to: '/dashboard/website/doctor', icon: UserRound, k: 'wDoctor' },
   { to: '/dashboard/website/contact', icon: Phone, k: 'wContact' },
   { to: '/dashboard/website/videos', icon: SquarePlay, k: 'wVideos' },
+  { to: '/dashboard/website/guide', icon: ClipboardList, k: 'wGuide' },
+  { to: '/dashboard/website/articles', icon: Newspaper, k: 'wArticles' },
   { to: '/dashboard/website/media', icon: Images, k: 'wMedia' },
 ] as const
 
@@ -166,6 +169,8 @@ export default function DashboardApp() {
               <Route path="website/branches" element={<ContentBranches />} />
               <Route path="website/doctor" element={<ContentDoctor />} />
               <Route path="website/videos" element={<ContentVideos />} />
+              <Route path="website/guide" element={<ContentGuide />} />
+              <Route path="website/articles" element={<ContentArticles />} />
               <Route path="website/media" element={<ContentMedia />} />
               <Route path="website/contact" element={<ContentContact />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

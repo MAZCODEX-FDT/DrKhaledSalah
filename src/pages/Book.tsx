@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { CheckCircle2, MessageCircle } from 'lucide-react'
+import { CheckCircle2, ClipboardList, MessageCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import PageHero from './PageHero'
 import { useI18n } from '../lib/i18n'
 import { ui, waLink } from '../content/site'
@@ -51,6 +52,7 @@ export default function Book() {
               <h2 className="mt-6 font-display text-3xl font-light">{lang === 'ar' ? 'وصلتنا رسالتك' : 'We have your message'}</h2>
               <p className="mt-3 text-ink/60">{lang === 'ar' ? 'اتسجّل طلبك، واتفتح واتساب الفرع والرسالة جاهزة. دوس إرسال عشان توصلنا على طول. لو الواتساب مفتحش، استخدم الزرار ده.' : 'Your request is recorded, and the branch WhatsApp opened with your message ready. Press send so it reaches us straight away. If WhatsApp did not open, use this button.'}</p>
               <a href={sent || waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="btn-gold mt-8"><MessageCircle className="size-4" />WhatsApp</a>
+              <Link to="/before-your-visit" className="mt-6 flex items-center justify-center gap-2 text-sm text-blue underline-offset-4 hover:underline"><ClipboardList className="size-4" />{lang === 'ar' ? 'جهّز نفسك: دليل قبل الزيارة' : 'Get ready: the before-your-visit guide'}</Link>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-5">

@@ -3,6 +3,7 @@ import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
 import { stockPhotos, STOCK_VERSION } from '../content/stock'
+import { guideSeed, articleSeed } from '../content/guide-articles'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
 export type { SocialPlatform }
 
@@ -22,6 +23,10 @@ export type TitledText = { t: L; d: L }
 /** Automatic import from the doctor's channel (YouTube Data API v3). */
 export type YouTubeSync = { channel: string; apiKey: string; autoShow: boolean; lastSync: string | null; lastError: string | null }
 export type Video = { id: string; title: L; url: string; views: string; featured: boolean; enabled: boolean; viewCount?: number; published?: string }
+/** One section of the "Before your visit" guide. Items are one per line. */
+export type GuideSection = { id: string; title: L; items: L; enabled: boolean }
+/** A short article for parents. Body uses "## " lines for headings and blank lines between paragraphs. */
+export type Article = { id: string; slug: string; title: L; excerpt: L; body: L; image: string | null; procedure: string; date: string; enabled: boolean }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
@@ -38,6 +43,8 @@ export interface ContentDB {
   socials: Social[]
   videos: Video[]
   youtube: YouTubeSync
+  guide: GuideSection[]
+  articles: Article[]
   branches: CmsBranch[]
   stats: CmsStat[]
   media: MediaItem[]
@@ -81,6 +88,8 @@ function seed(): ContentDB {
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
     videos: [],
     youtube: { channel: 'UCmHqUf0vI7lohE_7NbLd3DA', apiKey: '', autoShow: false, lastSync: null, lastError: null },
+    guide: guideSeed.map(g => ({ ...g, id: uid(), enabled: true })),
+    articles: articleSeed.map((a, i) => ({ ...a, id: uid(), image: null, procedure: a.procedure ?? '', date: new Date(Date.UTC(2026, 10, 20 - i)).toISOString().slice(0, 10), enabled: true })),
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
@@ -140,6 +149,8 @@ function load(): ContentDB {
           faqs: d.faqCategories ? d.faqs : s.faqs,
           contact: d.contact ?? s.contact,
           videos: d.videos ?? s.videos,
+          guide: d.guide ?? s.guide,
+          articles: d.articles ?? s.articles,
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
           branches: (d.branches ?? s.branches).map(b => b.lat != null ? b : { ...b, ...(({ lat, lng }) => ({ lat, lng }))(s.branches.find(x => x.id === b.id) ?? { lat: 0, lng: 0 }) }),
@@ -179,7 +190,7 @@ const move = <T,>(list: T[], i: number, dir: -1 | 1) => {
   const j = i + dir; if (j < 0 || j >= list.length) return list
   const next = [...list]; [next[i], next[j]] = [next[j], next[i]]; return next
 }
-type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media' | 'faqCategories' | 'socials' | 'videos'
+type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media' | 'faqCategories' | 'socials' | 'videos' | 'guide' | 'articles'
 
 export const cms = {
   setDoctor(patch: Partial<CmsDoctor>) { commit({ ...db, doctor: { ...db.doctor, ...patch } }) },
@@ -291,6 +302,8 @@ export function useSite() {
     videos: d.videos.filter(v => v.enabled && youtubeId(v.url)),
     // The featured video, or the first live one when none is marked
     featuredVideo: d.videos.find(v => v.featured && v.enabled && youtubeId(v.url)) ?? d.videos.find(v => v.enabled && youtubeId(v.url)) ?? null,
+    guide: d.guide.filter(g => g.enabled),
+    articles: d.articles.filter(a => a.enabled && a.slug),
     img: (id: string | null | undefined) => imageSrc(d, id),
   }
 }

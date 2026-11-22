@@ -13,6 +13,8 @@ import FaqPage from './pages/FaqPage'
 import Book from './pages/Book'
 import Contact from './pages/Contact'
 import VideosPage from './pages/VideosPage'
+import GuidePage from './pages/GuidePage'
+import { ArticlesPage, ArticlePage } from './pages/Articles'
 
 const Dashboard = lazy(() => import('./dashboard/DashboardApp'))
 
@@ -40,6 +42,9 @@ export default function App() {
         <Route path="book" element={<Book />} />
         <Route path="contact" element={<Contact />} />
         <Route path="videos" element={<VideosPage />} />
+        <Route path="before-your-visit" element={<GuidePage />} />
+        <Route path="articles" element={<ArticlesPage />} />
+        <Route path="articles/:slug" element={<ArticlePage />} />
         <Route path="*" element={<Home />} />
       </Route>
       <Route path="dashboard/*" element={<Suspense fallback={<div className="dash min-h-screen" />}><Dashboard /></Suspense>} />

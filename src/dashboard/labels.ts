@@ -43,5 +43,5 @@ export const sourceLabel: Record<Source, L> = {
 export const nav = {
   overview: tr('نظرة عامة', 'Overview'), appointments: tr('المواعيد', 'Appointments'), calendar: tr('الجدول', 'Schedule'),
   patients: tr('المرضى', 'Patients'), inquiries: tr('الاستفسارات', 'Inquiries'), reviews: tr('التقييمات', 'Reviews'), settings: tr('الإعدادات', 'Settings'),
-  wProcedures: tr('العمليات', 'Procedures'), wFaqs: tr('أسئلة الأهالي', 'FAQs'), wBranches: tr('الفروع', 'Branches'), wDoctor: tr('عن الدكتور', 'The doctor'), wContact: tr('تواصل معنا', 'Contact'), wVideos: tr('فيديوهات يوتيوب', 'YouTube videos'), wMedia: tr('مكتبة الصور', 'Image library'),
+  wProcedures: tr('العمليات', 'Procedures'), wFaqs: tr('أسئلة الأهالي', 'FAQs'), wBranches: tr('الفروع', 'Branches'), wDoctor: tr('عن الدكتور', 'The doctor'), wContact: tr('تواصل معنا', 'Contact'), wVideos: tr('فيديوهات يوتيوب', 'YouTube videos'), wGuide: tr('دليل قبل الزيارة', 'Visit guide'), wArticles: tr('المقالات', 'Articles'), wMedia: tr('مكتبة الصور', 'Image library'),
 }

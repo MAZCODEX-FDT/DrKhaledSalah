@@ -15,6 +15,7 @@ export default function ContentMedia() {
   const usedBy = (id: string) => [
     ...db.surgeries.filter(s => s.image === id).map(s => t(s.name)),
     ...db.branches.filter(b => b.image === id).map(b => t(b.name)),
+    ...db.articles.filter(a => a.image === id).map(a => t(a.title)),
     ...(db.doctor.portrait === id ? [t(tr('صورة الدكتور', 'Doctor portrait'))] : []),
     ...(db.doctor.heroImage === id ? [t(tr('البانر الرئيسي', 'Home banner'))] : []),
     ...(db.doctor.aboutImage === id ? [t(tr('صفحة الدكتور', 'About page'))] : []),

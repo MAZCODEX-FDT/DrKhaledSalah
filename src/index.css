@@ -132,3 +132,33 @@ html[lang="ar"] .eyebrow { font-family: var(--ff-body); letter-spacing: 0; font-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- "Before your visit" printable sheet ---------- */
+.print-sheet { display: none; }
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html, body, #root, main { background: #fff !important; width: auto !important; min-width: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+  /* Print only the sheet: drop the page around it so it fits on one A4 page */
+  #root > :not(main), main > :not(.print-sheet), .pin-spacer { display: none !important; }
+  body * { visibility: hidden !important; }
+  .print-sheet, .print-sheet * { visibility: visible !important; }
+  .print-sheet {
+    display: block; position: static; width: 100%; max-width: 186mm; margin: 0 auto; padding: 0 3mm; box-sizing: border-box; color: #1a2433;
+    font-family: 'IBM Plex Sans Arabic', 'Nunito', sans-serif; font-size: 10.5pt; line-height: 1.55;
+  }
+  .ps-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 8pt; border-bottom: 3pt solid #ffc83d; }
+  .ps-head div { display: flex; flex-direction: column; text-align: end; }
+  .ps-head strong { font-size: 13pt; color: #163e7a; }
+  .ps-head span { font-size: 9pt; color: #5e6a7a; }
+  .print-sheet h1 { font-family: 'El Messiri', 'Nunito', serif; font-size: 22pt; color: #163e7a; margin: 12pt 0 8pt; }
+  .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; }
+  .ps-grid section { border: 1pt solid #cfe3f3; border-radius: 10pt; padding: 8pt 10pt; break-inside: avoid; }
+  .ps-grid section.ps-alert { grid-column: 1 / -1; background: #e3f2fb; border-color: #2f6fd1; }
+  .ps-grid h2 { font-size: 11.5pt; font-weight: 700; color: #2f6fd1; margin-bottom: 4pt; }
+  .ps-grid ul { padding-inline-start: 14pt; list-style: disc; }
+  .ps-grid li { margin: 2pt 0; }
+  .ps-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; margin-top: 10pt; padding-top: 8pt; border-top: 1pt solid #cfe3f3; }
+  .ps-foot div { display: flex; flex-direction: column; }
+  .ps-foot strong { color: #163e7a; }
+  .ps-note { margin-top: 8pt; font-size: 8.5pt; color: #5e6a7a; }
+}

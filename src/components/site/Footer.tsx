@@ -63,6 +63,8 @@ export default function Footer() {
               <li><Link className="hover:text-cloud" to="/about">{t(ui.nav.about)}</Link></li>
               <li><Link className="hover:text-cloud" to="/videos">{t(ui.nav.videos)}</Link></li>
               <li><Link className="hover:text-cloud" to="/faq">{t(ui.nav.faq)}</Link></li>
+              <li><Link className="hover:text-cloud" to="/before-your-visit">{t(ui.nav.guide)}</Link></li>
+              <li><Link className="hover:text-cloud" to="/articles">{t(ui.nav.articles)}</Link></li>
               <li><Link className="hover:text-cloud" to="/contact">{t(ui.nav.contact)}</Link></li>
               <li><Link className="hover:text-cloud" to="/book">{t(ui.nav.book)}</Link></li>
               <li><Link className="hover:text-cloud" to="/dashboard">{t(ui.nav.dashboard)}</Link></li>
