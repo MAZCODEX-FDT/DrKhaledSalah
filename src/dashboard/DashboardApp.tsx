@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
-import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink, Stethoscope, MessagesSquare, MapPin, UserRound, Images, Phone } from 'lucide-react'
 import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
 import type { BranchId } from '../lib/store'
@@ -17,6 +17,7 @@ import ContentFaqs from './cms/ContentFaqs'
 import ContentBranches from './cms/ContentBranches'
 import ContentDoctor from './cms/ContentDoctor'
 import ContentMedia from './cms/ContentMedia'
+import ContentContact from './cms/ContentContact'
 
 type BranchFilter = 'all' | BranchId
 const BranchCtx = createContext<{ branch: BranchFilter; setBranch: (b: BranchFilter) => void }>({ branch: 'all', setBranch: () => {} })
@@ -37,6 +38,7 @@ const webItems = [
   { to: '/dashboard/website/faqs', icon: MessagesSquare, k: 'wFaqs' },
   { to: '/dashboard/website/branches', icon: MapPin, k: 'wBranches' },
   { to: '/dashboard/website/doctor', icon: UserRound, k: 'wDoctor' },
+  { to: '/dashboard/website/contact', icon: Phone, k: 'wContact' },
   { to: '/dashboard/website/media', icon: Images, k: 'wMedia' },
 ] as const
 
@@ -162,6 +164,7 @@ export default function DashboardApp() {
               <Route path="website/branches" element={<ContentBranches />} />
               <Route path="website/doctor" element={<ContentDoctor />} />
               <Route path="website/media" element={<ContentMedia />} />
+              <Route path="website/contact" element={<ContentContact />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

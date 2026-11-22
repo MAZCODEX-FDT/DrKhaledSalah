@@ -12,6 +12,7 @@ const links = [
   { to: '/procedures', k: 'surgeries' },
   { to: '/branches', k: 'branches' },
   { to: '/faq', k: 'faq' },
+  { to: '/contact', k: 'contact' },
 ] as const
 
 export default function Navbar() {

@@ -10,6 +10,7 @@ import ProcedureDetail from './pages/ProcedureDetail'
 import BranchesPage from './pages/BranchesPage'
 import FaqPage from './pages/FaqPage'
 import Book from './pages/Book'
+import Contact from './pages/Contact'
 
 const Dashboard = lazy(() => import('./dashboard/DashboardApp'))
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="branches" element={<BranchesPage />} />
         <Route path="faq" element={<FaqPage />} />
         <Route path="book" element={<Book />} />
+        <Route path="contact" element={<Contact />} />
         <Route path="*" element={<Home />} />
       </Route>
       <Route path="dashboard/*" element={<Suspense fallback={<div className="dash min-h-screen" />}><Dashboard /></Suspense>} />

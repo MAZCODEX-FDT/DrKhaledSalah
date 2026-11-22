@@ -2,6 +2,8 @@ import { useSyncExternalStore } from 'react'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
+import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
+export type { SocialPlatform }
 
 /**
  * Website content store (CMS), edited from Dashboard → Website.
@@ -11,17 +13,25 @@ import { extraSurgeries } from '../content/surgeries-extra'
  */
 
 export type MediaItem = { id: string; name: string; src: string; alt: L; enabled: boolean; createdAt: string }
-export type QA = { id: string; q: L; a: L; enabled: boolean }
+export type QA = { id: string; q: L; a: L; enabled: boolean; category?: string }
+export type FaqCategory = { id: string; name: L; enabled: boolean }
+export type Social = { id: string; platform: SocialPlatform; label: string; url: string; enabled: boolean }
+export type CmsContact = { email: string; website: string; whatsapp: string; showEmail: boolean; showWebsite: boolean; showWhatsapp: boolean }
+export type TitledText = { t: L; d: L }
+export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
 export type CmsBranch = (typeof seedBranches)[number] & { enabled: boolean; image: string | null }
 export type CmsStat = { id: string; value: number; suffix: string; label: L; enabled: boolean }
-export type CmsDoctor = { name: L; title: L; promise: L; bio: L; highlights: L[]; portrait: string | null; heroImage: string | null }
+export type CmsDoctor = { name: L; title: L; promise: L; bio: L; highlights: L[]; portrait: string | null; heroImage: string | null; quote: L; story: L; values: TitledText[]; timeline: Milestone[]; aboutImage: string | null }
 
 export interface ContentDB {
   version: 1
   doctor: CmsDoctor
   surgeries: CmsSurgery[]
   faqs: QA[]
+  faqCategories: FaqCategory[]
+  contact: CmsContact
+  socials: Social[]
   branches: CmsBranch[]
   stats: CmsStat[]
   media: MediaItem[]
@@ -32,6 +42,8 @@ export const uid = () => Math.random().toString(36).slice(2, 10)
 
 function seed(): ContentDB {
   const qa = (x: { q: L; a: L }): QA => ({ id: uid(), q: x.q, a: x.a, enabled: true })
+  const cats: FaqCategory[] = faqCategorySeed.map(c => ({ id: c.key, name: c.name, enabled: true }))
+  const catId = (k: string) => cats.find(c => c.id === k)?.id
   return {
     version: 1,
     doctor: {
@@ -47,9 +59,17 @@ function seed(): ContentDB {
       ],
       portrait: null,
       heroImage: null,
+      aboutImage: null,
+      ...doctorExtra,
     },
     surgeries: [...baseSurgeries, ...extraSurgeries].map(s => ({ ...s, id: uid(), enabled: true, image: null, video: '', faqs: s.faqs.map(qa) })),
-    faqs: generalFaqs.map(qa),
+    faqCategories: cats,
+    faqs: [
+      ...generalFaqs.map((f, i) => ({ ...qa(f), category: catId(generalFaqCategory[i]) })),
+      ...moreGeneralFaqs.map(f => ({ ...qa(f), category: catId(f.cat) })),
+    ],
+    contact: { email: contactSeed.email, website: contactSeed.website, whatsapp: contactSeed.whatsapp, showEmail: true, showWebsite: true, showWhatsapp: true },
+    socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
@@ -59,7 +79,21 @@ function seed(): ContentDB {
 function load(): ContentDB {
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) { const d = JSON.parse(raw) as ContentDB; if (d?.version === 1) return d }
+    if (raw) {
+      const d = JSON.parse(raw) as ContentDB
+      if (d?.version === 1) {
+        // Fill fields added after this browser first saved content
+        const s = seed()
+        return {
+          ...s, ...d,
+          doctor: { ...s.doctor, ...d.doctor },
+          faqCategories: d.faqCategories ?? s.faqCategories,
+          faqs: d.faqCategories ? d.faqs : s.faqs,
+          contact: d.contact ?? s.contact,
+          socials: d.socials ?? s.socials,
+        }
+      }
+    }
   } catch { /* fall through */ }
   return seed()
 }
@@ -88,10 +122,11 @@ const move = <T,>(list: T[], i: number, dir: -1 | 1) => {
   const j = i + dir; if (j < 0 || j >= list.length) return list
   const next = [...list]; [next[i], next[j]] = [next[j], next[i]]; return next
 }
-type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media'
+type ListKey = 'surgeries' | 'faqs' | 'branches' | 'stats' | 'media' | 'faqCategories' | 'socials'
 
 export const cms = {
   setDoctor(patch: Partial<CmsDoctor>) { commit({ ...db, doctor: { ...db.doctor, ...patch } }) },
+  setContact(patch: Partial<CmsContact>) { commit({ ...db, contact: { ...db.contact, ...patch } }) },
 
   upsert<K extends ListKey>(key: K, item: ContentDB[K][number]) {
     const list = db[key] as { id?: string; slug?: string }[]
@@ -105,11 +140,12 @@ export const cms = {
     let next = (db[key] as { id?: string; slug?: string }[]).filter(x => (x.id ?? x.slug) !== id)
     if (key === 'surgeries') next = renumber(next as CmsSurgery[])
     const patch: Partial<ContentDB> = { [key]: next }
+    if (key === 'faqCategories') patch.faqs = db.faqs.map(f => (f.category === id ? { ...f, category: undefined } : f))
     if (key === 'media') {
       // Clear references to a deleted image
       patch.surgeries = db.surgeries.map(s => (s.image === id ? { ...s, image: null } : s))
       patch.branches = db.branches.map(b => (b.image === id ? { ...b, image: null } : b))
-      patch.doctor = { ...db.doctor, portrait: db.doctor.portrait === id ? null : db.doctor.portrait, heroImage: db.doctor.heroImage === id ? null : db.doctor.heroImage }
+      patch.doctor = { ...db.doctor, portrait: db.doctor.portrait === id ? null : db.doctor.portrait, heroImage: db.doctor.heroImage === id ? null : db.doctor.heroImage, aboutImage: db.doctor.aboutImage === id ? null : db.doctor.aboutImage }
     }
     commit({ ...db, ...patch })
   },
@@ -170,6 +206,9 @@ export function useSite() {
     // Keep at least one branch so booking buttons always have a target
     branches: d.branches.some(b => b.enabled) ? d.branches.filter(b => b.enabled) : d.branches.slice(0, 1),
     stats: d.stats.filter(s => s.enabled),
+    faqCategories: d.faqCategories.filter(c => c.enabled),
+    contact: d.contact,
+    socials: d.socials.filter(x => x.enabled && x.url),
     img: (id: string | null | undefined) => imageSrc(d, id),
   }
 }

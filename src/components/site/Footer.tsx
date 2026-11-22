@@ -1,8 +1,9 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { MessageCircle, Play, Camera, ThumbsUp } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import ShinyText from '../reactbits/ShinyText'
 import Logo from './Logo'
+import SocialIcon from './SocialIcon'
 import PlayTiles from './PlayTiles'
 import { useI18n } from '../../lib/i18n'
 import { ui, waLink } from '../../content/site'
@@ -11,7 +12,7 @@ import { gsap, useGSAP } from '../../lib/smooth'
 
 export default function Footer() {
   const { t, lang } = useI18n()
-  const { branches, doctor, surgeries } = useSite()
+  const { branches, doctor, surgeries, socials } = useSite()
   const root = useRef<HTMLElement>(null)
   useGSAP(() => {
     gsap.from('[data-f="big"]', {
@@ -39,8 +40,8 @@ export default function Footer() {
             <Logo className="h-20" />
             <p className="text-sm leading-relaxed text-cloud/55">{t(doctor.title)}</p>
             <div className="flex gap-2">
-              {[ThumbsUp, Camera, Play].map((I, i) => (
-                <a key={i} href="#" className="flex size-10 items-center justify-center rounded-full border hairline text-cloud/70 transition hover:border-gold hover:text-gold" aria-label={["Facebook", "Instagram", "YouTube"][i]}><I className="size-4" /></a>
+              {socials.map(s => (
+                <a key={s.id} href={s.url} target="_blank" rel="noreferrer" className="flex size-10 items-center justify-center rounded-full border hairline text-cloud/70 transition hover:border-gold hover:text-gold" aria-label={s.label}><SocialIcon platform={s.platform} /></a>
               ))}
             </div>
           </div>
@@ -61,6 +62,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-cloud/65">
               <li><Link className="hover:text-cloud" to="/about">{t(ui.nav.about)}</Link></li>
               <li><Link className="hover:text-cloud" to="/faq">{t(ui.nav.faq)}</Link></li>
+              <li><Link className="hover:text-cloud" to="/contact">{t(ui.nav.contact)}</Link></li>
               <li><Link className="hover:text-cloud" to="/book">{t(ui.nav.book)}</Link></li>
               <li><Link className="hover:text-cloud" to="/dashboard">{t(ui.nav.dashboard)}</Link></li>
             </ul>
