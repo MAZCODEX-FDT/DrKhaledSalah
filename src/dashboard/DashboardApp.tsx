@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, type FormEvent } from 'react'
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom'
 import { LayoutDashboard, CalendarDays, CalendarClock, Users, Inbox, Star, Settings as Cog, LogOut, Globe, Menu, X, ExternalLink } from 'lucide-react'
-import { Mark } from '../components/site/Logo'
+import { FullLogo, Mark } from '../components/site/Logo'
 import { useI18n } from '../lib/i18n'
 import type { BranchId } from '../lib/store'
 import { nav, tr } from './labels'
@@ -40,32 +40,29 @@ function Login({ onIn }: { onIn: () => void }) {
     if (pass === 'demo2026') { try { sessionStorage.setItem(AUTH_KEY, '1') } catch { /* ignore */ } onIn() } else setErr(true)
   }
   return (
-    <div className="grid min-h-screen bg-ink lg:grid-cols-2">
-      <div className="grain relative hidden overflow-hidden bg-[radial-gradient(100%_80%_at_30%_20%,#24494b,#10262a_55%,#0b1a1d)] p-14 text-ivory lg:flex lg:flex-col lg:justify-between">
-        <svg viewBox="0 0 600 600" className="absolute -bottom-40 -end-40 size-[40rem] opacity-25" aria-hidden>
-          {Array.from({ length: 14 }).map((_, k) => <circle key={k} cx="300" cy="300" r={20 + k * 22} fill="none" stroke="#c9a96a" strokeWidth=".7" />)}
-        </svg>
-        <Mark className="size-14" />
+    <div className="grid min-h-screen bg-night lg:grid-cols-2">
+      <div className="calm-night brand-pattern relative hidden overflow-hidden p-14 text-cloud lg:flex lg:flex-col lg:justify-between">
+        <FullLogo className="relative h-24" />
         <div className="relative">
-          <p className="eyebrow mb-4 text-gold-2">{lang === 'ar' ? 'لوحة تحكم العيادة' : 'Clinic dashboard'}</p>
+          <p className="eyebrow mb-4 text-mist">{lang === 'ar' ? 'لوحة تحكم العيادة' : 'Clinic dashboard'}</p>
           <h1 className="max-w-md font-display text-5xl font-light leading-tight">{lang === 'ar' ? 'كل استفسار متسجّل، لحد الحجز والتقييم' : 'Every inquiry tracked, all the way to booking and review'}</h1>
         </div>
       </div>
       <div className="dash flex items-center justify-center p-6">
         <form onSubmit={submit} className="w-full max-w-sm space-y-5">
           <div className="flex items-center justify-between">
-            <Mark className="size-10 lg:hidden" />
-            <button type="button" onClick={toggle} className="ms-auto flex items-center gap-1.5 text-sm text-[#5d6865]"><Globe className="size-4" />{lang === 'ar' ? 'English' : 'عربي'}</button>
+            <Mark tone="navy" className="h-10 w-12 lg:hidden" />
+            <button type="button" onClick={toggle} className="ms-auto flex items-center gap-1.5 text-sm text-[#5b6773]"><Globe className="size-4" />{lang === 'ar' ? 'English' : 'عربي'}</button>
           </div>
           <h2 className="font-display text-3xl font-light">{t(tr('تسجيل الدخول', 'Sign in'))}</h2>
           <input type="email" dir="ltr" value={email} onChange={e => setEmail(e.target.value)} />
           <input type="password" dir="ltr" placeholder="••••••••" value={pass} onChange={e => { setPass(e.target.value); setErr(false) }} />
           {err && <p className="text-sm text-rose-700">{t(tr('كلمة السر غلط', 'Wrong password'))}</p>}
-          <button className="w-full rounded-xl bg-[#14302f] py-3 font-medium text-ivory hover:bg-[#1b3a3c]">{t(tr('دخول', 'Sign in'))}</button>
-          <p className="rounded-xl bg-[#efe9dc] p-3 text-xs leading-relaxed text-[#5d6865]">
+          <button className="w-full rounded-xl bg-[#14304a] py-3 font-medium text-cloud hover:bg-[#1f4c73]">{t(tr('دخول', 'Sign in'))}</button>
+          <p className="rounded-xl bg-[#e9eef2] p-3 text-xs leading-relaxed text-[#5b6773]">
             {t(tr('نسخة عرض: كلمة السر demo2026. الدخول الحقيقي هيتربط بنظام مصادقة قبل الإطلاق.', 'Demo build: password is demo2026. Real authentication will be wired in before launch.'))}
           </p>
-          <Link to="/" className="block text-center text-sm text-[#5d6865] hover:text-[#14211f]">{t(tr('رجوع للموقع', 'Back to website'))}</Link>
+          <Link to="/" className="block text-center text-sm text-[#5b6773] hover:text-[#1c2630]">{t(tr('رجوع للموقع', 'Back to website'))}</Link>
         </form>
       </div>
     </div>
@@ -83,9 +80,9 @@ export default function DashboardApp() {
   const logout = () => { try { sessionStorage.removeItem(AUTH_KEY) } catch { /* ignore */ } setAuthed(false) }
 
   const Side = (
-    <aside className="flex h-full flex-col bg-[#0f2427] p-5 text-ivory">
+    <aside className="flex h-full flex-col bg-[#14304a] p-5 text-cloud">
       <div className="mb-10 flex items-center gap-3 px-2">
-        <Mark className="size-10" />
+        <Mark className="h-10 w-12" />
         <div className="leading-tight">
           <div className="font-display">{lang === 'ar' ? 'د. خالد صلاح' : 'Dr. Khaled Salah'}</div>
           <div className="text-[.7rem] text-mist">{t(tr('لوحة التحكم', 'Dashboard'))}</div>
@@ -94,14 +91,14 @@ export default function DashboardApp() {
       <nav className="flex-1 space-y-1">
         {items.map(i => (
           <NavLink key={i.k} to={i.to} end={i.to === '/dashboard'} onClick={() => setOpen(false)}
-            className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition ${isActive ? 'bg-gold text-ink' : 'text-ivory/70 hover:bg-white/5 hover:text-ivory'}`}>
+            className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition ${isActive ? 'bg-blue text-white' : 'text-cloud/70 hover:bg-white/5 hover:text-cloud'}`}>
             <i.icon className="size-[1.1rem]" />{t(nav[i.k])}
           </NavLink>
         ))}
       </nav>
       <div className="space-y-1 border-t border-white/10 pt-4">
-        <Link to="/" className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm text-ivory/60 hover:text-ivory"><ExternalLink className="size-4" />{t(tr('الموقع', 'Website'))}</Link>
-        <button onClick={logout} className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm text-ivory/60 hover:text-ivory"><LogOut className="size-4" />{t(tr('خروج', 'Sign out'))}</button>
+        <Link to="/" className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm text-cloud/60 hover:text-cloud"><ExternalLink className="size-4" />{t(tr('الموقع', 'Website'))}</Link>
+        <button onClick={logout} className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm text-cloud/60 hover:text-cloud"><LogOut className="size-4" />{t(tr('خروج', 'Sign out'))}</button>
       </div>
     </aside>
   )
@@ -117,18 +114,18 @@ export default function DashboardApp() {
           </div>
         )}
         <div className="min-w-0">
-          <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#e7e1d4] bg-[#f4f1ea]/85 px-4 py-3 backdrop-blur sm:px-8">
+          <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-[#e1e7ec] bg-[#f4f6f8]/85 px-4 py-3 backdrop-blur sm:px-8">
             <button className="rounded-lg p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Menu">{open ? <X /> : <Menu className="size-5" />}</button>
-            <div className="flex rounded-xl border border-[#e2dccf] bg-white p-1 text-sm">
+            <div className="flex rounded-xl border border-[#dbe2e8] bg-white p-1 text-sm">
               {(['all', 'tagamoa', 'giza'] as const).map(b => (
-                <button key={b} onClick={() => setBranch(b)} className={`whitespace-nowrap rounded-lg px-3 py-1.5 transition ${branch === b ? 'bg-[#14302f] text-ivory' : 'text-[#5d6865] hover:text-[#14211f]'}`}>
+                <button key={b} onClick={() => setBranch(b)} className={`whitespace-nowrap rounded-lg px-3 py-1.5 transition ${branch === b ? 'bg-[#14304a] text-cloud' : 'text-[#5b6773] hover:text-[#1c2630]'}`}>
                   {t(b === 'all' ? tr('كل الفروع', 'All branches') : b === 'tagamoa' ? tr('التجمع', 'Settlement') : tr('الجيزة', 'Giza'))}
                 </button>
               ))}
             </div>
             <div className="ms-auto flex items-center gap-2">
-              <button onClick={toggle} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[#5d6865] hover:bg-white"><Globe className="size-4" />{lang === 'ar' ? 'EN' : 'ع'}</button>
-              <div className="flex size-9 items-center justify-center rounded-full bg-[#c9a96a] text-sm font-semibold text-[#14211f]">{lang === 'ar' ? 'خ' : 'KS'}</div>
+              <button onClick={toggle} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[#5b6773] hover:bg-white"><Globe className="size-4" />{lang === 'ar' ? 'EN' : 'ع'}</button>
+              <div className="flex size-9 items-center justify-center rounded-full bg-blue text-sm font-semibold text-white">{lang === 'ar' ? 'خ' : 'KS'}</div>
             </div>
           </header>
           <main className="mx-auto max-w-[90rem] p-4 sm:p-8">

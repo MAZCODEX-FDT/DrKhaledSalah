@@ -4,7 +4,7 @@ import type { ApptStatus, InquiryStage, ProcedureId, Source, BranchId } from '..
 export const tr = (ar: string, en: string): L => ({ ar, en })
 
 /** Validated categorical palette (dataviz validator: all checks pass on white). Fixed order, never cycled. */
-export const SERIES = ['#13917f', '#c27c1e', '#3d6fd1', '#c2456a', '#7d5bc4', '#8a8f8c']
+export const SERIES = ['#2b6fa8', '#c27c1e', '#13917f', '#7d5bc4', '#c2456a', '#8a8f8c'] // slot 1 is a chroma-safe step of Calm Blue
 
 export const procLabel: Record<ProcedureId, L> = {
   consultation: tr('كشف واستشارة', 'Consultation'),

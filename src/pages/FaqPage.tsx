@@ -8,7 +8,7 @@ export default function FaqPage() {
   return (
     <>
       <PageHero eyebrow={lang === 'ar' ? 'أسئلة الأهالي' : 'Parents\' questions'} title={lang === 'ar' ? 'اسأل قبل ما تقرر' : 'Ask before you decide'} />
-      <section className="bg-ivory py-24 text-ink">
+      <section className="bg-cloud py-24 text-ink">
         <div className="mx-auto max-w-5xl space-y-20 px-6">
           <div>
             <h2 className="mb-6 font-display text-3xl font-light">{lang === 'ar' ? 'عن الحجز والزيارة' : 'Booking & visits'}</h2>

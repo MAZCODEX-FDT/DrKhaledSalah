@@ -26,11 +26,11 @@ export default function Book() {
       <PageHero eyebrow={t(ui.nav.book)} title={lang === 'ar' ? 'خلّينا نتكلم الأول' : 'Let\'s talk first'}>
         {lang === 'ar' ? 'سيب بياناتك ونرد على حضرتك خلال 15 دقيقة في مواعيد العمل. التكلفة والتفاصيل بتتقال في رسالة خاصة.' : 'Leave your details and we\'ll reply within 15 minutes during working hours. Costs and details are shared privately.'}
       </PageHero>
-      <section className="bg-ivory py-24 text-ink">
+      <section className="bg-cloud py-24 text-ink">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[1.4fr_1fr]">
           {done ? (
             <div className="rounded-[2rem] bg-white/70 p-12 text-center">
-              <CheckCircle2 className="mx-auto size-14 text-pine" />
+              <CheckCircle2 className="mx-auto size-14 text-navy" />
               <h2 className="mt-6 font-display text-3xl font-light">{lang === 'ar' ? 'وصلتنا رسالتك' : 'We have your message'}</h2>
               <p className="mt-3 text-ink/60">{lang === 'ar' ? 'هنكلم حضرتك قريب. لو حابب أسرع، كلّمنا على واتساب.' : 'We will be in touch shortly. For a faster reply, message us on WhatsApp.'}</p>
               <a href={waLink(b.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="btn-gold mt-8"><MessageCircle className="size-4" />WhatsApp</a>
@@ -42,9 +42,9 @@ export default function Book() {
                 <div className="grid grid-cols-2 gap-3">
                   {branches.map(x => (
                     <button type="button" key={x.id} onClick={() => setBranch(x.id as BranchId)}
-                      className={`rounded-2xl border px-5 py-4 text-start transition ${branch === x.id ? 'border-pine bg-pine text-ivory' : 'border-ink/12 bg-white/70'}`}>
+                      className={`rounded-2xl border px-5 py-4 text-start transition ${branch === x.id ? 'border-navy bg-navy text-cloud' : 'border-ink/12 bg-white/70'}`}>
                       <span className="block font-display">{t(x.name)}</span>
-                      <span className={`text-xs ${branch === x.id ? 'text-ivory/60' : 'text-ink/50'}`}>{t(x.serves)}</span>
+                      <span className={`text-xs ${branch === x.id ? 'text-cloud/60' : 'text-ink/50'}`}>{t(x.serves)}</span>
                     </button>
                   ))}
                 </div>
@@ -62,11 +62,11 @@ export default function Book() {
               <p className="text-xs text-ink/45">{lang === 'ar' ? 'بياناتك بتستخدم للتواصل معاك بس.' : 'Your details are used only to contact you.'}</p>
             </form>
           )}
-          <aside className="h-fit rounded-[2rem] bg-pine p-8 text-ivory">
+          <aside className="h-fit rounded-[2rem] bg-navy p-8 text-cloud">
             <h3 className="font-display text-2xl font-light">{lang === 'ar' ? 'أو كلّمنا مباشرة' : 'Or reach us directly'}</h3>
             <div className="mt-8 space-y-4">
               {branches.map(x => (
-                <a key={x.id} href={waLink(x.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl border hairline px-5 py-4 transition hover:bg-ivory/5">
+                <a key={x.id} href={waLink(x.whatsapp, t(ui.waMsg))} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-2xl border hairline px-5 py-4 transition hover:bg-cloud/5">
                   <span>{t(x.name)}</span><MessageCircle className="size-4 text-gold" />
                 </a>
               ))}

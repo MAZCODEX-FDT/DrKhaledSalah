@@ -1,35 +1,27 @@
 import { Link } from 'react-router-dom'
 import { useI18n } from '../../lib/i18n'
-import { doctor } from '../../content/site'
 
-export function Mark({ className = 'size-9' }: { className?: string }) {
+/** Official KS Kids Surgeon files from the brand book. Never redraw, recolour or re-space them. */
+export const brandAsset = (name: string) => `${import.meta.env.BASE_URL}brand/${name}`
+
+type Tone = 'white' | 'navy' | 'blue'
+
+export function Mark({ className = 'size-9', tone = 'white' }: { className?: string; tone?: Tone }) {
+  return <img src={brandAsset(`mark-${tone}.webp`)} alt="" aria-hidden className={`object-contain ${className}`} draggable={false} />
+}
+
+export function FullLogo({ className = 'h-14', tone = 'white' }: { className?: string; tone?: 'white' | 'navy' }) {
+  const { lang } = useI18n()
   return (
-    <svg viewBox="0 0 64 64" className={className} aria-hidden>
-      <defs>
-        <linearGradient id="ks-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#f3e3bd" />
-          <stop offset=".55" stopColor="#c9a96a" />
-          <stop offset="1" stopColor="#a8864a" />
-        </linearGradient>
-      </defs>
-      <circle cx="32" cy="32" r="30" fill="none" stroke="url(#ks-g)" strokeWidth="1.2" />
-      <path d="M22 17v30M22 32l15-15M26 29.5l13 17.5" stroke="url(#ks-g)" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="44" cy="20" r="2.4" fill="url(#ks-g)" />
-    </svg>
+    <img src={brandAsset(`logo-${tone}.webp`)} className={`w-auto object-contain ${className}`} draggable={false}
+      alt={lang === 'ar' ? 'د. خالد صلاح، جراح أطفال' : 'Dr. Khaled Salah, Kids Surgeon'} />
   )
 }
 
-export default function Logo({ to = '/' }: { to?: string }) {
-  const { t, lang } = useI18n()
+export default function Logo({ to = '/', className = 'h-14', tone = 'white' }: { to?: string; className?: string; tone?: 'white' | 'navy' }) {
   return (
-    <Link to={to} className="flex items-center gap-3 group">
-      <Mark className="size-10 transition-transform duration-700 group-hover:rotate-[20deg]" />
-      <span className="leading-tight">
-        <span className="block whitespace-nowrap font-display text-[1.05rem] font-medium">{t(doctor.name)}</span>
-        <span className={`block text-[.68rem] text-mist ${lang === 'en' ? 'tracking-[.18em] uppercase' : ''}`}>
-          {lang === 'ar' ? 'جراحة الأطفال وحديثي الولادة' : 'Pediatric Surgery'}
-        </span>
-      </span>
+    <Link to={to} className="block shrink-0" aria-label="Home">
+      <FullLogo className={className} tone={tone} />
     </Link>
   )
 }

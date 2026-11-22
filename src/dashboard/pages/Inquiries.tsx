@@ -37,11 +37,11 @@ export default function Inquiries() {
           {stageOrder.map(s => {
             const col = list.filter(q => q.stage === s)
             return (
-              <div key={s} onDragOver={e => e.preventDefault()} onDrop={onDrop(s)} className="flex min-h-[28rem] flex-col rounded-2xl bg-[#ece6d9]/60 p-2.5">
+              <div key={s} onDragOver={e => e.preventDefault()} onDrop={onDrop(s)} className="flex min-h-[28rem] flex-col rounded-2xl bg-[#e6ecf1]/60 p-2.5">
                 <div className="mb-3 flex items-center gap-2 px-1.5 pt-1">
                   <span className={`size-2 rounded-full ${stageTone[s]}`} />
                   <span className="text-sm font-semibold">{t(stageLabel[s])}</span>
-                  <span className="ms-auto font-latin text-xs text-[#5d6865]">{col.length}</span>
+                  <span className="ms-auto font-latin text-xs text-[#5b6773]">{col.length}</span>
                 </div>
                 <div className="flex-1 space-y-2">
                   {col.map(q => (
@@ -49,17 +49,17 @@ export default function Inquiries() {
                       className={`dash-card cursor-grab !rounded-xl p-3 text-sm active:cursor-grabbing ${drag === q.id ? 'opacity-50' : ''}`}>
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium">{q.name}</p>
-                        <Pill className="bg-[#f2eee5] !px-2 !py-0.5 text-[.65rem] text-[#5d6865]">{t(sourceLabel[q.source])}</Pill>
+                        <Pill className="bg-[#eaf1f7] !px-2 !py-0.5 text-[.65rem] text-[#5b6773]">{t(sourceLabel[q.source])}</Pill>
                       </div>
-                      <p className="mt-1 text-xs text-[#5d6865]">{t(procLabel[q.procedure])} · {t(branchLabel[q.branch])}</p>
-                      {q.message && <p className="mt-2 line-clamp-2 text-xs text-[#3b4744]">{q.message}</p>}
-                      <div className="mt-3 flex items-center gap-1 border-t border-[#f2eee5] pt-2">
-                        <a href={`https://wa.me/${q.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="rounded-lg p-1.5 text-[#13917f] hover:bg-[#eef7f5]" aria-label="WhatsApp"><MessageCircle className="size-4" /></a>
-                        {q.stage !== 'booked' && <button onClick={() => setConvert(q.id)} className="rounded-lg p-1.5 text-[#14302f] hover:bg-[#f2eee5]" aria-label="Book"><CalendarCheck className="size-4" /></button>}
-                        <select value={q.stage} onChange={e => actions.moveInquiry(q.id, e.target.value as InquiryStage)} className="ms-auto !w-auto !border-0 !bg-transparent !p-0 text-[.7rem] text-[#5d6865]" aria-label="Stage">
+                      <p className="mt-1 text-xs text-[#5b6773]">{t(procLabel[q.procedure])} · {t(branchLabel[q.branch])}</p>
+                      {q.message && <p className="mt-2 line-clamp-2 text-xs text-[#3a4652]">{q.message}</p>}
+                      <div className="mt-3 flex items-center gap-1 border-t border-[#eaf1f7] pt-2">
+                        <a href={`https://wa.me/${q.phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="rounded-lg p-1.5 text-[#13917f] hover:bg-[#eaf1f7]" aria-label="WhatsApp"><MessageCircle className="size-4" /></a>
+                        {q.stage !== 'booked' && <button onClick={() => setConvert(q.id)} className="rounded-lg p-1.5 text-[#14304a] hover:bg-[#eaf1f7]" aria-label="Book"><CalendarCheck className="size-4" /></button>}
+                        <select value={q.stage} onChange={e => actions.moveInquiry(q.id, e.target.value as InquiryStage)} className="ms-auto !w-auto !border-0 !bg-transparent !p-0 text-[.7rem] text-[#5b6773]" aria-label="Stage">
                           {stageOrder.map(x => <option key={x} value={x}>{t(stageLabel[x])}</option>)}
                         </select>
-                        <button onClick={() => actions.deleteInquiry(q.id)} className="rounded-lg p-1.5 text-[#9aa29f] hover:text-rose-700" aria-label="Delete"><Trash2 className="size-3.5" /></button>
+                        <button onClick={() => actions.deleteInquiry(q.id)} className="rounded-lg p-1.5 text-[#98a2ac] hover:text-rose-700" aria-label="Delete"><Trash2 className="size-3.5" /></button>
                       </div>
                     </article>
                   ))}
@@ -69,8 +69,8 @@ export default function Inquiries() {
           })}
         </div>
       </div>
-      <Card className="mt-2 !bg-[#14302f] !border-0 text-ivory">
-        <p className="text-sm text-ivory/80">{t(tr('القاعدة: رد خلال 15 دقيقة، وسؤال «أنهي فرع أقرب؟»، ومتابعة بعد 24 و72 ساعة لأي حد سأل ومحجزش.', 'Rule: reply within 15 minutes, ask "which branch is closer?", and follow up at 24 and 72 hours with anyone who asked but did not book.'))}</p>
+      <Card className="mt-2 !bg-[#14304a] !border-0 text-cloud">
+        <p className="text-sm text-cloud/80">{t(tr('القاعدة: رد خلال 15 دقيقة، وسؤال «أنهي فرع أقرب؟»، ومتابعة بعد 24 و72 ساعة لأي حد سأل ومحجزش.', 'Rule: reply within 15 minutes, ask "which branch is closer?", and follow up at 24 and 72 hours with anyone who asked but did not book.'))}</p>
       </Card>
 
       <Modal open={!!convert} onClose={() => setConvert(null)} title={t(tr('تحويل لحجز كشف', 'Convert to consultation'))}>

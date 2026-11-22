@@ -13,17 +13,17 @@ export default function Procedures({ heading = true }: { heading?: boolean }) {
   const Arrow = lang === 'ar' ? ArrowUpLeft : ArrowUpRight
 
   return (
-    <section className="relative bg-ink py-28 sm:py-36">
+    <section className="relative bg-cloud py-28 text-ink sm:py-36">
       <div className="mx-auto max-w-7xl px-6">
         {heading && (
           <Reveal className="mb-16 grid gap-8 lg:grid-cols-2 lg:items-end">
             <div>
-              <p data-reveal className="eyebrow mb-6 text-gold-2">{lang === 'ar' ? 'العمليات' : 'Procedures'}</p>
+              <p data-reveal className="eyebrow mb-6 text-blue">{lang === 'ar' ? 'العمليات' : 'Procedures'}</p>
               <h2 data-reveal className="font-display text-[clamp(2.2rem,5vw,4.5rem)] font-light leading-[1.1]">
                 {lang === 'ar' ? 'من الطهارة لحد أدق العمليات' : 'From circumcision to the most delicate repairs'}
               </h2>
             </div>
-            <p data-reveal className="max-w-md text-ivory/65 lg:justify-self-end">
+            <p data-reveal className="max-w-md text-ink/65 lg:justify-self-end">
               {lang === 'ar'
                 ? 'كل عملية ليها صفحة بتجاوب على الأسئلة اللي الأهالي فعلًا بيسألوها، وفيديو شرح من الدكتور.'
                 : 'Each procedure has a page answering the questions parents actually ask, with an explainer from the doctor.'}
@@ -40,16 +40,16 @@ export default function Procedures({ heading = true }: { heading?: boolean }) {
                 to={`/procedures/${s.slug}`}
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
-                className={`group relative overflow-hidden rounded-[1.75rem] border hairline bg-ink-2 transition-[flex,background] duration-[900ms] ease-lux ${
-                  on ? 'lg:flex-[3.2] bg-pine' : 'lg:flex-[1]'
+                className={`group relative overflow-hidden rounded-[1.75rem] transition-[flex,background,color] duration-[900ms] ease-lux ${
+                  on ? 'lg:flex-[3.2] bg-navy text-cloud' : 'lg:flex-[1] bg-sand/70 text-ink'
                 } min-h-[16rem] lg:min-h-0`}
               >
-                <ProcedureArt slug={s.slug} tone={s.tone}
+                <ProcedureArt slug={s.slug} tone={on ? '#d8e7f2' : s.tone}
                   className={`absolute -bottom-16 -end-16 size-[26rem] transition-all duration-[1200ms] ease-lux ${on ? 'opacity-90 scale-100' : 'opacity-30 scale-90'}`} />
                 <div className="relative flex h-full flex-col justify-between p-7 sm:p-9">
                   <div className="flex items-start justify-between">
-                    <span className="font-serif text-sm italic text-gold-2">{s.index}</span>
-                    <span className={`flex size-11 items-center justify-center rounded-full border hairline transition-all duration-700 ${on ? 'bg-gold text-ink border-transparent' : ''}`}>
+                    <span className={`font-serif text-base italic ${on ? 'text-mist' : 'text-gold'}`}>{s.index}</span>
+                    <span className={`flex size-11 items-center justify-center rounded-full border transition-all duration-700 ${on ? 'bg-blue text-white border-transparent' : 'border-navy/20'}`}>
                       <Arrow className="size-4" />
                     </span>
                   </div>
@@ -57,7 +57,7 @@ export default function Procedures({ heading = true }: { heading?: boolean }) {
                     <h3 className={`font-display font-light leading-tight transition-all duration-700 ${on ? 'text-4xl' : 'text-2xl lg:[writing-mode:vertical-rl] lg:rotate-180 lg:text-2xl'} ${lang === 'ar' && !on ? 'lg:rotate-0' : ''}`}>
                       {t(s.name)}
                     </h3>
-                    <p className={`mt-4 max-w-md text-ivory/70 transition-all duration-700 ${on ? 'opacity-100 translate-y-0' : 'lg:opacity-0 lg:translate-y-4 lg:h-0'}`}>
+                    <p className={`mt-4 max-w-md text-cloud/75 transition-all duration-700 ${on ? 'opacity-100 translate-y-0' : 'lg:opacity-0 lg:translate-y-4 lg:h-0'}`}>
                       {t(s.short)}
                     </p>
                   </div>

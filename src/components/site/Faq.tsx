@@ -13,13 +13,13 @@ export default function Faq({ items, light = false }: { items: { q: L; a: L }[];
           <div key={i} className={`border-b ${light ? 'hairline-dark' : 'hairline'}`}>
             <button onClick={() => setOpen(on ? null : i)} className="flex w-full items-center justify-between gap-6 py-7 text-start" aria-expanded={on}>
               <span className="font-display text-xl font-light sm:text-2xl">{t(f.q)}</span>
-              <span className={`flex size-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${light ? 'hairline-dark' : 'hairline'} ${on ? 'rotate-45 bg-gold text-ink border-transparent' : ''}`}>
+              <span className={`flex size-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ${light ? 'hairline-dark' : 'hairline'} ${on ? 'rotate-45 bg-blue text-white border-transparent' : ''}`}>
                 <Plus className="size-4" />
               </span>
             </button>
             <div className="grid transition-all duration-700 ease-lux" style={{ gridTemplateRows: on ? '1fr' : '0fr' }}>
               <div className="overflow-hidden">
-                <p className={`max-w-3xl pb-8 leading-relaxed ${light ? 'text-ink/65' : 'text-ivory/65'}`}>{t(f.a)}</p>
+                <p className={`max-w-3xl pb-8 leading-relaxed ${light ? 'text-ink/65' : 'text-cloud/65'}`}>{t(f.a)}</p>
               </div>
             </div>
           </div>

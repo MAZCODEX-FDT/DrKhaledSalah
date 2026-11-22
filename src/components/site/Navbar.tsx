@@ -34,10 +34,10 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
       <nav
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-700 ease-lux sm:px-6 ${
-          scrolled ? 'bg-ink/75 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_-30px_rgba(0,0,0,.7)]' : 'bg-transparent'
+          scrolled ? 'bg-night/75 backdrop-blur-xl border border-white/10 shadow-[0_20px_60px_-30px_rgba(0,0,0,.7)]' : 'bg-transparent'
         }`}
       >
-        <Logo />
+        <Logo className={`transition-all duration-700 ease-lux ${scrolled ? 'h-12' : 'h-[4.75rem]'}`} />
         <ul className="hidden items-center gap-1 lg:flex">
           {links.map(l => (
             <li key={l.to}>
@@ -45,7 +45,7 @@ export default function Navbar() {
                 to={l.to}
                 end={l.to === '/'}
                 className={({ isActive }) =>
-                  `relative rounded-full px-4 py-2 text-sm transition-colors ${isActive ? 'text-gold-2' : 'text-ivory/75 hover:text-ivory'}`
+                  `relative rounded-full px-4 py-2 text-sm transition-colors ${isActive ? 'text-mist' : 'text-cloud/75 hover:text-cloud'}`
                 }
               >
                 {t(ui.nav[l.k])}
@@ -54,7 +54,7 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="flex items-center gap-2">
-          <button onClick={toggle} className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-ivory/80 hover:text-ivory" aria-label="Change language">
+          <button onClick={toggle} className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-cloud/80 hover:text-cloud" aria-label="Change language">
             <Globe className="size-4" />
             <span className="font-latin">{lang === 'ar' ? 'EN' : 'ع'}</span>
           </button>
@@ -68,9 +68,9 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile sheet */}
-      <div className={`fixed inset-0 z-50 bg-ink/95 backdrop-blur-xl transition-all duration-700 ease-lux lg:hidden ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
+      <div className={`fixed inset-0 z-50 bg-night/95 backdrop-blur-xl transition-all duration-700 ease-lux lg:hidden ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
         <div className="flex items-center justify-between px-6 pt-6">
-          <Logo />
+          <Logo className="h-12" />
           <button onClick={() => setOpen(false)} className="rounded-full p-2" aria-label="Close"><X className="size-6" /></button>
         </div>
         <ul className="mt-12 space-y-2 px-8">

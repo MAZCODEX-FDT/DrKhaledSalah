@@ -42,18 +42,18 @@ export default function Hero() {
   return (
     <section ref={root} className="grain relative isolate flex min-h-[100svh] items-end overflow-hidden pb-16 pt-32 sm:pb-24">
       {/* Background: React Bits Silk on desktop, static gradient fallback on mobile */}
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(120%_80%_at_70%_10%,#24494b_0%,#10262a_45%,#0b1a1d_100%)]" />
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(120%_80%_at_70%_10%,#1f4c73_0%,#14304a_45%,#0d2236_100%)]" />
       {webgl && (
         <Suspense fallback={null}>
           <div className="absolute inset-0 -z-10 opacity-70">
-            <Silk color="#1f4446" sheenColor="#e4cf9f" speed={2.2} scale={1.1} sheen={0.35} glow={0.2} depth={0.55} noiseIntensity={0.9} rotation={0.35} clickRipple={false} interactionStrength={0.5} />
+            <Silk color="#1f4c73" sheenColor="#d8e7f2" speed={2.2} scale={1.1} sheen={0.35} glow={0.2} depth={0.55} noiseIntensity={0.9} rotation={0.35} clickRipple={false} interactionStrength={0.5} />
           </div>
         </Suspense>
       )}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/40 to-ink/10" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-night via-night/40 to-night/10" />
 
       <div data-h="content" className="relative mx-auto w-full max-w-7xl px-6">
-        <p data-h="eyebrow" className="eyebrow mb-8 flex items-center gap-3 text-gold-2">
+        <p data-h="eyebrow" className="eyebrow mb-8 flex items-center gap-3 text-mist">
           <span className="inline-block size-1.5 rounded-full bg-gold" />
           {t(ui.heroEyebrow)}
         </p>
@@ -65,9 +65,9 @@ export default function Hero() {
         <div data-h="line" className="my-10 h-px w-full max-w-3xl bg-gradient-to-l from-transparent via-gold/60 to-gold/0 rtl:bg-gradient-to-r" />
 
         <div className="grid items-end gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <p data-h="sub" className="max-w-xl text-lg leading-relaxed text-ivory/75 sm:text-xl">
+          <p data-h="sub" className="max-w-xl text-lg leading-relaxed text-cloud/75 sm:text-xl">
             {t(ui.heroSub)}
-            <span className="mt-3 block text-sm text-gold-2/90">{t(doctor.name)} · {t(doctor.title)}</span>
+            <span className="mt-3 block text-sm text-mist/90">{t(doctor.name)} · {t(doctor.title)}</span>
           </p>
 
           <div className="flex flex-col gap-6 lg:items-end">
@@ -79,7 +79,7 @@ export default function Hero() {
               </Magnet>
               <Link to="/book" className="btn-ghost">{t(ui.bookGiza)}</Link>
             </div>
-            <div data-h="trust" className="flex items-center gap-4 text-sm text-ivory/70">
+            <div data-h="trust" className="flex items-center gap-4 text-sm text-cloud/70">
               <span className="flex gap-0.5 text-gold">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="size-4 fill-current" />)}</span>
               <span>{lang === 'ar' ? '5.0 من 220 تقييم على Google' : '5.0 from 220 Google reviews'}</span>
             </div>

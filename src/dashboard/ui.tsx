@@ -6,7 +6,7 @@ export function Card({ children, className = '', title, action }: { children: Re
     <section className={`dash-card p-5 sm:p-6 ${className}`}>
       {(title || action) && (
         <header className="mb-5 flex items-center justify-between gap-3">
-          {title && <h3 className="text-[.95rem] font-semibold text-[#14211f]">{title}</h3>}
+          {title && <h3 className="text-[.95rem] font-semibold text-[#1c2630]">{title}</h3>}
           {action}
         </header>
       )}
@@ -19,8 +19,8 @@ export function PageTitle({ title, sub, action }: { title: string; sub?: string;
   return (
     <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="font-display text-3xl font-light text-[#14211f] sm:text-4xl">{title}</h1>
-        {sub && <p className="mt-1.5 text-sm text-[#5d6865]">{sub}</p>}
+        <h1 className="font-display text-3xl font-light text-[#1c2630] sm:text-4xl">{title}</h1>
+        {sub && <p className="mt-1.5 text-sm text-[#5b6773]">{sub}</p>}
       </div>
       {action}
     </div>
@@ -29,9 +29,9 @@ export function PageTitle({ title, sub, action }: { title: string; sub?: string;
 
 export function Btn({ children, variant = 'primary', className = '', ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'gold' }) {
   const v = {
-    primary: 'bg-[#14302f] text-[#f6f1e7] hover:bg-[#1b3a3c]',
-    gold: 'bg-[#c9a96a] text-[#14211f] hover:bg-[#d6b77a]',
-    ghost: 'border border-[#e2dccf] bg-white text-[#14211f] hover:bg-[#f7f4ee]',
+    primary: 'bg-[#14304a] text-[#f6f1e7] hover:bg-[#1f4c73]',
+    gold: 'bg-[#2e6a96] text-white hover:bg-[#3a7aaa]',
+    ghost: 'border border-[#dbe2e8] bg-white text-[#1c2630] hover:bg-[#f3f6f9]',
   }[variant]
   return <button className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${v} ${className}`} {...rest}>{children}</button>
 }
@@ -44,11 +44,11 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
   }, [open, onClose])
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0b1a1d]/40 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#0d2236]/40 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
       <div className="dash-card max-h-[92vh] w-full max-w-xl overflow-y-auto !rounded-b-none p-6 sm:!rounded-[1.25rem]" onClick={e => e.stopPropagation()} role="dialog" aria-modal>
         <div className="mb-5 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[#f2eee5]" aria-label="Close"><X className="size-5" /></button>
+          <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-[#eaf1f7]" aria-label="Close"><X className="size-5" /></button>
         </div>
         {children}
       </div>
@@ -57,7 +57,7 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
 }
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
-  return <label className="block space-y-1.5"><span className="text-xs font-medium text-[#5d6865]">{label}</span>{children}</label>
+  return <label className="block space-y-1.5"><span className="text-xs font-medium text-[#5b6773]">{label}</span>{children}</label>
 }
 
 export function Pill({ children, className = '' }: { children: ReactNode; className?: string }) {
