@@ -83,7 +83,7 @@ export default function ContentVideos() {
           <Btn onClick={runSync} disabled={!yt.apiKey || syncing}><RefreshCw className={`size-4 ${syncing ? 'animate-spin' : ''}`} />{t(tr('اسحب دلوقتي', 'Sync now'))}</Btn>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Field label={t(tr('القناة', 'Channel'))}><input dir="ltr" value={yt.channel} onChange={e => cms.setYouTube({ channel: e.target.value })} placeholder="@dr.khaledsalah3930" /></Field>
+          <Field label={t(tr('القناة', 'Channel'))}><input dir="ltr" value={yt.channel} onChange={e => cms.setYouTube({ channel: e.target.value })} placeholder="@DrKhaledSalah" /></Field>
           <Field label={t(tr('مفتاح YouTube Data API', 'YouTube Data API key'))}><input dir="ltr" type="password" autoComplete="off" value={yt.apiKey} onChange={e => cms.setYouTube({ apiKey: e.target.value.trim(), lastError: null })} placeholder="AIza…" /></Field>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">

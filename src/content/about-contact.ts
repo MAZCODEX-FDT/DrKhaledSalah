@@ -35,11 +35,12 @@ export const contactSeed = {
   website: 'drkhaledsalah.com',    // to confirm
   whatsapp: '201000000000',        // placeholder
   socials: [
-    { platform: 'facebook' as SocialPlatform, label: 'Facebook', url: 'https://www.facebook.com/' },
-    { platform: 'instagram' as SocialPlatform, label: 'Instagram', url: 'https://www.instagram.com/' },
-    { platform: 'youtube' as SocialPlatform, label: 'YouTube', url: 'https://www.youtube.com/@dr.khaledsalah3930' },
-    { platform: 'tiktok' as SocialPlatform, label: 'TikTok', url: 'https://www.tiktok.com/' },
-    { platform: 'google' as SocialPlatform, label: 'Google', url: 'https://maps.google.com/' },
+    { platform: 'youtube' as SocialPlatform, label: 'YouTube', url: 'https://www.youtube.com/channel/UCmHqUf0vI7lohE_7NbLd3DA' },
+    { platform: 'facebook' as SocialPlatform, label: 'Facebook', url: 'https://www.facebook.com/share/1JH4BYJ7x3/' },
+    { platform: 'instagram' as SocialPlatform, label: 'Instagram', url: 'https://www.instagram.com/dr_khaled_salah_kids_surgeon/' },
+    { platform: 'tiktok' as SocialPlatform, label: 'TikTok', url: 'https://www.tiktok.com/@khaledsalahahmad' },
+    { platform: 'linkedin' as SocialPlatform, label: 'LinkedIn', url: 'https://www.linkedin.com/in/dr-khaled-salah' },
+    { platform: 'google' as SocialPlatform, label: 'Google', url: 'https://share.google/2dPxibzUqo9AB4F7u' },
   ],
 }
 

@@ -55,7 +55,7 @@ export default function MediaExpand() {
                 </a>
               )}
               <h2 className="font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
-                {ar ? 'أكتر من 500 فيديو بيشرح لحضرتك قبل ما تيجي' : 'Over 500 videos that explain before you even visit'}
+                {ar ? 'أكتر من 900 فيديو بيشرح لحضرتك قبل ما تيجي' : 'Over 900 videos that explain before you even visit'}
               </h2>
               <p className="mt-5 max-w-lg text-cloud/70">
                 {ar

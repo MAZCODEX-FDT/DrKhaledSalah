@@ -76,11 +76,19 @@ function seed(): ContentDB {
     contact: { email: contactSeed.email, website: contactSeed.website, whatsapp: contactSeed.whatsapp, showEmail: true, showWebsite: true, showWhatsapp: true },
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
     videos: [],
-    youtube: { channel: '@dr.khaledsalah3930', apiKey: '', autoShow: false, lastSync: null, lastError: null },
+    youtube: { channel: 'UCmHqUf0vI7lohE_7NbLd3DA', apiKey: '', autoShow: false, lastSync: null, lastError: null },
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
   }
+}
+
+/** Swap the early placeholder social links for the doctor's real accounts, and add any platform that is missing. */
+function withRealSocials(saved: Social[], real: Social[]): Social[] {
+  const placeholder = (u: string) => !u || /^https:\/\/(www\.|maps\.)?[a-z]+\.com\/?$/.test(u) || u.includes('@dr.khaledsalah3930')
+  const out = saved.map(x => { const r = real.find(y => y.platform === x.platform); return r && placeholder(x.url) ? { ...x, url: r.url } : x })
+  for (const r of real) if (!out.some(x => x.platform === r.platform)) out.push(r)
+  return out
 }
 
 function load(): ContentDB {
@@ -98,9 +106,8 @@ function load(): ContentDB {
           faqs: d.faqCategories ? d.faqs : s.faqs,
           contact: d.contact ?? s.contact,
           videos: d.videos ?? s.videos,
-          youtube: { ...s.youtube, ...d.youtube },
-          // Replace the old placeholder channel link with the doctor's real channel
-          socials: (d.socials ?? s.socials).map(x => x.platform === 'youtube' && /^https:\/\/www\.youtube\.com\/?$/.test(x.url) ? { ...x, url: CHANNEL_URL } : x),
+          youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
+          socials: withRealSocials(d.socials ?? s.socials, s.socials),
         }
       }
     }
@@ -246,7 +253,7 @@ export function useSite() {
 }
 
 /** Extract the 11-character YouTube id from a link (watch, youtu.be, shorts, embed, live) or a bare id. */
-export const CHANNEL_URL = 'https://www.youtube.com/@dr.khaledsalah3930'
+export const CHANNEL_URL = 'https://www.youtube.com/channel/UCmHqUf0vI7lohE_7NbLd3DA'
 
 export function youtubeId(input: string | undefined | null): string | null {
   if (!input) return null
