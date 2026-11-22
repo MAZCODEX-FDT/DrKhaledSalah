@@ -18,6 +18,8 @@ export type FaqCategory = { id: string; name: L; enabled: boolean }
 export type Social = { id: string; platform: SocialPlatform; label: string; url: string; enabled: boolean }
 export type CmsContact = { email: string; website: string; whatsapp: string; showEmail: boolean; showWebsite: boolean; showWhatsapp: boolean }
 export type TitledText = { t: L; d: L }
+/** Automatic import from the doctor's channel (YouTube Data API v3). */
+export type YouTubeSync = { channel: string; apiKey: string; autoShow: boolean; lastSync: string | null; lastError: string | null }
 export type Video = { id: string; title: L; url: string; views: string; featured: boolean; enabled: boolean }
 export type Milestone = { year: string; t: L; d: L }
 export type CmsSurgery = Omit<Surgery, 'faqs'> & { id: string; enabled: boolean; image: string | null; video: string; faqs: QA[] }
@@ -34,6 +36,7 @@ export interface ContentDB {
   contact: CmsContact
   socials: Social[]
   videos: Video[]
+  youtube: YouTubeSync
   branches: CmsBranch[]
   stats: CmsStat[]
   media: MediaItem[]
@@ -73,6 +76,7 @@ function seed(): ContentDB {
     contact: { email: contactSeed.email, website: contactSeed.website, whatsapp: contactSeed.whatsapp, showEmail: true, showWebsite: true, showWhatsapp: true },
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
     videos: [],
+    youtube: { channel: '@dr.khaledsalah3930', apiKey: '', autoShow: false, lastSync: null, lastError: null },
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
@@ -93,8 +97,10 @@ function load(): ContentDB {
           faqCategories: d.faqCategories ?? s.faqCategories,
           faqs: d.faqCategories ? d.faqs : s.faqs,
           contact: d.contact ?? s.contact,
-          socials: d.socials ?? s.socials,
           videos: d.videos ?? s.videos,
+          youtube: { ...s.youtube, ...d.youtube },
+          // Replace the old placeholder channel link with the doctor's real channel
+          socials: (d.socials ?? s.socials).map(x => x.platform === 'youtube' && /^https:\/\/www\.youtube\.com\/?$/.test(x.url) ? { ...x, url: CHANNEL_URL } : x),
         }
       }
     }
@@ -162,6 +168,22 @@ export const cms = {
     if (key === 'surgeries') next = renumber(next as CmsSurgery[])
     commit({ ...db, [key]: next })
   },
+  setYouTube(p: Partial<YouTubeSync>) {
+    commit({ ...db, youtube: { ...db.youtube, ...p } })
+  },
+  /** Adds channel videos that aren't in the list yet and refreshes view counts. Titles and order you edited are kept. */
+  importVideos(items: { id: string; title: string; views: string }[]) {
+    const byId = new Map(db.videos.map(v => [youtubeId(v.url), v]))
+    const updated = db.videos.map(v => { const f = items.find(i => i.id === youtubeId(v.url)); return f ? { ...v, views: f.views || v.views } : v })
+    const added: Video[] = items.filter(i => !byId.has(i.id)).map(i => ({
+      id: uid(), url: `https://www.youtube.com/watch?v=${i.id}`, views: i.views, featured: false, enabled: db.youtube.autoShow,
+      // Same YouTube title in both languages until someone translates it in the dashboard
+      title: { ar: i.title, en: i.title },
+    }))
+    const videos = [...added, ...updated]
+    commit({ ...db, videos, youtube: { ...db.youtube, lastSync: new Date().toISOString(), lastError: null } })
+    return added.length
+  },
   setFeaturedVideo(id: string) {
     commit({ ...db, videos: db.videos.map(v => ({ ...v, featured: v.id === id })) })
   },
@@ -224,6 +246,8 @@ export function useSite() {
 }
 
 /** Extract the 11-character YouTube id from a link (watch, youtu.be, shorts, embed, live) or a bare id. */
+export const CHANNEL_URL = 'https://www.youtube.com/@dr.khaledsalah3930'
+
 export function youtubeId(input: string | undefined | null): string | null {
   if (!input) return null
   const v = input.trim()

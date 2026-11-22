@@ -3,7 +3,8 @@ import SpotlightCard from '../reactbits/SpotlightCard'
 import Reveal from './Reveal'
 import { useI18n } from '../../lib/i18n'
 import type { L } from '../../lib/i18n'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { autoSync } from '../../lib/youtubeSync'
 import { useSite } from '../../lib/content'
 import YouTubePlayer from './YouTubePlayer'
 
@@ -17,6 +18,7 @@ const placeholders: { title: L; views: string; q: string }[] = [
 export default function Videos() {
   const { t, lang } = useI18n()
   const { videos } = useSite()
+  useEffect(() => { autoSync() }, [])
   const [all, setAll] = useState(false)
   const list = all ? videos : videos.slice(0, 6)
   return (

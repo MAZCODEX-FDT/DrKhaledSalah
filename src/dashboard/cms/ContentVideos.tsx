@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Plus, Star, ExternalLink } from 'lucide-react'
+import { Plus, Star, ExternalLink, RefreshCw, KeyRound } from 'lucide-react'
+import { syncChannel, autoSync } from '../../lib/youtubeSync'
 import { useI18n } from '../../lib/i18n'
 import { cms, uid, useContent, youtubeId, type Video } from '../../lib/content'
 import { Btn, Card, Field, Modal, PageTitle } from '../ui'
 import { tr } from '../labels'
-import { DemoNote, emptyL, LInput, RowActions, StatusPill } from './kit'
+import { DemoNote, emptyL, LInput, RowActions, StatusPill, Toggle } from './kit'
 
 const blank = (): Video => ({ id: uid(), title: emptyL(), url: '', views: '', featured: false, enabled: true })
 const thumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
@@ -31,6 +32,18 @@ export default function ContentVideos() {
   const set = (p: Partial<Video>) => setEdit(e => (e ? { ...e, ...p } : e))
   const vid = edit ? youtubeId(edit.url) : null
   const [reading, setReading] = useState(false)
+  const yt = useContent(d => d.youtube)
+  const [syncing, setSyncing] = useState(false)
+  const [note, setNote] = useState('')
+  useEffect(() => { autoSync() }, [])
+  const runSync = async () => {
+    setSyncing(true); setNote('')
+    try {
+      const n = await syncChannel()
+      setNote(n ? t(tr(`اتضاف ${n} فيديو جديد${yt.autoShow ? '' : '. الجديد بيتضاف مخفي، راجعه واظهره.'}`, `${n} new video${n > 1 ? 's' : ''} added${yt.autoShow ? '' : '. New videos arrive hidden: review and show them.'}`)) : t(tr('مفيش فيديوهات جديدة. عدد المشاهدات اتحدّث.', 'No new videos. View counts updated.')))
+    } catch { /* lastError shows below */ }
+    setSyncing(false)
+  }
 
   // Read the title (and channel) from YouTube as soon as a valid link is pasted, unless a title is already typed.
   useEffect(() => {
@@ -61,6 +74,27 @@ export default function ContentVideos() {
         sub={t(tr('الفيديوهات بتظهر في قسم "الدكتور بيشرح". الفيديو اللي عليه نجمة هو اللي بيشتغل في قسم قناة اليوتيوب.', 'Videos appear in the "Doctor explains" section. The starred video plays in the YouTube channel section.'))}
         action={<Btn onClick={() => setEdit(blank())}><Plus className="size-4" />{t(tr('فيديو جديد', 'New video'))}</Btn>} />
       <DemoNote />
+      <Card className="mb-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h3 className="font-semibold">{t(tr('سحب الفيديوهات من القناة تلقائيًا', 'Import videos from the channel automatically'))}</h3>
+            <p className="mt-1 max-w-2xl text-sm text-[#5e6a7a]">{t(tr('الموقع بيقرا القناة كل 6 ساعات، بيضيف الفيديوهات الجديدة بعناوينها وبيحدّث عدد المشاهدات. العناوين والترتيب اللي عدّلتهم بيفضلوا زي ما هم.', 'The site reads the channel every 6 hours, adds new videos with their titles and refreshes view counts. Titles and order you edited stay as they are.'))}</p>
+          </div>
+          <Btn onClick={runSync} disabled={!yt.apiKey || syncing}><RefreshCw className={`size-4 ${syncing ? 'animate-spin' : ''}`} />{t(tr('اسحب دلوقتي', 'Sync now'))}</Btn>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <Field label={t(tr('القناة', 'Channel'))}><input dir="ltr" value={yt.channel} onChange={e => cms.setYouTube({ channel: e.target.value })} placeholder="@dr.khaledsalah3930" /></Field>
+          <Field label={t(tr('مفتاح YouTube Data API', 'YouTube Data API key'))}><input dir="ltr" type="password" autoComplete="off" value={yt.apiKey} onChange={e => cms.setYouTube({ apiKey: e.target.value.trim(), lastError: null })} placeholder="AIza…" /></Field>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <Toggle on={yt.autoShow} onClick={() => cms.setYouTube({ autoShow: !yt.autoShow })} />
+          <span>{t(tr('اظهر الفيديوهات الجديدة على الموقع على طول (من غير مراجعة)', 'Show new videos on the site right away (no review)'))}</span>
+        </div>
+        {!yt.apiKey && <p className="mt-4 flex items-start gap-2 rounded-xl bg-[#fff4d6] p-3 text-sm text-[#163e7a]"><KeyRound className="mt-0.5 size-4 shrink-0" />{t(tr('محتاج مفتاح مجاني من Google Cloud: مشروع جديد ← فعّل YouTube Data API v3 ← Credentials ← Create API key، وقصره على عنوان الموقع.', 'Needs a free key from Google Cloud: new project → enable YouTube Data API v3 → Credentials → Create API key, restricted to the website address.'))}</p>}
+        {yt.lastError && <p className="mt-4 rounded-xl bg-[#fdecec] p-3 text-sm text-[#c0392b]">{t(tr('السحب فشل: ', 'Sync failed: '))}<span dir="ltr">{yt.lastError}</span></p>}
+        {note && <p className="mt-4 text-sm text-[#1f7a4d]">{note}</p>}
+        {yt.lastSync && <p className="mt-2 text-xs text-[#5e6a7a]">{t(tr('آخر سحب: ', 'Last sync: '))}{new Date(yt.lastSync).toLocaleString()}</p>}
+      </Card>
       <Card>
         {list.length === 0 ? (
           <p className="py-8 text-center text-sm text-[#5e6a7a]">{t(tr('لسه مفيش فيديوهات. دوس "فيديو جديد" والصق رابط الفيديو من يوتيوب.', 'No videos yet. Press "New video" and paste the YouTube link.'))}</p>

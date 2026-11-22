@@ -37,7 +37,7 @@ export const contactSeed = {
   socials: [
     { platform: 'facebook' as SocialPlatform, label: 'Facebook', url: 'https://www.facebook.com/' },
     { platform: 'instagram' as SocialPlatform, label: 'Instagram', url: 'https://www.instagram.com/' },
-    { platform: 'youtube' as SocialPlatform, label: 'YouTube', url: 'https://www.youtube.com/' },
+    { platform: 'youtube' as SocialPlatform, label: 'YouTube', url: 'https://www.youtube.com/@dr.khaledsalah3930' },
     { platform: 'tiktok' as SocialPlatform, label: 'TikTok', url: 'https://www.tiktok.com/' },
     { platform: 'google' as SocialPlatform, label: 'Google', url: 'https://maps.google.com/' },
   ],
