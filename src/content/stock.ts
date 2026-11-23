@@ -6,13 +6,28 @@ import type { L } from '../lib/i18n'
  * from Dashboard → Website content → Image library ("Remove sample photos" clears them in one go).
  * Bump STOCK_VERSION when this list changes so browsers swap out older samples.
  */
-export const STOCK_VERSION = 2
+export const STOCK_VERSION = 3
 const hf = (f: string) => `https://d8j0ntlcm91z4.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/hf_${f}.png`
+/** Illustrations made in Canva (brand v2 style), hosted on the same CDN. */
+const cv = (f: string) => `https://d2ol7oe51mr4n9.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/${f}`
+const illo = (slug: string, file: string, ar: string, en: string) =>
+  ({ key: `canva-${slug}`, target: `procedure:${slug}`, src: cv(file), alt: { ar: `رسم توضيحي هادي عن ${ar}`, en: `A calm illustration about ${en}` } })
 
 /** target: 'hero' | 'about' | 'branch:<index>' | 'procedure:<slug>' */
 export const stockPhotos: { key: string; target: string; src: string; alt: L }[] = [
   { key: 'hero-teddy', target: 'hero', src: hf('20261122_212732_52fd7747-cf8c-4532-9b80-f671bfb90d34'), alt: { ar: 'دبدوب لابس سماعة دكتور', en: 'A teddy bear wearing a stethoscope' } },
   { key: 'proc-steth', target: 'procedure:undescended-testis', src: hf('20261122_212732_948eb1c1-9903-4b62-ba60-f072eeb7eaac'), alt: { ar: 'سماعة طبية وعدسة مكبرة', en: 'A stethoscope and a magnifying glass' } },
   { key: 'proc-teddy-bed', target: 'procedure:inguinal-hernia', src: hf('20261122_212732_9e17fe91-3078-4090-b62e-90784ff3df17'), alt: { ar: 'دبدوب مرتاح على سرير صغير', en: 'A teddy bear resting on a little bed' } },
+  illo('circumcision', 'e80de22f-ff09-400c-b694-3fd8a03d5613.png', 'طهارة الأطفال', 'circumcision'),
+  illo('hypospadias', 'c5d75537-a454-402e-a047-9ab6f8ab738c.jpg', 'الإحليل السفلي', 'hypospadias'),
+  illo('umbilical-hernia', 'd2c1c433-8c64-47be-bdb6-29411610db8b.jpg', 'فتق السرة', 'umbilical hernia'),
+  illo('hydrocele', '7cd314cc-615e-4490-afe7-9318a7b31a73.jpg', 'القيلة المائية', 'hydrocele'),
+  illo('tongue-tie', '018ea8ea-c4f8-4087-95ce-660a6680ea29.jpg', 'لجام اللسان', 'tongue-tie'),
+  illo('pyloric-stenosis', '5cdaf0ee-134b-40ac-807b-0deb53688e64.jpg', 'ضيق فتحة المعدة', 'pyloric stenosis'),
+  illo('appendicitis', '86686717-8c68-4ac5-ae8e-0fdc5a1fcab8.jpg', 'الزائدة الدودية', 'appendicitis'),
+  illo('intussusception', 'e48e1817-2900-4556-b43a-37852860ef88.jpg', 'انغلاف الأمعاء', 'intussusception'),
+  illo('varicocele', '2e708dca-ff7d-47fb-8cf5-24acb01c7485.jpg', 'دوالي الخصية للمراهقين', 'adolescent varicocele'),
+  illo('neck-swellings', '5c35546b-a11f-4a50-b37e-7832e1a2a2a0.jpg', 'أكياس وتورّمات الرقبة', 'neck cysts and swellings'),
+  illo('anorectal-malformations', '35514eb1-ab44-4baf-9a0e-f82b94b85bd2.jpg', 'تشوهات فتحة الشرج الخلقية', 'anorectal malformations'),
   { key: 'proc-bottle', target: 'procedure:neonatal-surgery', src: hf('20261122_212733_6161e277-8a7d-46b5-b293-3d0999dfaf4e'), alt: { ar: 'رضّاعة وبزّازة', en: 'A baby bottle and pacifier' } },
 ]
