@@ -6,7 +6,7 @@ import type { L } from '../lib/i18n'
  * from Dashboard → Website content → Image library ("Remove sample photos" clears them in one go).
  * Bump STOCK_VERSION when this list changes so browsers swap out older samples.
  */
-export const STOCK_VERSION = 4
+export const STOCK_VERSION = 5
 const hf = (f: string) => `https://d8j0ntlcm91z4.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/hf_${f}.png`
 /** Illustrations made in Canva (brand v2 style), hosted on the same CDN. */
 const cv = (f: string) => `https://d2ol7oe51mr4n9.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/${f}`
@@ -30,5 +30,6 @@ export const stockPhotos: { key: string; target: string; src: string; alt: L }[]
   illo('neck-swellings', '5c35546b-a11f-4a50-b37e-7832e1a2a2a0.jpg', 'أكياس وتورّمات الرقبة', 'neck cysts and swellings'),
   illo('anorectal-malformations', '35514eb1-ab44-4baf-9a0e-f82b94b85bd2.jpg', 'تشوهات فتحة الشرج الخلقية', 'anorectal malformations'),
   illo('hirschsprung', '9f7cfd2a-19c4-432c-983e-fa4bab5e9439.jpg', 'مرض هيرشسبرونج', 'Hirschsprung disease'),
+  illo('laparoscopic-surgery', '0b96fe14-c72c-415a-b17e-fe8cef17c572.jpg', 'جراحة المناظير للأطفال', 'pediatric laparoscopic surgery'),
   { key: 'proc-bottle', target: 'procedure:neonatal-surgery', src: hf('20261122_212733_6161e277-8a7d-46b5-b293-3d0999dfaf4e'), alt: { ar: 'رضّاعة وبزّازة', en: 'A baby bottle and pacifier' } },
 ]
