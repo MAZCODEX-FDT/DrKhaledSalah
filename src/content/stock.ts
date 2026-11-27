@@ -6,7 +6,7 @@ import type { L } from '../lib/i18n'
  * from Dashboard → Website content → Image library ("Remove sample photos" clears them in one go).
  * Bump STOCK_VERSION when this list changes so browsers swap out older samples.
  */
-export const STOCK_VERSION = 5
+export const STOCK_VERSION = 6
 const hf = (f: string) => `https://d8j0ntlcm91z4.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/hf_${f}.png`
 /** Illustrations made in Canva (brand v2 style), hosted on the same CDN. */
 const cv = (f: string) => `https://d2ol7oe51mr4n9.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/${f}`
@@ -32,4 +32,5 @@ export const stockPhotos: { key: string; target: string; src: string; alt: L }[]
   illo('hirschsprung', '9f7cfd2a-19c4-432c-983e-fa4bab5e9439.jpg', 'مرض هيرشسبرونج', 'Hirschsprung disease'),
   illo('laparoscopic-surgery', '0b96fe14-c72c-415a-b17e-fe8cef17c572.jpg', 'جراحة المناظير للأطفال', 'pediatric laparoscopic surgery'),
   { key: 'proc-bottle', target: 'procedure:neonatal-surgery', src: hf('20261122_212733_6161e277-8a7d-46b5-b293-3d0999dfaf4e'), alt: { ar: 'رضّاعة وبزّازة', en: 'A baby bottle and pacifier' } },
+  { key: 'canva-about', target: 'about', src: cv('4f0897fd-f23c-43ba-a641-243e7212a8c7.jpg'), alt: { ar: 'غرفة كشف هادية فيها مكتب وسماعة ودبدوب', en: 'A calm consultation room with a desk, stethoscope and teddy bear' } },
 ]
