@@ -3,7 +3,7 @@ import { api, BACKEND, getToken } from './api'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
-import { stockPhotos, STOCK_VERSION } from '../content/stock'
+import { stockPhotos, STOCK_VERSION, realPhotoKeys } from '../content/stock'
 import { guideSeed, articleSeed } from '../content/guide-articles'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
 export type { SocialPlatform }
@@ -116,7 +116,7 @@ function withRealSocials(saved: Social[], real: Social[]): Social[] {
 /** Removes sample photos that are no longer in the stock list and clears the slots that used them. */
 function pruneStock(d: ContentDB, all = false): ContentDB {
   const current = new Set(stockPhotos.map(p => p.key))
-  const gone = new Set(d.media.filter(m => m.stock && (all || !current.has(m.stockKey ?? ''))).map(m => m.id))
+  const gone = new Set(d.media.filter(m => m.stock && ((all && !realPhotoKeys.has(m.stockKey ?? '')) || !current.has(m.stockKey ?? ''))).map(m => m.id))
   if (!gone.size) return d
   const keep = (id: string | null) => (id && gone.has(id) ? null : id)
   return {

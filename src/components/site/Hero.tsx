@@ -13,6 +13,8 @@ export default function Hero() {
   const { t, lang } = useI18n()
   const { branches, doctor, img, google } = useSite()
   const heroImg = img(doctor.heroImage)
+  // A photo with its background removed stands on a brand circle instead of sitting in a card
+  const cutout = !!heroImg && /cutout/i.test(heroImg)
   const root = useRef<HTMLElement>(null)
 
   useGSAP(() => {
@@ -74,7 +76,14 @@ export default function Hero() {
         </div>
 
         {/* KS Play mosaic: edge decoration, no text on it */}
-        {heroImg ? (
+        {cutout ? (
+          <div data-h="tiles" className="relative mx-auto w-full max-w-[18rem] sm:max-w-sm lg:max-w-[28rem]">
+            <div className="absolute inset-x-[2%] top-[8%] aspect-square rounded-full bg-sky/20 ring-[10px] ring-gold/80" aria-hidden="true" />
+            <div className="absolute -top-2 end-[4%] size-16 rounded-full bg-gold/90 sm:size-20" aria-hidden="true" />
+            <div className="absolute bottom-[38%] start-0 size-10 rounded-full bg-cloud/80" aria-hidden="true" />
+            <img src={heroImg!} alt={t(doctor.name)} fetchPriority="high" className="relative w-full [mask-image:linear-gradient(to_bottom,#000_86%,transparent)]" />
+          </div>
+        ) : heroImg ? (
           <div data-h="tiles" className="relative hidden lg:block">
             <div><img src={heroImg} alt={t(doctor.name)} className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-[0_40px_80px_-40px_rgba(0,0,0,.5)]" /></div>
             <PlayTiles cols={2} rows={1} offset={1} className="absolute -bottom-6 -start-6 w-40 overflow-hidden rounded-2xl" />
@@ -84,7 +93,7 @@ export default function Hero() {
             <PlayTiles cols={4} rows={5} />
           </div>
         )}
-        <PlayTiles cols={6} rows={1} offset={4} className="-mx-6 lg:hidden" />
+        {!cutout && <PlayTiles cols={6} rows={1} offset={4} className="-mx-6 lg:hidden" />}
       </div>
 
       <div className="absolute bottom-6 start-1/2 hidden -translate-x-1/2 items-center gap-2 text-xs text-sky rtl:translate-x-1/2 sm:flex">
