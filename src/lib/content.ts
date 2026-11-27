@@ -113,6 +113,15 @@ function withRealSocials(saved: Social[], real: Social[]): Social[] {
   return out
 }
 
+/** Swap the early placeholder branch details (numbers, "to confirm" addresses, Manial) for the confirmed ones. */
+function withRealBranch(b: CmsBranch, real?: CmsBranch): CmsBranch {
+  if (!real) return b
+  const placeholder = /^20100000000\d$/.test(b.whatsapp) || b.address.ar.includes('يتأكد') || b.name.ar.includes('المنيل')
+  if (!placeholder) return b
+  const { name, area, address, whatsapp, phone, map, lat, lng, serves } = real
+  return { ...b, name, area, address, whatsapp, phone, map, lat, lng, serves }
+}
+
 /** Removes sample photos that are no longer in the stock list and clears the slots that used them. */
 function pruneStock(d: ContentDB, all = false): ContentDB {
   const current = new Set(stockPhotos.map(p => p.key))
@@ -174,7 +183,7 @@ function upgrade(d: ContentDB | null): ContentDB | null {
           doctor: { ...s.doctor, ...d.doctor },
           faqCategories: d.faqCategories ?? s.faqCategories,
           faqs: d.faqCategories ? d.faqs : s.faqs,
-          contact: d.contact ?? s.contact,
+          contact: d.contact ? { ...d.contact, whatsapp: /^2010{9}$/.test(d.contact.whatsapp ?? '') ? s.contact.whatsapp : d.contact.whatsapp } : s.contact,
           videos: d.videos ?? s.videos,
           guide: d.guide ?? s.guide,
           tracking: { ...s.tracking, ...d.tracking },
@@ -184,7 +193,8 @@ function upgrade(d: ContentDB | null): ContentDB | null {
           articles: d.articles ?? s.articles,
           youtube: { ...s.youtube, ...d.youtube, channel: !d.youtube?.channel || d.youtube.channel === '@dr.khaledsalah3930' ? s.youtube.channel : d.youtube.channel },
           socials: withRealSocials(d.socials ?? s.socials, s.socials),
-          branches: (d.branches ?? s.branches).map(b => b.lat != null ? b : { ...b, ...(({ lat, lng }) => ({ lat, lng }))(s.branches.find(x => x.id === b.id) ?? { lat: 0, lng: 0 }) }),
+          branches: (d.branches ?? s.branches).map(b => b.lat != null ? b : { ...b, ...(({ lat, lng }) => ({ lat, lng }))(s.branches.find(x => x.id === b.id) ?? { lat: 0, lng: 0 }) })
+            .map(b => withRealBranch(b, s.branches.find(x => x.id === b.id))),
         }
         // Offer the sample photos once to browsers that saved content before they existed
         // Offer (or refresh) the sample illustrations unless this browser removed them on purpose

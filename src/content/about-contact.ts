@@ -33,7 +33,7 @@ export type SocialPlatform = 'facebook' | 'instagram' | 'youtube' | 'tiktok' | '
 export const contactSeed = {
   email: 'info@drkhaledsalah.com', // to confirm: domain not chosen yet
   website: 'drkhaledsalah.com',    // to confirm
-  whatsapp: '201000000000',        // placeholder
+  whatsapp: '201500380387',        // Settlement branch
   socials: [
     { platform: 'youtube' as SocialPlatform, label: 'YouTube', url: 'https://www.youtube.com/channel/UCmHqUf0vI7lohE_7NbLd3DA' },
     { platform: 'facebook' as SocialPlatform, label: 'Facebook', url: 'https://www.facebook.com/share/1JH4BYJ7x3/' },

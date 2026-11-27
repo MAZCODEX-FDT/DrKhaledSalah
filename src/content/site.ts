@@ -23,33 +23,33 @@ export const doctor = {
   } as L,
 }
 
-/** TODO before launch: confirm the approved number and exact address for each branch. */
+/** Branch details confirmed by the clinic on 2026-11-28. The Settlement branch works from two clinics on one number. */
 export const branches = [
   {
     id: 'tagamoa',
     primary: true,
     name: { ar: 'فرع التجمع الخامس', en: 'Fifth Settlement Branch' } as L,
     area: { ar: 'التجمع الخامس · القاهرة الجديدة', en: 'Fifth Settlement · New Cairo' } as L,
-    address: { ar: 'شارع التسعين الشمالي، التجمع الخامس (العنوان النهائي يتأكد)', en: 'North 90th Street, Fifth Settlement (final address to confirm)' } as L,
+    address: { ar: 'Aspects Clinica و eterna Oveo Plaza، التجمع الخامس', en: 'Aspects Clinica and eterna Oveo Plaza, Fifth Settlement' } as L,
     hours: { ar: 'السبت إلى الخميس · بالحجز المسبق', en: 'Saturday to Thursday · by appointment' } as L,
-    whatsapp: '201000000000',
-    phone: '+20 100 000 0000',
-    map: 'https://maps.google.com/?q=Fifth+Settlement+North+90th',
+    whatsapp: '201500380387',
+    phone: '+20 150 038 0387',
+    map: 'https://www.google.com/maps/search/?api=1&query=Aspects+Clinica+Fifth+Settlement',
     lat: 30.0074, lng: 31.4913, // approximate, used to suggest the nearest branch
     serves: { ar: 'التجمع · الرحاب · مدينتي · الشروق', en: 'Settlement · Rehab · Madinaty · Shorouk' } as L,
   },
   {
     id: 'giza',
     primary: false,
-    name: { ar: 'فرع الجيزة · المنيل', en: 'Giza Branch · Manial' } as L,
-    area: { ar: 'المنيل · الجيزة', en: 'Manial · Giza' } as L,
-    address: { ar: 'المنيل، الجيزة (العنوان النهائي يتأكد)', en: 'Manial, Giza (final address to confirm)' } as L,
+    name: { ar: 'فرع الجيزة', en: 'Giza Branch' } as L,
+    area: { ar: 'الجيزة · ميدان الجيزة', en: 'Giza · Giza Square' } as L,
+    address: { ar: '7 شارع الجامعة، ميدان الجيزة', en: '7 El Gamaa Street, Giza Square' } as L,
     hours: { ar: 'بالحجز المسبق', en: 'By appointment' } as L,
-    whatsapp: '201000000001',
-    phone: '+20 100 000 0001',
-    map: 'https://maps.google.com/?q=Manial+Giza',
-    lat: 30.0219, lng: 31.2289,
-    serves: { ar: 'الجيزة · المنيل · وسط البلد', en: 'Giza · Manial · Downtown' } as L,
+    whatsapp: '201031827155',
+    phone: '+20 103 182 7155',
+    map: 'https://www.google.com/maps/search/?api=1&query=7+El+Gamaa+Street+Giza+Square+Giza',
+    lat: 30.0131, lng: 31.2089,
+    serves: { ar: 'الجيزة · الدقي · الهرم · فيصل', en: 'Giza · Dokki · Haram · Faisal' } as L,
   },
 ]
 
