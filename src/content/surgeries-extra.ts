@@ -75,7 +75,7 @@ const drafts: Draft[] = [
     op: { ar: 'الإجراء', en: 'Procedure' },
     name: { ar: 'لجام اللسان', en: 'Tongue-tie' },
     short: { ar: 'تقييم لجام اللسان عند المواليد والأطفال، ومتى يكون فكّه مفيد.', en: 'Assessing tongue-tie in babies and children, and when releasing it helps.' },
-    hero: { ar: 'لجام اللسان، بتقييم هادي', en: 'Tongue-tie, assessed calmly' },
+    hero: { ar: 'لجام اللسان، بتقييم دقيق', en: 'Tongue-tie, assessed calmly' },
     what: {
       ar: 'أسئلة كتير بتوصلنا عن الرضاعة والكلام ولجام اللسان. مش كل لجام محتاج تدخل. التقييم بيشوف حركة اللسان وتأثيرها، وبنشرح لحضرتك إمتى الإجراء ممكن يفيد.',
       en: 'We hear many questions about feeding, speech and tongue-tie. Not every tongue-tie needs treatment. The assessment looks at tongue movement and its effect, and we explain when a release may help.',
@@ -137,7 +137,7 @@ const drafts: Draft[] = [
     slug: 'intussusception',
     op: { ar: 'العلاج', en: 'Treatment' },
     name: { ar: 'انغلاف الأمعاء', en: 'Intussusception' },
-    short: { ar: 'حالة طارئة عند الرضّع والأطفال الصغيرين، وبنشرح للأهل الخيارات بهدوء.', en: 'An urgent condition in infants and toddlers, with the options explained calmly to parents.' },
+    short: { ar: 'حالة طارئة عند الرضّع والأطفال الصغيرين، وبنشرح للأهل الخيارات بوضوح.', en: 'An urgent condition in infants and toddlers, with the options explained calmly to parents.' },
     hero: { ar: 'انغلاف الأمعاء، خطوة بخطوة', en: 'Intussusception, step by step' },
     what: {
       ar: 'انغلاف الأمعاء حالة طارئة بتحتاج تقييم سريع. أحيانًا بتتعالج من غير جراحة، وأحيانًا العملية بتكون لازمة. بنشرح لحضرتك كل خيار وليه.',
@@ -161,7 +161,7 @@ const drafts: Draft[] = [
     short: { ar: 'تقييم دوالي الخصية في سن المراهقة، ومتى تكون المتابعة كافية.', en: 'Assessing varicocele in adolescents, and when monitoring is enough.' },
     hero: { ar: 'دوالي الخصية في سن المراهقة', en: 'Varicocele in adolescence' },
     what: {
-      ar: 'دوالي الخصية بتظهر غالبًا في سن المراهقة. مش كل الحالات محتاجة عملية. الكشف والأشعة بيحددوا الدرجة، وبنشرح للأهل وللشاب نفسه الخيارات بهدوء.',
+      ar: 'دوالي الخصية بتظهر غالبًا في سن المراهقة. مش كل الحالات محتاجة عملية. الكشف والأشعة بيحددوا الدرجة، وبنشرح للأهل وللشاب نفسه الخيارات بوضوح.',
       en: 'Varicocele usually appears in adolescence. Not every case needs surgery. Examination and ultrasound define the grade, and we explain the options calmly to parents and to the young person.',
     },
     signs: [

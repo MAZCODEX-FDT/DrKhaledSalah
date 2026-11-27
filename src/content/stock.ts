@@ -11,7 +11,7 @@ const hf = (f: string) => `https://d8j0ntlcm91z4.cloudfront.net/user_3KeFpLBceWP
 /** Illustrations made in Canva (brand v2 style), hosted on the same CDN. */
 const cv = (f: string) => `https://d2ol7oe51mr4n9.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/${f}`
 const illo = (slug: string, file: string, ar: string, en: string) =>
-  ({ key: `canva-${slug}`, target: `procedure:${slug}`, src: cv(file), alt: { ar: `رسم توضيحي هادي عن ${ar}`, en: `A calm illustration about ${en}` } })
+  ({ key: `canva-${slug}`, target: `procedure:${slug}`, src: cv(file), alt: { ar: `رسم توضيحي عن ${ar}`, en: `A calm illustration about ${en}` } })
 
 /** The doctor's own photos: kept when the sample photos are removed. */
 export const realPhotoKeys = new Set(['doctor-cutout', 'doctor-scrubs', 'doctor-seated'])

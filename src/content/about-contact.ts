@@ -11,7 +11,7 @@ export const doctorExtra = {
     en: 'We explain before we begin, because parents who understand decide with peace of mind.',
   } as L,
   story: {
-    ar: 'د. خالد صلاح استشاري جراحة الأطفال وحديثي الولادة، بيستقبل الأهالي في التجمع الخامس والجيزة. من أول كشف لحد آخر متابعة، الدكتور بنفسه اللي بيشرح الحالة ويجاوب على كل سؤال. قناته على يوتيوب بقت مرجع لآلاف الأهالي اللي بيدوّروا على شرح هادي وواضح قبل أي عملية.\n\nالفكرة بسيطة: كل أب وأم من حقهم يفهموا إيه اللي هيحصل لطفلهم، وليه، وإزاي. عشان كده كل كشف بيخلص بورقة مكتوبة فيها الخطوات والتخدير والميعاد، وخط مفتوح لأي سؤال بعد العملية.',
+    ar: 'د. خالد صلاح استشاري جراحة الأطفال وحديثي الولادة، بيستقبل الأهالي في التجمع الخامس والجيزة. من أول كشف لحد آخر متابعة، الدكتور بنفسه اللي بيشرح الحالة ويجاوب على كل سؤال. قناته على يوتيوب بقت مرجع لآلاف الأهالي اللي بيدوّروا على شرح واضح ومفصّل قبل أي عملية.\n\nالفكرة بسيطة: كل أب وأم من حقهم يفهموا إيه اللي هيحصل لطفلهم، وليه، وإزاي. عشان كده كل كشف بيخلص بورقة مكتوبة فيها الخطوات والتخدير والميعاد، وخط مفتوح لأي سؤال بعد العملية.',
     en: 'Dr. Khaled Salah is a consultant of pediatric and neonatal surgery, seeing families in New Cairo and Giza. From the first consultation to the last follow-up, the doctor personally explains the case and answers every question. His YouTube channel has become a reference for thousands of parents looking for a calm, clear explanation before any operation.\n\nThe idea is simple: every parent has the right to understand what will happen to their child, why, and how. That is why every consultation ends with a written sheet of steps, anesthesia and date, and an open line for questions after surgery.',
   } as L,
   values: [

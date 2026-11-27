@@ -144,7 +144,28 @@ function withStock(input: ContentDB): ContentDB {
 }
 
 /** Brings content saved by an older version of the site up to date (fills new fields, refreshes sample illustrations). */
+/** Wording the clinic retired (the «هادي / بهدوء» family): swapped in content saved before the change. */
+const RETIRED_WORDING: [string, string][] = [
+  ['نفس الدكتور، ونفس الهدوء، في فرعين', 'نفس الدكتور، ونفس طريقة الشرح، في فرعين'],
+  ['من الطهارة لحد أدق العمليات، بهدوء ومن غير استعجال.', 'من الطهارة لحد أدق العمليات، بوضوح ومن غير استعجال.'],
+  ['الطهارة، بهدوء وبطريقة واضحة', 'الطهارة، بخطوات واضحة ومفهومة'],
+  ['شرح هادي، وتخرج بورقة', 'شرح واضح، وتخرج بورقة'],
+  ['كل خطوة بتتشرح لحضرتك بهدوء، من', 'كل خطوة بتتشرح لحضرتك بالتفصيل، من'],
+  ['لجام اللسان، بتقييم هادي', 'لجام اللسان، بتقييم دقيق'],
+  ['الخيارات بهدوء', 'الخيارات بوضوح'],
+  ['شرح هادي وواضح قبل', 'شرح واضح ومفصّل قبل'],
+  ['رسم توضيحي هادي عن', 'رسم توضيحي عن'],
+  ['إجابات هادية على أسئلة الأهالي', 'إجابات واضحة على أسئلة الأهالي'],
+]
+function retireWording<T>(v: T): T {
+  if (typeof v === 'string') return RETIRED_WORDING.reduce((s, [a, b]) => s.split(a).join(b), v as string) as T
+  if (Array.isArray(v)) return v.map(retireWording) as T
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, retireWording(x)])) as T
+  return v
+}
+
 function upgrade(d: ContentDB | null): ContentDB | null {
+  d = d ? retireWording(d) : d
       if (d?.version === 1) {
         // Fill fields added after this browser first saved content
         const s = seed()

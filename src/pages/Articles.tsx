@@ -49,7 +49,7 @@ export function ArticlesPage() {
   const { articles } = useSite()
   return (
     <>
-      <PageHero eyebrow={t(ui.nav.articles)} title={lang === 'ar' ? 'إجابات هادية على أسئلة الأهالي' : 'Calm answers to parents\' questions'}>
+      <PageHero eyebrow={t(ui.nav.articles)} title={lang === 'ar' ? 'إجابات واضحة على أسئلة الأهالي' : 'Calm answers to parents\' questions'}>
         {lang === 'ar' ? 'مقالات قصيرة بتشرح الحاجات اللي بتتسأل كتير في الكشف. مش بديل عن الكشف، لكنها بتساعدك تيجي وانت فاهم.' : 'Short articles on the questions we hear most at the consultation. Not a substitute for a visit, but they help you arrive informed.'}
       </PageHero>
       <section className="bg-cloud py-24 text-ink sm:py-32">

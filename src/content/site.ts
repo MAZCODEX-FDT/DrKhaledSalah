@@ -18,7 +18,7 @@ export const doctor = {
   name: { ar: 'د. خالد صلاح', en: 'Dr. Khaled Salah' } as L,
   title: { ar: 'استشاري جراحة الأطفال وحديثي الولادة', en: 'Consultant of Pediatric & Neonatal Surgery' } as L,
   promise: {
-    ar: 'جرّاح أطفال في التجمع بيشرح لحضرتك كل خطوة قبل ما تقرر: من الطهارة لحد أدق العمليات، بهدوء ومن غير استعجال.',
+    ar: 'جرّاح أطفال في التجمع بيشرح لحضرتك كل خطوة قبل ما تقرر: من الطهارة لحد أدق العمليات، بوضوح ومن غير استعجال.',
     en: 'A pediatric surgeon in New Cairo who walks you through every step before you decide: from circumcision to the most delicate procedures, calmly and without rush.',
   } as L,
 }
@@ -84,7 +84,7 @@ export const surgeries: Surgery[] = [
     tone: '#2f6fd1',
     name: { ar: 'طهارة الأطفال', en: 'Pediatric Circumcision' },
     short: { ar: 'طهارة آمنة لحديثي الولادة والأطفال، والطريقة والتخدير بيتشرحوا قبل أي قرار.', en: 'Safe circumcision for newborns and children, with method and anesthesia explained before anything is decided.' },
-    hero: { ar: 'الطهارة، بهدوء وبطريقة واضحة', en: 'Circumcision, calmly and clearly' },
+    hero: { ar: 'الطهارة، بخطوات واضحة ومفهومة', en: 'Circumcision, calmly and clearly' },
     what: {
       ar: 'الطهارة من أكتر الإجراءات اللي الأهل بيسألوا عنها في أول أيام المولود. بنقعد مع حضرتك الأول، نشرح الطرق المتاحة، ونختار مع بعض الأنسب لسن الطفل وحالته، في العيادة أو في المستشفى.',
       en: 'Circumcision is one of the first things parents ask about in a newborn\'s early days. We sit with you first, explain the available methods, and choose together what suits the child\'s age and condition, in the clinic or in hospital.',
@@ -217,7 +217,7 @@ export const surgeries: Surgery[] = [
 export const journey = [
   { k: '01', t: { ar: 'أول رسالة', en: 'First message' }, d: { ar: 'رد خلال 15 دقيقة، وسؤال واحد: أنهي فرع أقرب لحضرتك؟', en: 'A reply within 15 minutes, and one question: which branch is closer to you?' } },
   { k: '02', t: { ar: 'قبل الكشف', en: 'Before the visit' }, d: { ar: 'تأكيد الميعاد وتذكير، ومعاه فيديو شرح من الدكتور لو حابب.', en: 'Confirmation and a reminder, with an explainer video from the doctor if you like.' } },
-  { k: '03', t: { ar: 'في الكشف', en: 'At the consultation' }, d: { ar: 'شرح هادي، وتخرج بورقة: الخطوات والتخدير والتكلفة والميعاد.', en: 'A calm explanation, and you leave with a sheet: steps, anesthesia, cost and date.' } },
+  { k: '03', t: { ar: 'في الكشف', en: 'At the consultation' }, d: { ar: 'شرح واضح، وتخرج بورقة: الخطوات والتخدير والتكلفة والميعاد.', en: 'A calm explanation, and you leave with a sheet: steps, anesthesia, cost and date.' } },
   { k: '04', t: { ar: 'بعد العملية', en: 'After surgery' }, d: { ar: 'رسالة متابعة تاني يوم، وخط مفتوح لأي سؤال.', en: 'A follow-up message the next day, and an open line for any question.' } },
   { k: '05', t: { ar: 'بعد أسبوع', en: 'One week later' }, d: { ar: 'زيارة اطمئنان، ورأي حضرتك بيساعد عيلة تانية تلاقينا.', en: 'A check-up visit, and your feedback helps another family find us.' } },
 ]
@@ -247,7 +247,7 @@ export const ui = {
   heroEyebrow: { ar: 'جراحة الأطفال وحديثي الولادة · التجمع الخامس والجيزة', en: 'Pediatric & Neonatal Surgery · New Cairo & Giza' },
   heroTitle: { ar: 'بنشرح قبل ما نبدأ', en: 'We explain before we begin' },
   heroSub: {
-    ar: 'كل خطوة بتتشرح لحضرتك بهدوء، من الطهارة لحد أدق العمليات، عشان تقرر وانت مطمّن.',
+    ar: 'كل خطوة بتتشرح لحضرتك بالتفصيل، من الطهارة لحد أدق العمليات، عشان تقرر وانت مطمّن.',
     en: 'Every step explained to you calmly, from circumcision to the most delicate operations, so you decide with confidence.',
   },
   bookTagamoa: { ar: 'احجز في التجمع', en: 'Book in New Cairo' },

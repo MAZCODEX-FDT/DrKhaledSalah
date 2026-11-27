@@ -13,7 +13,7 @@ export default function Branches() {
       <Reveal className="mx-auto max-w-7xl px-6">
         <p data-reveal className="eyebrow mb-5 text-navy/70">{lang === 'ar' ? 'الفروع' : 'Branches'}</p>
         <h2 data-reveal className="mb-14 max-w-3xl font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
-          {lang === 'ar' ? 'نفس الدكتور، ونفس الهدوء، في فرعين' : 'The same doctor, the same calm, in two branches'}
+          {lang === 'ar' ? 'نفس الدكتور، ونفس طريقة الشرح، في فرعين' : 'The same doctor, the same clear explanations, in two branches'}
         </h2>
         <div className="grid items-stretch gap-5 lg:grid-cols-2">
           {branches.map((b, i) => (
