@@ -46,9 +46,19 @@ export default function About() {
 
       {wide && (
         <section className="bg-cloud pb-24">
-          <div className="mx-auto max-w-7xl px-6">
-            <img src={wide} alt={t(doctor.name)} className="aspect-[21/9] w-full rounded-[2rem] object-cover" />
-          </div>
+          <div className="mx-auto max-w-7xl px-6"><Reveal className="grid items-center gap-10 overflow-hidden rounded-[2rem] bg-white px-6 pt-10 shadow-[0_30px_60px_-40px_rgba(22,62,122,.35)] sm:px-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16 lg:pt-0">
+            <img data-reveal src={wide} alt={t(doctor.name)} loading="lazy" className="mx-auto max-h-[34rem] w-auto max-w-full self-end object-contain lg:mt-10" />
+            {(doctor.highlights ?? []).length > 0 && (
+              <ul className="space-y-4 pb-10 text-ink lg:py-12">
+                {(doctor.highlights ?? []).map((h, i) => (
+                  <li key={i} data-reveal className="flex items-start gap-3 text-lg leading-relaxed">
+                    <span className="mt-2.5 size-2.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+                    {t(h)}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Reveal></div>
         </section>
       )}
 

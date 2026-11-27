@@ -15,7 +15,7 @@ export default function DoctorPortrait({ className = '' }: { className?: string 
       </svg>
       <div className="calm-night brand-pattern absolute inset-[6%] flex flex-col items-center justify-center gap-4 overflow-hidden rounded-full text-center text-cloud/60">
         {src ? (
-          <img src={src} alt={t(doctor.name)} className="absolute inset-0 size-full object-cover" />
+          <img src={src} alt={t(doctor.name)} className="absolute inset-0 size-full bg-white object-cover object-top" />
         ) : (
           <>
             <Mark className="relative h-24 w-28" />

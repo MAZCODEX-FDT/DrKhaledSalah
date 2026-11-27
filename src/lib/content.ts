@@ -137,7 +137,7 @@ function withStock(input: ContentDB): ContentDB {
   const idFor = (target: string) => { const p = stockPhotos.find(x => x.target === target); return p ? media.find(m => m.stock && m.stockKey === p.key)?.id ?? null : null }
   return {
     ...d, media, stockApplied: true, stockVersion: STOCK_VERSION,
-    doctor: { ...d.doctor, heroImage: d.doctor.heroImage ?? idFor('hero'), aboutImage: d.doctor.aboutImage ?? idFor('about') },
+    doctor: { ...d.doctor, portrait: d.doctor.portrait ?? idFor('portrait'), heroImage: d.doctor.heroImage ?? idFor('hero'), aboutImage: d.doctor.aboutImage ?? idFor('about') },
     branches: d.branches.map((b, i) => ({ ...b, image: b.image ?? idFor(`branch:${i}`) })),
     surgeries: d.surgeries.map(x => ({ ...x, image: x.image ?? idFor(`procedure:${x.slug}`) })),
   }
