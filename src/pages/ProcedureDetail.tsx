@@ -45,7 +45,7 @@ export default function ProcedureDetail() {
             </div>
             <button type="button" data-reveal onClick={() => document.getElementById('procedure-faq')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue underline-offset-4 hover:underline">
-              {lang === 'ar' ? `الإجابات الكاملة على كل النقط دي في «كل اللي محتاج تعرفه» تحت (${s.faqs.filter(f => f.enabled).length} سؤال)` : `Full answers to all of these are in "Everything you need to know" below (${s.faqs.filter(f => f.enabled).length} questions)`}
+              {lang === 'ar' ? `الإجابات الكاملة على كل النقط دي في «كل اللي محتاج تعرفه» تحت (${((n: number) => `${n} ${n >= 3 && n <= 10 ? 'أسئلة' : 'سؤال'}`)(s.faqs.filter(f => f.enabled).length)})` : `Full answers to all of these are in "Everything you need to know" below (${s.faqs.filter(f => f.enabled).length} questions)`}
               <ArrowDown className="size-4" />
             </button>
           </div>
