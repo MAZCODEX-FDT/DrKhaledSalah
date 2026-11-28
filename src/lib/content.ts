@@ -195,7 +195,7 @@ function withContentRev(d: ContentDB, s: ContentDB): ContentDB {
     return { ...x, faqs: [...full.faqs, ...own] }
   })
   const have = new Set(d.articles.map(a => a.slug))
-  const articles = [...d.articles, ...s.articles.filter(a => !have.has(a.slug))]
+  const articles = [...d.articles, ...s.articles.filter(a => !have.has(a.slug)).map(a => ({ ...a, image: null }))]
   return { ...d, surgeries, articles, contentRev: CONTENT_REV }
 }
 
