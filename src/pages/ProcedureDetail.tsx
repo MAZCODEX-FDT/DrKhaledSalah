@@ -1,5 +1,5 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Check, ClipboardList, MessageCircle, Play } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, Check, ClipboardList, MessageCircle, Play } from 'lucide-react'
 import { ArticleCard } from './Articles'
 import YouTubePlayer from '../components/site/YouTubePlayer'
 import VideoCard from '../components/site/VideoCard'
@@ -43,7 +43,11 @@ export default function ProcedureDetail() {
                 </div>
               ))}
             </div>
-            <p data-reveal className="mt-4 text-sm text-ink/50">{lang === 'ar' ? 'كل النقط دي بتتشرح بالتفصيل في الكشف.' : 'All of these are explained in detail at the consultation.'}</p>
+            <button type="button" data-reveal onClick={() => document.getElementById('procedure-faq')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue underline-offset-4 hover:underline">
+              {lang === 'ar' ? `الإجابات الكاملة على كل النقط دي في «كل اللي محتاج تعرفه» تحت (${s.faqs.filter(f => f.enabled).length} سؤال)` : `Full answers to all of these are in "Everything you need to know" below (${s.faqs.filter(f => f.enabled).length} questions)`}
+              <ArrowDown className="size-4" />
+            </button>
           </div>
           <div role="group" aria-label={lang === 'ar' ? 'احجز' : 'Book'} data-reveal className="relative h-fit overflow-hidden rounded-[2rem] bg-navy p-8 text-cloud sm:p-10 lg:sticky lg:top-28">
             <ProcedureArt slug={s.slug} tone={s.tone} className="absolute -end-24 -top-24 size-80 opacity-60" />
@@ -122,8 +126,11 @@ export default function ProcedureDetail() {
       )}
 
       <section className="bg-night pb-28">
-        <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">
-          <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light leading-tight">{lang === 'ar' ? 'أسئلة الأهالي' : 'Parents ask'}</h2>
+        <div id="procedure-faq" className="mx-auto grid max-w-7xl scroll-mt-28 gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">
+          <div>
+            <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light leading-tight">{lang === 'ar' ? 'كل اللي محتاج تعرفه' : 'Everything you need to know'}</h2>
+            <p className="mt-4 max-w-sm text-mist">{lang === 'ar' ? `إجابات واضحة على أسئلة الأهالي عن ${t(s.name)}: قبل العملية، ويومها، وبعدها في البيت.` : `Clear answers to parents' questions about ${t(s.name)}: before, on the day, and at home afterwards.`}</p>
+          </div>
           <Faq items={s.faqs.filter(f => f.enabled)} />
         </div>
         <div className="mx-auto mt-24 max-w-7xl px-6">

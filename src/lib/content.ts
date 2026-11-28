@@ -6,6 +6,7 @@ import { extraSurgeries } from '../content/surgeries-extra'
 import { seedVideos } from '../content/videos'
 import { stockPhotos, STOCK_VERSION, realPhotoKeys } from '../content/stock'
 import { guideSeed, articleSeed } from '../content/guide-articles'
+import { procedureFaqs } from '../content/procedure-faqs'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
 export type { SocialPlatform }
 
@@ -59,6 +60,8 @@ export interface ContentDB {
   /** Set once the sample stock photos were offered to this browser, so removing them sticks. */
   stockApplied?: boolean
   stockVersion?: number
+  /** Built-in copy updates already applied to this saved content (1 = full procedure answers + new articles). */
+  contentRev?: number
 }
 
 const KEY = 'ks-content-v1'
@@ -86,7 +89,7 @@ function seed(): ContentDB {
       aboutImage: null,
       ...doctorExtra,
     },
-    surgeries: [...baseSurgeries, ...extraSurgeries].map(s => ({ ...s, id: uid(), enabled: true, image: null, video: '', faqs: s.faqs.map(qa) })),
+    surgeries: [...baseSurgeries, ...extraSurgeries].map(s => ({ ...s, id: uid(), enabled: true, image: null, video: '', faqs: (procedureFaqs[s.slug] ?? s.faqs).map(qa) })),
     faqCategories: cats,
     faqs: [
       ...generalFaqs.map((f, i) => ({ ...qa(f), category: catId(generalFaqCategory[i]) })),
@@ -103,6 +106,7 @@ function seed(): ContentDB {
     branches: seedBranches.map(b => ({ ...b, enabled: true, image: null })),
     stats: seedStats.map(s => ({ ...s, id: uid(), enabled: true })),
     media: [],
+    contentRev: CONTENT_REV,
   })
 }
 
@@ -134,6 +138,7 @@ function pruneStock(d: ContentDB, all = false): ContentDB {
     doctor: { ...d.doctor, portrait: keep(d.doctor.portrait), heroImage: keep(d.doctor.heroImage), aboutImage: keep(d.doctor.aboutImage) },
     branches: d.branches.map(b => ({ ...b, image: keep(b.image) })),
     surgeries: d.surgeries.map(x => ({ ...x, image: keep(x.image) })),
+    articles: d.articles.map(a => ({ ...a, image: keep(a.image) })),
   }
 }
 
@@ -150,6 +155,7 @@ function withStock(input: ContentDB): ContentDB {
     doctor: { ...d.doctor, portrait: d.doctor.portrait ?? idFor('portrait'), heroImage: d.doctor.heroImage ?? idFor('hero'), aboutImage: d.doctor.aboutImage ?? idFor('about') },
     branches: d.branches.map((b, i) => ({ ...b, image: b.image ?? idFor(`branch:${i}`) })),
     surgeries: d.surgeries.map(x => ({ ...x, image: x.image ?? idFor(`procedure:${x.slug}`) })),
+    articles: d.articles.map(a => ({ ...a, image: a.image ?? idFor(`article:${a.slug}`) })),
   }
 }
 
@@ -173,6 +179,24 @@ function retireWording<T>(v: T): T {
   if (Array.isArray(v)) return v.map(retireWording) as T
   if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, retireWording(x)])) as T
   return v
+}
+
+
+const CONTENT_REV = 1
+const oldSeedQuestions = new Map([...baseSurgeries, ...extraSurgeries].map(s => [s.slug, new Set(s.faqs.map(f => f.q.ar))]))
+/** Swaps the short sample questions for the full answers and adds the new built-in articles, once, keeping anything the clinic wrote itself. */
+function withContentRev(d: ContentDB, s: ContentDB): ContentDB {
+  if ((d.contentRev ?? 0) >= CONTENT_REV) return d
+  const surgeries = d.surgeries.map(x => {
+    const full = s.surgeries.find(y => y.slug === x.slug)
+    if (!full || !procedureFaqs[x.slug]) return x
+    const old = oldSeedQuestions.get(x.slug) ?? new Set<string>()
+    const own = x.faqs.filter(f => !old.has(f.q.ar))
+    return { ...x, faqs: [...full.faqs, ...own] }
+  })
+  const have = new Set(d.articles.map(a => a.slug))
+  const articles = [...d.articles, ...s.articles.filter(a => !have.has(a.slug))]
+  return { ...d, surgeries, articles, contentRev: CONTENT_REV }
 }
 
 function upgrade(d: ContentDB | null): ContentDB | null {
@@ -201,7 +225,7 @@ function upgrade(d: ContentDB | null): ContentDB | null {
         }
         // Offer the sample photos once to browsers that saved content before they existed
         // Offer (or refresh) the sample illustrations unless this browser removed them on purpose
-        const base = { ...merged, media: d.media ?? [] }
+        const base = withContentRev({ ...merged, contentRev: d.contentRev, media: d.media ?? [] }, s)
         if (d.stockVersion === STOCK_VERSION) return base
         return d.stockApplied && !d.stockVersion && !d.media?.some(m => m.stock) ? { ...base, stockVersion: STOCK_VERSION } : withStock(base)
       }

@@ -1,3 +1,5 @@
+import { moreArticles1 } from './articles-more-1'
+import { moreArticles2 } from './articles-more-2'
 import type { L } from '../lib/i18n'
 
 /**
@@ -84,4 +86,6 @@ export const articleSeed: { slug: string; procedure?: string; title: L; excerpt:
       en: '## When to get it checked\nIf something is noticed at a routine check, the doctor examines and explains what they find.\n\n## Why timing matters\nThe doctor explains the right timing for your child and the reasons.\n\n## Ask about\nThe tests needed, the type of operation if one is needed, and follow-up afterwards.',
     },
   },
+  ...moreArticles1,
+  ...moreArticles2,
 ]
