@@ -30,7 +30,7 @@ export const branches = [
     primary: true,
     name: { ar: 'فرع التجمع الخامس', en: 'Fifth Settlement Branch' } as L,
     area: { ar: 'التجمع الخامس · القاهرة الجديدة', en: 'Fifth Settlement · New Cairo' } as L,
-    address: { ar: 'Aspects Clinica و eterna Oveo Plaza، التجمع الخامس', en: 'Aspects Clinica and eterna Oveo Plaza, Fifth Settlement' } as L,
+    address: { ar: 'أسبكتس كلينيكا وإيتيرنا أوفيو بلازا، التجمع الخامس', en: 'Aspects Clinica and eterna Oveo Plaza, Fifth Settlement' } as L,
     hours: { ar: 'السبت إلى الخميس · بالحجز المسبق', en: 'Saturday to Thursday · by appointment' } as L,
     whatsapp: '201500380387',
     phone: '+20 150 038 0387',

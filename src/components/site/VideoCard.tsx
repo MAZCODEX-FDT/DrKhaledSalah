@@ -8,9 +8,9 @@ export default function VideoCard({ v, className = '' }: { v: Video; className?:
   return (
     <article className={`flex flex-col overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-navy/5 shadow-[0_20px_40px_-30px_rgba(22,62,122,.35)] ${className}`}>
       <YouTubePlayer url={v.url} title={t(v.title)} />
-      <div className="flex flex-1 items-start justify-between gap-4 p-5">
+      <div className="flex flex-1 flex-col items-start gap-3 p-5">
         <h3 className="line-clamp-3 font-display text-lg leading-snug">{t(v.title)}</h3>
-        {v.views && <span className="shrink-0 rounded-full bg-mist px-3 py-1 text-xs font-medium text-blue">{v.views} {lang === 'ar' ? 'مشاهدة' : 'views'}</span>}
+        {v.views && <span className="mt-auto shrink-0 rounded-full bg-mist px-3 py-1 text-xs font-medium text-blue">{v.views} {lang === 'ar' ? 'مشاهدة' : 'views'}</span>}
       </div>
     </article>
   )

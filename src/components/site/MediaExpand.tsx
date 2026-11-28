@@ -36,12 +36,12 @@ export default function MediaExpand() {
         <span data-m="b" className="text-cloud/90">{ar ? 'قبل ما نبدأ' : 'then begin'}</span>
       </div>
 
-      <div data-m="card" className="arch relative mx-6 h-[70vh] w-full overflow-hidden md:mx-0">
+      <div data-m="card" className="arch relative mx-6 w-full overflow-hidden md:mx-0 md:h-[70vh]">
         <div data-m="inner" className="calm-night brand-pattern absolute inset-0">
           <div className="grain absolute inset-0" />
         </div>
 
-        <div data-m="copy" className="relative flex h-full flex-col justify-between p-8 sm:p-14 md:pt-28">
+        <div data-m="copy" className="relative flex h-full flex-col justify-between gap-8 px-6 pb-8 pt-20 sm:p-14 md:pt-28">
           <div className="flex items-center gap-3 text-sm text-cloud/70">
             <Mark className="h-8 w-10" />
             <span>{ar ? 'قناة د. خالد صلاح على YouTube' : 'Dr. Khaled Salah on YouTube'}</span>
@@ -54,7 +54,7 @@ export default function MediaExpand() {
                   <Play className="size-7 fill-cloud text-cloud transition-colors group-hover:fill-white group-hover:text-white" />
                 </a>
               )}
-              <h2 className="font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-tight">
+              <h2 className="font-display text-[clamp(1.7rem,4.5vw,4rem)] font-light leading-tight">
                 {ar ? 'أكتر من 900 فيديو بيشرح لحضرتك قبل ما تيجي' : 'Over 900 videos that explain before you even visit'}
               </h2>
               <p className="mt-5 max-w-lg text-cloud/70">

@@ -56,7 +56,26 @@ export default function Procedures({ heading = true, grid = false }: { heading?:
           </div>
         ) : (
         <>
-        <div className="flex flex-col gap-3 lg:h-[34rem] lg:flex-row">
+        {/* Phones: swipeable cards with the procedure illustration, title and summary always readable */}
+        <div data-lenis-prevent className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-6 px-6 pb-4 [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden">
+          {surgeries.map(s => {
+            const src = img(s.image)
+            return (
+              <Link key={s.slug} to={`/procedures/${s.slug}`} className="flex w-[80%] shrink-0 snap-start flex-col overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-navy/5 shadow-[0_20px_40px_-30px_rgba(22,62,122,.35)] sm:w-[calc(50%-.5rem)]">
+                <div className="relative h-44 overflow-hidden bg-mist">
+                  {src ? <img src={src} alt="" loading="lazy" className="absolute inset-0 size-full object-cover" /> : <ProcedureArt slug={s.slug} tone={s.tone} className="absolute -end-10 -top-10 size-60 opacity-60" />}
+                  <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 font-serif text-sm font-bold text-blue">{s.index}</span>
+                </div>
+                <div className="flex flex-1 flex-col gap-3 p-6">
+                  <h3 className="font-display text-2xl leading-tight text-navy">{t(s.name)}</h3>
+                  <p className="text-sm leading-relaxed text-ink/70">{t(s.short)}</p>
+                  <span className="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-semibold text-blue">{lang === 'ar' ? 'اقرأ أكتر' : 'Read more'} <Arrow className="size-4" /></span>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+        <div className="hidden gap-3 lg:flex lg:h-[34rem] lg:flex-row">
           {surgeries.map((s, i) => {
             const on = active === i
             return (

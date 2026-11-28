@@ -35,11 +35,11 @@ export default function Hero() {
   const main = branches[0]
 
   return (
-    <section ref={root} className="relative isolate flex min-h-[100svh] items-center overflow-hidden pb-16 pt-32 sm:pb-20">
+    <section ref={root} className="relative isolate flex min-h-[100svh] items-center overflow-hidden pb-16 pt-28 sm:pb-20 lg:pt-32">
       {/* Blue Sky gradient + soft dots */}
       <div className="calm-night brand-pattern absolute inset-0 -z-20" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-6 lg:grid-cols-[1.3fr_1fr]">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-8 px-6 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
         <div data-h="content">
           <p data-h="eyebrow" className="mb-8">
             <span className="pill bg-gold text-navy">{t(ui.heroEyebrow)}</span>
@@ -77,7 +77,7 @@ export default function Hero() {
 
         {/* KS Play mosaic: edge decoration, no text on it */}
         {cutout ? (
-          <div data-h="tiles" className="relative mx-auto w-full max-w-[18rem] sm:max-w-sm lg:max-w-[28rem]">
+          <div data-h="tiles" className="relative order-first mx-auto w-full max-w-[15rem] sm:max-w-xs lg:order-none lg:max-w-[28rem]">
             <div className="absolute inset-x-[2%] top-[8%] aspect-square rounded-full bg-sky/20 ring-[10px] ring-gold/80" aria-hidden="true" />
             <div className="absolute -top-2 end-[4%] size-16 rounded-full bg-gold/90 sm:size-20" aria-hidden="true" />
             <div className="absolute bottom-[38%] start-0 size-10 rounded-full bg-cloud/80" aria-hidden="true" />

@@ -3,6 +3,7 @@ import { api, BACKEND, getToken } from './api'
 import type { L } from './i18n'
 import { branches as seedBranches, doctor as seedDoctor, generalFaqs, stats as seedStats, surgeries as baseSurgeries, type Surgery } from '../content/site'
 import { extraSurgeries } from '../content/surgeries-extra'
+import { seedVideos } from '../content/videos'
 import { stockPhotos, STOCK_VERSION, realPhotoKeys } from '../content/stock'
 import { guideSeed, articleSeed } from '../content/guide-articles'
 import { contactSeed, doctorExtra, faqCategorySeed, generalFaqCategory, moreGeneralFaqs, type SocialPlatform } from '../content/about-contact'
@@ -93,7 +94,7 @@ function seed(): ContentDB {
     ],
     contact: { email: contactSeed.email, website: contactSeed.website, whatsapp: contactSeed.whatsapp, showEmail: true, showWebsite: true, showWhatsapp: true },
     socials: contactSeed.socials.map(x => ({ ...x, id: uid(), enabled: true })),
-    videos: [],
+    videos: seedVideos,
     youtube: { channel: 'UCmHqUf0vI7lohE_7NbLd3DA', apiKey: '', autoShow: false, lastSync: null, lastError: null },
     tracking: { ga4: '', pixel: '', askConsent: true },
     google: { placeId: '', placeName: '', apiKey: '', rating: null, count: null, mapsUrl: '', reviews: [], lastSync: null, lastError: null },
@@ -155,6 +156,7 @@ function withStock(input: ContentDB): ContentDB {
 /** Brings content saved by an older version of the site up to date (fills new fields, refreshes sample illustrations). */
 /** Wording the clinic retired (the «هادي / بهدوء» family): swapped in content saved before the change. */
 const RETIRED_WORDING: [string, string][] = [
+  ['Aspects Clinica و eterna Oveo Plaza، التجمع الخامس', 'أسبكتس كلينيكا وإيتيرنا أوفيو بلازا، التجمع الخامس'],
   ['نفس الدكتور، ونفس الهدوء، في فرعين', 'نفس الدكتور، ونفس طريقة الشرح، في فرعين'],
   ['من الطهارة لحد أدق العمليات، بهدوء ومن غير استعجال.', 'من الطهارة لحد أدق العمليات، بوضوح ومن غير استعجال.'],
   ['الطهارة، بهدوء وبطريقة واضحة', 'الطهارة، بخطوات واضحة ومفهومة'],
@@ -184,7 +186,8 @@ function upgrade(d: ContentDB | null): ContentDB | null {
           faqCategories: d.faqCategories ?? s.faqCategories,
           faqs: d.faqCategories ? d.faqs : s.faqs,
           contact: d.contact ? { ...d.contact, whatsapp: /^2010{9}$/.test(d.contact.whatsapp ?? '') ? s.contact.whatsapp : d.contact.whatsapp } : s.contact,
-          videos: d.videos ?? s.videos,
+          // Browsers that never synced the channel get the built-in list of the most watched videos
+          videos: d.videos?.length ? d.videos : s.videos,
           guide: d.guide ?? s.guide,
           tracking: { ...s.tracking, ...d.tracking },
           google: { ...s.google, ...d.google },
