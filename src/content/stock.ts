@@ -6,7 +6,7 @@ import type { L } from '../lib/i18n'
  * from Dashboard → Website content → Image library ("Remove sample photos" clears them in one go).
  * Bump STOCK_VERSION when this list changes so browsers swap out older samples.
  */
-export const STOCK_VERSION = 12
+export const STOCK_VERSION = 13
 const hf = (f: string) => `https://d8j0ntlcm91z4.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/hf_${f}.png`
 /** Illustrations made in Canva (brand v2 style), hosted on the same CDN. */
 const cv = (f: string) => `https://d2ol7oe51mr4n9.cloudfront.net/user_3KeFpLBceWPNV4EuryTfU1bfeBn/${f}`
@@ -57,6 +57,10 @@ export const stockPhotos: { key: string; target: string; src: string; alt: L }[]
   art('laparoscopy-children', '1727830968495-ea2798aaee35', 'سرير مستشفى وأجهزة طبية', 'A hospital bed and equipment'),
   art('back-to-school-sports', '1543351611-58f69d7c1781', 'كورة', 'A football'),
   art('questions-to-ask', '1612367980327-7454a7276aa7', 'نوتة وقلم', 'A notebook'),
+  art('anesthesia-questions', '1628372095387-017d1099fc19', 'ممر مستشفى', 'A hospital corridor'),
+  art('circumcision-timing', '1639751907353-3629fc00d2b2', 'غرفة طفل فيها سرير أبيض', 'A nursery with a white crib'),
+  art('inguinal-hernia-wait', '1618842676088-c4d48a6a7c9d', 'لعبة حلقات ملونة', 'A colourful stacking toy'),
+  art('undescended-testis-questions', '1687708522434-6197bb47c933', 'ألعاب قطيفة', 'Soft toys'),
   { key: 'canva-branch-settlement', target: 'branch:0', src: cv('0dcc9aed-e233-4a90-baa5-14c0a90c5493.jpg'), alt: { ar: 'مبنى عيادة حديث بين النخيل في التجمع', en: 'A modern clinic building among palm trees in New Cairo' } },
   { key: 'canva-branch-giza-square', target: 'branch:1', src: cv('92a881fc-9d00-418c-80f6-3373efcc22a1.jpg'), alt: { ar: 'مبنى عيادة بطراز قاهري كلاسيكي في ميدان الجيزة', en: 'A clinic in a classic Cairo building on Giza Square' } },
 ]

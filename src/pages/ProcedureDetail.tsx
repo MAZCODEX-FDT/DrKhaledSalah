@@ -5,7 +5,6 @@ import YouTubePlayer from '../components/site/YouTubePlayer'
 import VideoCard from '../components/site/VideoCard'
 import { videosForProcedure } from '../lib/videoMatch'
 import PageHero from './PageHero'
-import Faq from '../components/site/Faq'
 import Reveal from '../components/site/Reveal'
 import ProcedureArt from '../components/site/ProcedureArt'
 import Branches from '../components/site/Branches'
@@ -25,6 +24,7 @@ export default function ProcedureDetail() {
   const [main, ...more] = vids
   const Arrow = lang === 'ar' ? ArrowLeft : ArrowRight
   const reads = articles.filter(a => a.procedure === s.slug)
+  const answers = s.faqs.filter(f => f.enabled)
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function ProcedureDetail() {
             </div>
             <button type="button" data-reveal onClick={() => document.getElementById('procedure-faq')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-blue underline-offset-4 hover:underline">
-              {lang === 'ar' ? `الإجابات الكاملة على كل النقط دي في «كل اللي محتاج تعرفه» تحت (${((n: number) => `${n} ${n >= 3 && n <= 10 ? 'أسئلة' : 'سؤال'}`)(s.faqs.filter(f => f.enabled).length)})` : `Full answers to all of these are in "Everything you need to know" below (${s.faqs.filter(f => f.enabled).length} questions)`}
+              {lang === 'ar' ? `الإجابات الكاملة في دليل الأهل تحت (${((n: number) => `${n} ${n >= 3 && n <= 10 ? 'أسئلة' : 'سؤال'}`)(answers.length)})` : `Full answers are in the parents' guide below (${answers.length} questions)`}
               <ArrowDown className="size-4" />
             </button>
           </div>
@@ -71,6 +71,46 @@ export default function ProcedureDetail() {
           </div>
         </Reveal>
       </section>
+
+      {/* Parents' guide: every question with its answer right under it */}
+      {answers.length > 0 && (
+        <section id="procedure-faq" className="scroll-mt-24 bg-white py-20 text-ink sm:py-28">
+          <div className="mx-auto max-w-7xl px-6">
+            <p className="eyebrow mb-4 text-blue">{lang === 'ar' ? 'دليل الأهل' : "Parents' guide"}</p>
+            <h2 className="max-w-3xl font-display text-[clamp(1.9rem,4vw,3.2rem)] leading-tight">{lang === 'ar' ? `كل اللي محتاج تعرفه عن ${t(s.name)}` : `Everything you need to know about ${t(s.name)}`}</h2>
+            <p className="mt-4 max-w-2xl text-lg text-ink/60">{lang === 'ar' ? 'من أول ما تلاحظ العلامات، لحد الرجوع للبيت والمتابعة.' : 'From the first signs you notice to coming home and follow-up.'}</p>
+            <div className="mt-12 grid gap-10 lg:grid-cols-[18rem_1fr] lg:gap-16">
+              <nav aria-label={lang === 'ar' ? 'محتوى الدليل' : 'Guide contents'} className="hidden h-fit lg:sticky lg:top-28 lg:block">
+                <p className="mb-4 text-sm font-semibold text-ink/50">{lang === 'ar' ? 'في الصفحة دي' : 'On this page'}</p>
+                <ol className="space-y-1 border-s-2 border-sky">
+                  {answers.map((f, i) => (
+                    <li key={f.id}>
+                      <button type="button" onClick={() => document.getElementById(`q-${i + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                        className="-ms-0.5 block w-full border-s-2 border-transparent py-2 ps-4 text-start text-sm leading-snug text-ink/65 transition-colors hover:border-blue hover:text-blue">
+                        {t(f.q)}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+              <div className="space-y-5">
+                {answers.map((f, i) => (
+                  <article key={f.id} id={`q-${i + 1}`} className="scroll-mt-28 rounded-[1.75rem] border hairline-dark bg-cloud/60 p-6 sm:p-9">
+                    <div className="flex items-start gap-4 sm:gap-5">
+                      <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue font-latin text-sm font-bold text-white sm:size-12 sm:text-base">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="min-w-0">
+                        <h3 className="font-display text-xl leading-snug text-navy sm:text-2xl">{t(f.q)}</h3>
+                        <p className="mt-3 text-[1.05rem] leading-[1.9] text-ink/75">{t(f.a)}</p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+                <p className="pt-2 text-sm text-ink/50">{lang === 'ar' ? 'المعلومات دي للتوعية، والخطة المناسبة لكل طفل بتتحدد في الكشف.' : 'This information is for awareness; the right plan for each child is decided at the consultation.'}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-night py-24 sm:py-32">
         <Reveal className="mx-auto max-w-7xl px-6">
@@ -125,15 +165,8 @@ export default function ProcedureDetail() {
         </section>
       )}
 
-      <section className="bg-night pb-28">
-        <div id="procedure-faq" className="mx-auto grid max-w-7xl scroll-mt-28 gap-14 px-6 lg:grid-cols-[1fr_1.6fr]">
-          <div>
-            <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light leading-tight">{lang === 'ar' ? 'كل اللي محتاج تعرفه' : 'Everything you need to know'}</h2>
-            <p className="mt-4 max-w-sm text-mist">{lang === 'ar' ? `إجابات واضحة على أسئلة الأهالي عن ${t(s.name)}: قبل العملية، ويومها، وبعدها في البيت.` : `Clear answers to parents' questions about ${t(s.name)}: before, on the day, and at home afterwards.`}</p>
-          </div>
-          <Faq items={s.faqs.filter(f => f.enabled)} />
-        </div>
-        <div className="mx-auto mt-24 max-w-7xl px-6">
+      <section className="bg-night pb-28 pt-24">
+        <div className="mx-auto max-w-7xl px-6">
           <p className="eyebrow mb-6 text-mist">{lang === 'ar' ? 'عمليات تانية' : 'Other procedures'}</p>
           <div className="grid gap-4 md:grid-cols-3">
             {others.map(o => (
